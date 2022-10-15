@@ -30,8 +30,8 @@ class Session: ObservableObject, Identifiable, Codable, Equatable, Hashable {
     var estimatedRaceTime = 0
     var weatherMain = ""
     var weatherDescription = ""
-    var weatherTemp = 0
-    var weatherRain = 0
+    var weatherTemp = 0.0
+    var weatherRain = 0.0
     
     enum CodingKeys: String, CodingKey {
         case sessionID
@@ -113,8 +113,8 @@ class Session: ObservableObject, Identifiable, Codable, Equatable, Hashable {
         estimatedRaceTime = try values.decode(Int.self, forKey: .estimatedRaceTime)
         weatherMain = try values.decode(String.self, forKey: .weatherMain)
         weatherDescription = try values.decode(String.self, forKey: .weatherDescription)
-        weatherTemp = try values.decode(Int.self, forKey: .weatherTemp)
-        weatherRain = try values.decode(Int.self, forKey: .weatherRain)
+        weatherTemp = try values.decode(Double.self, forKey: .weatherTemp)
+        weatherRain = try values.decode(Double.self, forKey: .weatherRain)
     }
     
     init() {
