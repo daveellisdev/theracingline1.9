@@ -48,6 +48,7 @@ class DataController: ObservableObject {
             
             do {
                 let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
+                
                 DispatchQueue.main.async {
                     self.series = json.series
                     self.circuits = json.circuits
@@ -59,7 +60,6 @@ class DataController: ObservableObject {
                 print(jsonError)
                 print(jsonError.localizedDescription)
             }
-
 
         }.resume()
     } // DOWNLOADDATA
