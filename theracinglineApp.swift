@@ -10,8 +10,11 @@ import SwiftUI
 @main
 struct theracinglineApp: App {
     var body: some Scene {
+        
+        let dataController = DataController()
+        
         WindowGroup {
-            ContentView()
+            ContentView(dataController: dataController)
         }
     }
 }
