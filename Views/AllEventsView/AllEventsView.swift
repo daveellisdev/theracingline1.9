@@ -10,20 +10,22 @@ import SwiftUI
 struct AllEventsView: View {
     
     @ObservedObject var dc: DataController
+    @State var navStack = NavigationPath()
     
     var body: some View {
         
         var events = dc.events
         
-        NavigationStack {
-            List {
-                ForEach(events) { event in
+        NavigationStack(path: $navStack) {
+            List(events) { event in
+                NavigationLink(value: event){
                     EventRowView(dc: dc, raceEvent: event)
                 }
-                
-            }.navigationTitle("Events")
+            }.navigationDestination(for: RaceEvent.self) { event in
+                EventView(raceEvent: event)
+            }
+            .navigationTitle("Events")
         }
-        
     }
 }
 

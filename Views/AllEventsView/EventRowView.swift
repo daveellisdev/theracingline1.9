@@ -15,7 +15,6 @@ struct EventRowView: View {
 
     let raceEvent: RaceEvent
     
-
     var body: some View {
         
         VStack {

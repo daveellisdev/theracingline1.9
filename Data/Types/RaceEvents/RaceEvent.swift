@@ -8,7 +8,8 @@
 import Foundation
 import SwiftDate
 
-struct RaceEvent: Codable, Identifiable {
+struct RaceEvent: Codable, Identifiable, Hashable {
+    
     let id = UUID()
     let eventId: Int
     let eventName: String
@@ -148,6 +149,14 @@ struct RaceEvent: Codable, Identifiable {
         let firstSession = self.sessions.first
         let firstSessionDate = firstSession!.raceStartTimeInRegion
         return firstSessionDate.toRelative(since: Date().convertTo(region: Region.UTC))
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func ==(lhs: RaceEvent, rhs: RaceEvent) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 
