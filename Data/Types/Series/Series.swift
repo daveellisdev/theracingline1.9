@@ -8,9 +8,12 @@
 import Foundation
 
 struct Series: Codable, Identifiable {
+   
     let id = UUID()
     let seriesInfo: SeriesInfo
     let colourValues: ColourValues
     let links: Links
     let streaming: [Streaming]
 }
+
+let exampleSeries = Series(seriesInfo: exampleSeriesInfo, colourValues: exampleColourValues, links: exampleLinks, streaming: [exampleStreaming, exampleStreaming2])

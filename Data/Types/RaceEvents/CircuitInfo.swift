@@ -11,3 +11,6 @@ struct CircuitInfo: Codable {
     let circuit: String
     let circuitLayout: String?
 }
+
+let exampleCircuitInfo = CircuitInfo(circuit: "Silverstone", circuitLayout: "Grand Prix")
+let exampleCircuitInfo2 = CircuitInfo(circuit: "Knockhill", circuitLayout: nil)

@@ -13,3 +13,6 @@ struct Streaming: Codable {
     let country: String
     let url: String
 }
+
+var exampleStreaming = Streaming(name: "F1TV", country: "🇪🇺🇺🇸", url: "https://f1tv.formula1.com/")
+var exampleStreaming2 = Streaming(name: "SkySportsF1 - NowTV", country: "🇬🇧", url: "https://www.nowtv.com/")

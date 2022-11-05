@@ -11,3 +11,6 @@ struct SessionInfo: Codable {
     let sessionName: String
     let sessionType: String
 }
+
+let exampleSessionInfo = SessionInfo(sessionName: "Race", sessionType: "R")
+let exampleSessionInfo2 = SessionInfo(sessionName: "Qualifying", sessionType: "Q")

@@ -15,3 +15,5 @@ struct Circuit: Codable  {
     let location: CircuitLocation
     let type: String
 }
+
+var exampleCircle = Circuit(circuit: "Silverstone", layout: "Grand Prix", country: "United Kingdom", emoji: "🇬🇧", location: exampleCircuitLocation, type: "circuit")

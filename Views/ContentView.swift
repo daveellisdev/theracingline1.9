@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @ObservedObject var dataController: DataController
+    @ObservedObject var dc: DataController
     
     var body: some View {
         
@@ -22,9 +22,9 @@ struct ContentView: View {
                 .tabItem {
                     Label("Day", systemImage: "30.square.fill")
                 }
-            DayView()
+            AllEventsView(dc: dc)
                 .tabItem {
-                    Label("All Races", systemImage: "flag.fill")
+                    Label("Events", systemImage: "flag.fill")
                 }
             SeriesView()
                 .tabItem {
@@ -40,6 +40,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(dataController: DataController())
+        ContentView(dc: DataController())
     }
 }

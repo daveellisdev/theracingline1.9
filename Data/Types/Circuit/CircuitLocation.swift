@@ -11,3 +11,5 @@ struct CircuitLocation: Codable {
     let lat: Float
     let long: Float
 }
+
+var exampleCircuitLocation = CircuitLocation(lat: 52.071669, long: -1.016031)
