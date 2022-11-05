@@ -53,6 +53,19 @@ struct Session: Codable, Identifiable {
         }
         return nil
     }
+    
+    var sessionInProgress: Bool? {
+        if raceEndTime == nil {
+            return nil
+        }
+        
+        let now = Date()
+        if now > raceStartTime && now < raceEndTime! {
+            return true
+        } else {
+            return false
+        }
+    }
 }
 
 var exampleSession = Session(id: 123, seriesId: "f1", circuit: exampleCircuitInfo, session: exampleSessionInfo, date: exampleSessionDate, duration: exampleDuration)
