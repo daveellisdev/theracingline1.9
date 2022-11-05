@@ -10,6 +10,8 @@ import SwiftUI
 
 class DataController: ObservableObject {
     
+    static var shared = DataController()
+    
     @Published var series: [Series] = []
     @Published var circuits: [Circuit] = []
     @Published var events: [RaceEvent] = []
@@ -48,6 +50,7 @@ class DataController: ObservableObject {
             
             do {
                 let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
+                
                 DispatchQueue.main.async {
                     self.series = json.series
                     self.circuits = json.circuits
@@ -57,10 +60,19 @@ class DataController: ObservableObject {
                 }
             } catch let jsonError as NSError {
                 print(jsonError)
+                print(jsonError.underlyingErrors)
                 print(jsonError.localizedDescription)
             }
 
-
         }.resume()
     } // DOWNLOADDATA
+    
+    func getSeriesById(seriesId: String) -> Series? {
+        if let index = self.series.firstIndex(where: {$0.seriesInfo.id == seriesId}) {
+            return series[index]
+        } else {
+            return nil
+        }
+
+    }
 } // CONTROLER

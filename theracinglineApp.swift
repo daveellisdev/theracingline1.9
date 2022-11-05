@@ -9,12 +9,13 @@ import SwiftUI
 
 @main
 struct theracinglineApp: App {
+    
+    @ObservedObject var dc = DataController.shared
+
     var body: some Scene {
-        
-        let dataController = DataController()
-        
+
         WindowGroup {
-            ContentView(dataController: dataController)
+            ContentView(dc: dc)
         }
     }
 }

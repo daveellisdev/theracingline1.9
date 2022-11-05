@@ -13,3 +13,5 @@ struct SeriesInfo: Codable, Identifiable {
     let shortName: String
     let type: String
 }
+
+let exampleSeriesInfo = SeriesInfo(id: "f1", name: "Formula 1", shortName: "F1", type: "Single Seater")
