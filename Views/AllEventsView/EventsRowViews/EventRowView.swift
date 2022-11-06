@@ -40,17 +40,7 @@ struct EventRowView: View {
                         } // if not nil
                     } // hstack
                     .padding(.bottom, -2)
-                    HStack {
-                        ForEach(raceEvent.seriesIds, id: \.self) { seriesId in
-                            // get the series for the id
-                            let series = dc.getSeriesById(seriesId: seriesId)
-                            if series != nil {
-                                EventRowSeriesName(series: series!)
-
-                            } // if not nil
-                        } // foreach
-                        Spacer()
-                    } // hstack
+                    EventRowSeriesRow(dc: dc, raceEvent: raceEvent)
                     HStack {
                         EventRowSessionDates(raceEvent: raceEvent)
                     }

@@ -22,7 +22,7 @@ struct AllEventsView: View {
                     EventRowView(dc: dc, raceEvent: event)
                 }
             }.navigationDestination(for: RaceEvent.self) { event in
-                EventView(raceEvent: event)
+                EventView(dc: dc, raceEvent: event)
             }
             .navigationTitle("Events")
         }
