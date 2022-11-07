@@ -31,9 +31,23 @@ struct EventView: View {
                     
                     EventViewSessionRow(dc: dc, session: session)
                     
+                    
                 } // foreach
             } // groupbox
+            
+            GroupBox {
+                HStack {
+                    Text("Streaming Links")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                    Spacer()
+                    
+                } // hstack
+                EventViewLinks(dc: dc, raceEvent: raceEvent)
+                
+            } // groupbox
         } // scrollview
+        .scrollIndicators(.hidden)
         .navigationTitle(raceEvent.eventName)
         .padding()
     }

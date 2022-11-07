@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Streaming: Codable {
+struct Streaming: Codable, Identifiable {
     let id = UUID()
     let name: String
     let country: String

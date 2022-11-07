@@ -19,7 +19,7 @@ struct EventRowSeriesRow: View {
                 // get the series for the id
                 let series = dc.getSeriesById(seriesId: seriesId)
                 if series != nil {
-                    EventRowSeriesName(series: series!)
+                    EventRowSeriesName(series: series!, shortName: true)
 
                 } // if not nil
             } // foreach

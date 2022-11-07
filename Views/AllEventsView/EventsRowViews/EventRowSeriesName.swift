@@ -10,6 +10,7 @@ import SwiftUI
 struct EventRowSeriesName: View {
     
     let series: Series
+    let shortName: Bool
     
     var body: some View {
         let darkR = Double(series.colourValues.dark[0])
@@ -30,14 +31,21 @@ struct EventRowSeriesName: View {
                   endPoint: .init(x: 0.5, y: 0.6)
                 ))
             .frame(width: 8, height: 16)
-        Text(series.seriesInfo.shortName)
-            .font(.caption)
-            .fontWeight(.bold)
+        if shortName {
+            Text(series.seriesInfo.shortName)
+                .font(.caption)
+                .fontWeight(.bold)
+        } else {
+            Text(series.seriesInfo.name)
+                .font(.caption)
+                .fontWeight(.bold)
+        }
+        
     }
 }
 
 struct EventRowSeriesName_Previews: PreviewProvider {
     static var previews: some View {
-        EventRowSeriesName(series: exampleSeries)
+        EventRowSeriesName(series: exampleSeries, shortName: true)
     }
 }

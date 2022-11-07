@@ -20,7 +20,9 @@ struct EventViewSessionRow: View {
             HStack {
                 VStack(alignment: .leading) {
                     HStack {
-                        EventRowSeriesName(series: series)
+                        if series != nil {
+                            EventRowSeriesName(series: series!, shortName: false)
+                        }
                     } // hstack
                     HStack {
                         Text(session.session.sessionName)
@@ -46,9 +48,12 @@ struct EventViewSessionRow: View {
         } // groupbox
     }
     
-    func getSeriesById(id: String) -> Series {
-        let series = dc.series.first { $0.seriesInfo.id == id }
-        return series!
+    func getSeriesById(id: String) -> Series? {
+        if let series = dc.series.first { $0.seriesInfo.id == id } {
+            return series
+        } else {
+            return nil
+        }
     }
 }
 
