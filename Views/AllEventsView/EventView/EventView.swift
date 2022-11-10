@@ -14,6 +14,8 @@ struct EventView: View {
     
     var body: some View {
         
+        var circuitInfo = dc.getCircuitByName(circuit: raceEvent.sessions[0].circuit.circuit)
+        
         ScrollView {
             GroupBox {
                 EventViewCircuitInfo(raceEvent: raceEvent)
@@ -35,17 +37,10 @@ struct EventView: View {
                 } // foreach
             } // groupbox
             
-            GroupBox {
-                HStack {
-                    Text("Streaming Links")
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                    Spacer()
-                    
-                } // hstack
-                EventViewLinks(dc: dc, raceEvent: raceEvent)
-                
-            } // groupbox
+            EventViewLinks(dc: dc, raceEvent: raceEvent)
+            if circuitInfo != nil {
+                EventViewCircuitMap(circuit: circuitInfo!)
+            }
         } // scrollview
         .scrollIndicators(.hidden)
         .navigationTitle(raceEvent.eventName)

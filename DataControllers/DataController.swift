@@ -73,6 +73,13 @@ class DataController: ObservableObject {
         } else {
             return nil
         }
-
+    }
+    
+    func getCircuitByName(circuit: String) -> Circuit? {
+        if let index = self.circuits.firstIndex(where: {$0.circuit == circuit}) {
+            return circuits[index]
+        } else {
+            return nil
+        }
     }
 } // CONTROLER

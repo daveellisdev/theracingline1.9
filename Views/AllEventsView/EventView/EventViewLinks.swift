@@ -1,5 +1,5 @@
 //
-//  EventViewLinks.swift
+//  EventViewStreamingLinks.swift
 //  theracingline
 //
 //  Created by Dave on 07/11/2022.
@@ -14,43 +14,100 @@ struct EventViewLinks: View {
     
     var body: some View {
         
-        ForEach(raceEvent.seriesIds, id: \.self) { seriesId in
-            if let series = getSeriesById(id: seriesId) {
-                GroupBox {
-                    VStack {
-                        HStack {
-                            EventRowSeriesName(series: series, shortName: false)
-                            Spacer()
-                        } // hstack
-                        
-                        ForEach(series.streaming) { stream in
+        GroupBox {
+            HStack {
+                Text("Official Links")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                Spacer()
+                
+            } // hstack
+            
+            ForEach(raceEvent.seriesIds, id: \.self) { seriesId in
+                if let series = getSeriesById(id: seriesId) {
+                    GroupBox {
+                        VStack {
+                            HStack {
+                                EventRowSeriesName(series: series, shortName: false)
+                                Spacer()
+                            } // hstack
                             VStack {
-                                ZStack {
-//                                    RoundedRectangle(cornerRadius: 5)
-//                                        .frame(height: 20)
-//                                        .foregroundColor(.gray)
-                                        
+                                Link(destination: URL(string: series.links.official)!) {
                                     GroupBox {
                                         HStack {
-                                            Text(stream.country)
-                                                .font(.caption)
-                                                .fontWeight(.bold)
-                                            Text(stream.name)
+                                            Text("Official Site")
                                                 .font(.caption)
                                                 .fontWeight(.bold)
                                             Spacer()
+                                            Image(systemName: "arrow.up.right.square")
+                                                .font(.caption)
                                         }.padding(-5)
-                                    }
-                                    
-                                }
-                            }
-                                        
- 
-                        } //foreach
-                    } // vstack
-                } // groupbox
-            } // iflet
-        } // foreach
+                                    } // groupbox
+                                } // link
+                                
+                            
+                                Link(destination: URL(string: series.links.timing)!) {
+                                    GroupBox {
+                                        HStack {
+                                            Text("Live Timing")
+                                                .font(.caption)
+                                                .fontWeight(.bold)
+                                            Spacer()
+                                            Image(systemName: "arrow.up.right.square")
+                                                .font(.caption)
+                                        }.padding(-5)
+                                    } // groupbox
+                                } // link
+                            } // vstack
+                        } // vstack
+                    } // groupbox
+                } // iflet
+            } // foreach
+        } // groupbox
+        
+        GroupBox {
+            HStack {
+                Text("Streaming Links")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                Spacer()
+                
+            } // hstack
+            
+            ForEach(raceEvent.seriesIds, id: \.self) { seriesId in
+                if let series = getSeriesById(id: seriesId) {
+                    GroupBox {
+                        VStack {
+                            HStack {
+                                EventRowSeriesName(series: series, shortName: false)
+                                Spacer()
+                            } // hstack
+                            ForEach(series.streaming) { stream in
+                                VStack {
+                                    ZStack {
+                                        Link(destination: URL(string: stream.url)!) {
+                                            GroupBox {
+                                                HStack {
+                                                    Text(stream.country)
+                                                        .font(.caption)
+                                                        .fontWeight(.bold)
+                                                    Text(stream.name)
+                                                        .font(.caption)
+                                                        .fontWeight(.bold)
+                                                    Spacer()
+                                                    Image(systemName: "arrow.up.right.square")
+                                                        .font(.caption)
+                                                }.padding(-5)
+                                            } // groupbox
+                                        } // link
+                                    } // zstack
+                                } // vstack
+                            } //foreach
+                        } // vstack
+                    } // groupbox
+                } // iflet
+            } // foreach
+        } // groupbox
     } // body
     
     func getSeriesById(id: String) -> Series? {
