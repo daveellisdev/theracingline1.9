@@ -78,6 +78,19 @@ struct Session: Codable, Identifiable {
         }
     }
     
+    var sessionComplete: Bool? {
+        if raceEndTime == nil {
+            return nil
+        }
+        
+        let now = Date()
+        if now > raceEndTime! {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     var getDurationText: String? {
      
         if let duration = self.duration {
@@ -144,3 +157,4 @@ struct Session: Codable, Identifiable {
 
 var exampleSession = Session(id: 123, seriesId: "f1", circuit: exampleCircuitInfo, session: exampleSessionInfo, date: exampleSessionDate, duration: exampleDuration)
 var exampleSession2 = Session(id: 123, seriesId: "f1", circuit: exampleCircuitInfo2, session: exampleSessionInfo2, date: exampleSessionDate2, duration: exampleDuration2)
+var exampleSession3 = Session(id: 123, seriesId: "f1", circuit: exampleCircuitInfo2, session: exampleSessionInfo2, date: exampleSessionDate3, duration: exampleDuration3)

@@ -14,7 +14,7 @@ struct EventViewCircuitMap: View {
 
     var body: some View {
         
-        var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: CLLocationDegrees(circuit.location.lat), longitude: CLLocationDegrees(circuit.location.long)), span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))
+        var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: CLLocationDegrees(circuit.location.lat), longitude: CLLocationDegrees(circuit.location.long)), span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02))
         
         GroupBox {
             HStack {

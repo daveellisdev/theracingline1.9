@@ -14,7 +14,7 @@ struct EventView: View {
     
     var body: some View {
         
-        var circuitInfo = dc.getCircuitByName(circuit: raceEvent.sessions[0].circuit.circuit)
+        let circuitInfo = dc.getCircuitByName(circuit: raceEvent.sessions[0].circuit.circuit)
         
         ScrollView {
             GroupBox {
@@ -29,11 +29,19 @@ struct EventView: View {
                         .foregroundColor(.gray)
                     Spacer()
                 }
+                
                 ForEach(raceEvent.sessionsSortedByDate()) { session in
-                    
-                    EventViewSessionRow(dc: dc, session: session)
-                    
-                    
+                    if session.sessionComplete != nil && session.sessionComplete! {
+                        // if session has passed
+                        EventViewSessionRowExpired(dc: dc, session: session)
+                    } else if session.sessionInProgress != nil && session.sessionInProgress! {
+                        // if in progress
+                        EventViewSessionRowLive(dc: dc, session: session)
+                    } else {
+                        // if not happened
+                        EventViewSessionRow(dc: dc, session: session)
+                    }
+
                 } // foreach
             } // groupbox
             
