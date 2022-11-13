@@ -14,7 +14,7 @@ struct Session: Codable, Identifiable {
     let circuit: CircuitInfo
     let session: SessionInfo
     let date: SessionDate
-    let duration: Duration?
+    let duration: Duration
     
     var raceStartTime: Date {
         // strip the string down
@@ -55,14 +55,11 @@ struct Session: Codable, Identifiable {
     }
     
     var raceEndTime: Date? {
-        if duration != nil {
-            if duration!.durationType == "T" {
-                let durationLength = self.duration!.duration
-                let raceEndTime = self.raceStartTime + durationLength.minutes
-                return raceEndTime
-            }
-        }
-        return nil
+
+        let durationLength = self.duration.durationMinutes
+        let raceEndTime = self.raceStartTime + durationLength.minutes
+        return raceEndTime
+
     }
     
     var sessionInProgress: Bool? {
@@ -93,60 +90,56 @@ struct Session: Codable, Identifiable {
     
     var getDurationText: String? {
      
-        if let duration = self.duration {
-            
-            if duration.tba != nil {
-                return nil
-            }
-            
-            let durationType = duration.durationType
-            let durationValue = duration.duration
-            
-            let durationTypeString: String
-            
-            switch durationType {
-            case "T":
-                if durationValue < 60 {
-                    durationTypeString = " Minutes"
-                } else {
-                    if durationValue % 60 == 0{
-                        if durationValue / 60 == 1 {
-                            return "\(Int(floor(Double(durationValue)/60))) Hour"
-                        } else {
-                            return "\(Int(floor(Double(durationValue)/60))) Hours"
-                        }
-                    } else {
-                        let hours = Int(floor(Double(durationValue)/60))
-                        let minutes = durationValue % 60
-                        
-                        if hours == 1 {
-                            return "\(Int(floor(Double(durationValue)/60))) Hour \(minutes) Minutes"
-                        } else {
-                            return "\(Int(floor(Double(durationValue)/60))) Hours \(minutes) Minutes"
-                        }
-                    }
-                }
-            case "L":
-                durationTypeString = "Laps"
-            case "DM":
-                durationTypeString = "Miles"
-            case "DKM":
-                durationTypeString = "km"
-            case "AD":
-                durationTypeString = "All Day Event"
-            default:
-                return nil
-            }
-            if durationType == "T" {
-                // time
-            } else if durationType == "L" {
-                
-            }
-            
-            return "\(durationValue) \(durationTypeString)"
+        if duration.tba != nil {
+            return nil
         }
         
-        return nil
+        let durationType = duration.durationType
+        let durationValue = duration.duration
+        
+        let durationTypeString: String
+        
+        switch durationType {
+        case "T":
+            if durationValue < 60 {
+                durationTypeString = " Minutes"
+            } else {
+                if durationValue % 60 == 0{
+                    if durationValue / 60 == 1 {
+                        return "\(Int(floor(Double(durationValue)/60))) Hour"
+                    } else {
+                        return "\(Int(floor(Double(durationValue)/60))) Hours"
+                    }
+                } else {
+                    let hours = Int(floor(Double(durationValue)/60))
+                    let minutes = durationValue % 60
+                    
+                    if hours == 1 {
+                        return "\(Int(floor(Double(durationValue)/60))) Hour \(minutes) Minutes"
+                    } else {
+                        return "\(Int(floor(Double(durationValue)/60))) Hours \(minutes) Minutes"
+                    }
+                }
+            }
+        case "L":
+            durationTypeString = "Laps"
+        case "DM":
+            durationTypeString = "Miles"
+        case "DKM":
+            durationTypeString = "km"
+        case "AD":
+            durationTypeString = "All Day Event"
+        default:
+            return nil
+        }
+        if durationType == "T" {
+            // time
+        } else if durationType == "L" {
+            
+        }
+        
+        return "\(durationValue) \(durationTypeString)"
+        
     }
     
     var timeFromNow: String {

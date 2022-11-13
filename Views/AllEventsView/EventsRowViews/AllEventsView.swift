@@ -14,7 +14,7 @@ struct AllEventsView: View {
     
     var body: some View {
         
-        var events = dc.events
+        let events = dc.events
         
         NavigationStack(path: $navStack) {
             List(events) { event in

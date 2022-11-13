@@ -31,7 +31,7 @@ struct EventView: View {
                 }
                 
                 ForEach(raceEvent.sessionsSortedByDate()) { session in
-                    if session.sessionComplete != nil && session.sessionComplete! {
+                    if (session.sessionComplete != nil && session.sessionComplete!) {
                         // if session has passed
                         EventViewSessionRowExpired(dc: dc, session: session)
                     } else if session.sessionInProgress != nil && session.sessionInProgress! {

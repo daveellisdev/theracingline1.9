@@ -49,7 +49,7 @@ struct EventViewSessionRow: View {
     }
     
     func getSeriesById(id: String) -> Series? {
-        if let series = dc.series.first { $0.seriesInfo.id == id } {
+        if let series = dc.series.first(where: { $0.seriesInfo.id == id }) {
             return series
         } else {
             return nil

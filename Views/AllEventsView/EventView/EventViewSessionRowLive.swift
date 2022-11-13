@@ -9,25 +9,22 @@ import SwiftUI
 
 struct EventViewSessionRowLive: View {
     
-
     
     var dc: DataController
     var session: Session
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
         
         let series = getSeriesById(id: session.seriesId)
-        let duration = session.duration?.durationMinutes
-        var timeComplete = (Date() - session.raceStartTime) / 60
-
+        let duration = session.duration.durationMinutes
+        let timeComplete = (Date() - session.raceStartTime) / 60
         GroupBox() {
             HStack {
                 VStack(alignment: .leading) {
                     HStack {
                         if series != nil {
                             EventRowSeriesName(series: series!, shortName: false)
-                        }
+                        } // if series
                     } // hstack
                     HStack {
                         Text(session.session.sessionName)
@@ -36,7 +33,7 @@ struct EventViewSessionRowLive: View {
                         if let duration = session.getDurationText {
                             Text(duration)
                                 .font(.caption)
-                        }
+                        } // if let duration
                     } // hstack
                     HStack {
                         Text(session.raceStartTimeAsString())
@@ -46,40 +43,32 @@ struct EventViewSessionRowLive: View {
                         Text("In Progress")
                             .font(.caption)
                     } // hstack
-                    if duration != nil {
-                        if timeComplete < Double(duration!) {
-                            let timeLeftDouble = (Double(duration!) - timeComplete).rounded()
-                            var timeLeft = Int(timeLeftDouble)
-                            VStack {
-                                HStack {
-                                    Text("Approximate time remaining")
-                                        .font(.caption)
-                                    Spacer()
-                                    Text("\(timeLeft) minutes")
-                                        .font(.caption)
-                                }
-                                ProgressView(value: timeComplete, total: Double(duration!))
+                    if timeComplete < Double(duration) {
+                        let timeLeftDouble = (Double(duration) - timeComplete).rounded()
+                        let timeLeft = Int(timeLeftDouble)
+                        VStack {
+                            HStack {
+                                Text("Approximate time remaining")
                                     .font(.caption)
-                                    .onReceive(timer) { _ in
-//                                        if timeComplete < Double(duration!) {
-                                            timeComplete += 1
-                                            timeLeft -= 1
-//                                        }
-                                    }
-                            } // vstack
-                            .padding(.top, 1)
-                        } else {
-                            VStack {
-                                HStack {
-                                    Text("Session Complete")
-                                        .font(.caption)
-                                    Spacer()
-                                }
-                                ProgressView(value: 100.0, total: 100.0)
+                                Spacer()
+                                Text("\(timeLeft) minutes")
                                     .font(.caption)
-                            } // vstack
-                        }
-                    }
+                            } // hstack
+                            ProgressView(value: timeComplete, total: Double(duration))
+                                .font(.caption)
+                        } // vstack
+                        .padding(.top, 1)
+                    } else {
+                        VStack {
+                            HStack {
+                                Text("Session Complete")
+                                    .font(.caption)
+                                Spacer()
+                            } // hstack
+                            ProgressView(value: 100.0, total: 100.0)
+                                .font(.caption)
+                        } // vstack
+                    } // if time complete else
                 } // vstack
                 Spacer()
             } // hstack
@@ -94,7 +83,6 @@ struct EventViewSessionRowLive: View {
         }
     }
 }
-
 struct EventViewSessionRowLive_Previews: PreviewProvider {
     static var previews: some View {
         EventViewSessionRowLive(dc: DataController(), session: exampleSession3)
