@@ -19,18 +19,18 @@ struct EventRowSessionDates: View {
                     Text("Races:")
                         .font(.caption)
                         .fontWeight(.bold)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                     Text("\(raceEvent.firstRaceDateAsString!) - \(raceEvent.lastRaceDateAsString!)")
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                 } else {
                     Text("Race:")
                         .font(.caption)
                         .fontWeight(.bold)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                     Text("\(raceEvent.firstRaceDateAsString!)")
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                 }
             }
         } else {
@@ -39,18 +39,18 @@ struct EventRowSessionDates: View {
                     Text("Sessions:")
                         .font(.caption)
                         .fontWeight(.bold)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                     Text("\(raceEvent.firstSessionDateAsString) - \(raceEvent.lastSessionDateAsString)")
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                 } else {
                     Text("Session:")
                         .font(.caption)
                         .fontWeight(.bold)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                     Text("\(raceEvent.firstSessionDateAsString)")
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                 }
             }
         }
@@ -58,11 +58,11 @@ struct EventRowSessionDates: View {
         Spacer()
         Text("\(raceEvent.timeFromNow())")
             .font(.caption)
-            .foregroundColor(.gray)
+            .foregroundColor(.secondary)
         Image(systemName: "clock")
             .font(.caption)
             .fontWeight(.bold)
-            .foregroundColor(.gray)
+            .foregroundColor(.secondary)
     }
 }
 

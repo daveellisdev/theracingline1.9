@@ -37,7 +37,7 @@ struct EventViewSessionRow: View {
                         Text(session.raceStartTimeAsString())
                             .font(.caption)
                         Spacer()
-                        Text(session.timeFromNow)
+                        Text(session.timeFromNow())
                             .font(.caption)
                         Image(systemName: "clock")
                             .font(.caption2)

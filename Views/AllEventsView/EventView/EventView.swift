@@ -26,7 +26,7 @@ struct EventView: View {
                 HStack {
                     Text("Sessions")
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                     Spacer()
                 } //hstack
                 

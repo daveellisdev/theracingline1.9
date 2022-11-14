@@ -19,7 +19,11 @@ struct DayView: View {
         NavigationStack(path: $navStack) {
             List(sessions) { session in
                 NavigationLink(value: session) {
-                    SessionRow(session: session)
+                    if session.sessionComplete! {
+                        SessionRowExpired(dc: dc, session: session)
+                    } else {
+                        SessionRow(dc: dc, session: session)
+                    }
                 }
             }.navigationDestination(for: Session.self) { session in
                 Text("Session Page")

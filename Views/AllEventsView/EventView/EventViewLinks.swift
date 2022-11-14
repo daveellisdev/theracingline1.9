@@ -18,7 +18,7 @@ struct EventViewLinks: View {
             HStack {
                 Text("Official Links")
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                 Spacer()
                 
             } // hstack
@@ -69,7 +69,7 @@ struct EventViewLinks: View {
             HStack {
                 Text("Streaming Links")
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                 Spacer()
                 
             } // hstack

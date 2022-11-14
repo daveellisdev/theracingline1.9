@@ -20,7 +20,7 @@ struct EventViewCircuitMap: View {
             HStack {
                 Text("Circuit Information")
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                 Spacer()
                 
             } // hstack

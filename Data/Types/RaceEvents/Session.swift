@@ -142,7 +142,7 @@ struct Session: Codable, Identifiable, Hashable {
         
     }
     
-    var timeFromNow: String {
+    func timeFromNow() -> String {
         
           return self.raceStartTime.toRelative(since: Date().convertTo(region: Region.UTC))
     }
