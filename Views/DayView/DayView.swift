@@ -9,18 +9,23 @@ import SwiftUI
 
 struct DayView: View {
     
-    var dc: DataController
+    @ObservedObject var dc: DataController
+    @State var navStack = NavigationPath()
     
     var body: some View {
         
         let sessions = dc.sessions
-        VStack {
-            ForEach(sessions) { session in
-                Text("HEY")
-            }
-            Text("Day View2")
-        }
         
+        NavigationStack(path: $navStack) {
+            List(sessions) { session in
+                NavigationLink(value: session) {
+                    Text("Session")
+                }
+            }.navigationDestination(for: Session.self) { session in
+                Text("Session Page")
+            }
+            .navigationTitle("Sessions")
+        }
     }
 }
 
