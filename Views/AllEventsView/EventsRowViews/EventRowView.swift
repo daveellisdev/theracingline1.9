@@ -35,7 +35,7 @@ struct EventRowView: View {
                     EventRowSeriesRow(dc: dc, raceEvent: raceEvent)
                     HStack {
                         EventRowSessionDates(raceEvent: raceEvent)
-                    }
+                    } // hstack
                 } // vstack
             } // hstack
         } // vstack
