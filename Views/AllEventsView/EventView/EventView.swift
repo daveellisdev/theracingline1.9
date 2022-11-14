@@ -20,7 +20,7 @@ struct EventView: View {
             GroupBox {
                 EventViewCircuitInfo(raceEvent: raceEvent)
                 EventRowSeriesRow(dc: dc, raceEvent: raceEvent)
-            }
+            } // groupbox
             
             GroupBox {
                 HStack {
@@ -28,7 +28,7 @@ struct EventView: View {
                         .font(.caption)
                         .foregroundColor(.gray)
                     Spacer()
-                }
+                } //hstack
                 
                 ForEach(raceEvent.sessionsSortedByDate()) { session in
                     if (session.sessionComplete != nil && session.sessionComplete!) {
@@ -48,7 +48,7 @@ struct EventView: View {
             EventViewLinks(dc: dc, raceEvent: raceEvent)
             if circuitInfo != nil {
                 EventViewCircuitMap(circuit: circuitInfo!)
-            }
+            } // if
         } // scrollview
         .scrollIndicators(.hidden)
         .navigationTitle(raceEvent.eventName)
