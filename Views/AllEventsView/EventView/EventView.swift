@@ -52,7 +52,8 @@ struct EventView: View {
         } // scrollview
         .scrollIndicators(.hidden)
         .navigationTitle(raceEvent.eventName)
-        .padding()
+        .padding(.horizontal)
+        .padding(.bottom)
     }
 }
 
