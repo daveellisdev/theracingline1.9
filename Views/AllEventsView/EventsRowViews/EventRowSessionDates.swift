@@ -13,14 +13,14 @@ struct EventRowSessionDates: View {
     
     var body: some View {
         
-        if raceEvent.firstRaceDate != nil {
+        if raceEvent.firstRaceDateAsString != nil {
             HStack {
-                if raceEvent.firstRaceDate != raceEvent.lastRaceDate {
+                if raceEvent.firstRaceDateAsString != raceEvent.lastRaceDateAsString {
                     Text("Races:")
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundColor(.gray)
-                    Text("\(raceEvent.firstRaceDate!) - \(raceEvent.lastRaceDate!)")
+                    Text("\(raceEvent.firstRaceDateAsString!) - \(raceEvent.lastRaceDateAsString!)")
                         .font(.caption)
                         .foregroundColor(.gray)
                 } else {
@@ -28,20 +28,19 @@ struct EventRowSessionDates: View {
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundColor(.gray)
-                    Text("\(raceEvent.firstRaceDate!)")
+                    Text("\(raceEvent.firstRaceDateAsString!)")
                         .font(.caption)
                         .foregroundColor(.gray)
                 }
                 
             }
-        } else if raceEvent.firstSessionDate != nil {
             HStack {
-                if raceEvent.firstSessionDate != raceEvent.lastSessionDate {
+                if raceEvent.firstSessionDateAsString != raceEvent.lastSessionDateAsString {
                     Text("Sessions:")
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundColor(.gray)
-                    Text("\(raceEvent.firstSessionDate!) - \(raceEvent.lastSessionDate!)")
+                    Text("\(raceEvent.firstSessionDateAsString) - \(raceEvent.lastSessionDateAsString)")
                         .font(.caption)
                         .foregroundColor(.gray)
                 } else {
@@ -49,7 +48,7 @@ struct EventRowSessionDates: View {
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundColor(.gray)
-                    Text("\(raceEvent.firstSessionDate!)")
+                    Text("\(raceEvent.firstSessionDateAsString)")
                         .font(.caption)
                         .foregroundColor(.gray)
                 }
