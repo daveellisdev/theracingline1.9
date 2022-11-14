@@ -16,7 +16,7 @@ struct RaceEvent: Codable, Identifiable, Hashable {
     let seriesIds: [String]
     let sessions: [Session]
     
-    var firstRaceDate: String? {
+    var firstRaceDateAsString: String? {
         
         // filter out non races
         let races = self.sessions.filter({ $0.session.sessionType == "R" })
@@ -29,7 +29,7 @@ struct RaceEvent: Codable, Identifiable, Hashable {
         }
     }
     
-    var lastRaceDate: String? {
+    var lastRaceDateAsString: String? {
         // filter out non races
         let races = self.sessions.filter({ $0.session.sessionType == "R" })
         if races.isEmpty {
@@ -41,7 +41,7 @@ struct RaceEvent: Codable, Identifiable, Hashable {
         }
     }
     
-    var firstSessionDate: String? {
+    var firstSessionDateAsString: String {
         
         let firstSession = self.sessions.first 
         let firstSessionDate = firstSession!.raceStartTime
@@ -49,11 +49,29 @@ struct RaceEvent: Codable, Identifiable, Hashable {
         
     }
     
-    var lastSessionDate: String? {
+    var lastSessionDateAsString: String {
         
         let lastSession = self.sessions.last
         let lastSessionDate = lastSession!.raceStartTime
         return dateAsString(date: lastSessionDate)
+    }
+    
+    var firstRaceDate: Date {
+        // filter out non races
+        let races = self.sessions.filter({ $0.session.sessionType == "R" })
+        if races.isEmpty {
+            // if no races then return first session
+            return self.firstSessionDate
+        } else {
+            let firstRace = races.min { $0.raceStartTime < $1.raceStartTime }
+            return firstRace!.raceStartTime
+        }
+    }
+    
+    var firstSessionDate: Date {
+        
+        let firstSession = self.sessions.first
+        return firstSession!.raceStartTime
     }
     
     var sessionInProgress: Bool? {

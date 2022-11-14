@@ -53,9 +53,19 @@ class DataController: ObservableObject {
                 let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
                 
                 DispatchQueue.main.async {
+                    
+                    // series
                     self.series = json.series
+                    
+                    // circuits
                     self.circuits = json.circuits
-                    self.events = json.events
+                    
+                    // events
+                    var sortedEvents = json.events
+                    sortedEvents.sort {$0.firstRaceDate < $1.firstRaceDate}
+                    self.events = sortedEvents
+                    
+                    // sessions
                     self.sessions = self.createSessions(events: self.events)
                     
                     print("Decoded")
