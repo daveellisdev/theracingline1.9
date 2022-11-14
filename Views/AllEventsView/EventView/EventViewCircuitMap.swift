@@ -28,6 +28,8 @@ struct EventViewCircuitMap: View {
                 VStack {
                     HStack {
                         Text(circuit.circuit)
+                            .font(.title3)
+                            .fontWeight(.bold)
                         Spacer()
                     } // hstack
                     if(circuit.layout != nil) {
