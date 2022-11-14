@@ -27,30 +27,12 @@ struct EventRowView: View {
                         Spacer()
                         if raceEvent.sessionInProgress != nil {
                             if raceEvent.sessionInProgress! {
-                                Circle()
-                                    .frame(width: 10)
-                                    .foregroundColor(.white)
-                                    .colorMultiply(liveColour)
-                                    .onAppear {
-                                        withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
-                                            self.liveColour = flashColour
-                                        }
-                                    }
+                                LiveCircleView()
                             } // if true
                         } // if not nil
                     } // hstack
                     .padding(.bottom, -2)
-                    HStack {
-                        ForEach(raceEvent.seriesIds, id: \.self) { seriesId in
-                            // get the series for the id
-                            let series = dc.getSeriesById(seriesId: seriesId)
-                            if series != nil {
-                                EventRowSeriesName(series: series!)
-
-                            } // if not nil
-                        } // foreach
-                        Spacer()
-                    } // hstack
+                    EventRowSeriesRow(dc: dc, raceEvent: raceEvent)
                     HStack {
                         EventRowSessionDates(raceEvent: raceEvent)
                     }

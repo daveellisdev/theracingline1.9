@@ -8,13 +8,24 @@
 import SwiftUI
 
 struct DayView: View {
+    
+    var dc: DataController
+    
     var body: some View {
-        Text("Day View")
+        
+        let sessions = dc.sessions
+        VStack {
+            ForEach(sessions) { session in
+                Text("HEY")
+            }
+            Text("Day View2")
+        }
+        
     }
 }
 
 struct DayView_Previews: PreviewProvider {
     static var previews: some View {
-        DayView()
+        DayView(dc: DataController())
     }
 }

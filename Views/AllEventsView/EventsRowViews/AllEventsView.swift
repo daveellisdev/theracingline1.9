@@ -14,7 +14,7 @@ struct AllEventsView: View {
     
     var body: some View {
         
-        var events = dc.events
+        let events = dc.events
         
         NavigationStack(path: $navStack) {
             List(events) { event in
@@ -22,7 +22,7 @@ struct AllEventsView: View {
                     EventRowView(dc: dc, raceEvent: event)
                 }
             }.navigationDestination(for: RaceEvent.self) { event in
-                EventView(raceEvent: event)
+                EventView(dc: dc, raceEvent: event)
             }
             .navigationTitle("Events")
         }

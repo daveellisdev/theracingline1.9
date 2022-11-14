@@ -15,6 +15,7 @@ class DataController: ObservableObject {
     @Published var series: [Series] = []
     @Published var circuits: [Circuit] = []
     @Published var events: [RaceEvent] = []
+    @Published var sessions: [Session] = []
     
     init() {
         downloadData()
@@ -55,6 +56,7 @@ class DataController: ObservableObject {
                     self.series = json.series
                     self.circuits = json.circuits
                     self.events = json.events
+                    self.sessions = self.createSessions(events: self.events)
                     
                     print("Decoded")
                 }
@@ -73,6 +75,24 @@ class DataController: ObservableObject {
         } else {
             return nil
         }
-
+    }
+    
+    func getCircuitByName(circuit: String) -> Circuit? {
+        if let index = self.circuits.firstIndex(where: {$0.circuit == circuit}) {
+            return circuits[index]
+        } else {
+            return nil
+        }
+    }
+    
+    func createSessions(events: [RaceEvent]) -> [Session] {
+        
+        var sessions: [Session] = []
+        for event in events {
+            sessions.append(contentsOf: event.sessions)
+        }
+        
+        print(sessions)
+        return sessions
     }
 } // CONTROLER

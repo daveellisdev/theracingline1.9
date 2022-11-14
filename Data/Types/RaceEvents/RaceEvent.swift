@@ -158,6 +158,12 @@ struct RaceEvent: Codable, Identifiable, Hashable {
     static func ==(lhs: RaceEvent, rhs: RaceEvent) -> Bool {
         return lhs.id == rhs.id
     }
+    
+    func sessionsSortedByDate() -> [Session] {
+        let sortedSessions = self.sessions.sorted { $0.raceStartTime < $1.raceStartTime }
+        
+        return sortedSessions
+    }
 }
 
 var exampleEvent = RaceEvent(eventId: 999, eventName: "British Grand Prix", seriesIds: ["f1", "f2", "f3", "supercup"], sessions: [exampleSession])
