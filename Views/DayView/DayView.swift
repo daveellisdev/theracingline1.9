@@ -19,7 +19,7 @@ struct DayView: View {
         NavigationStack(path: $navStack) {
             List(sessions) { session in
                 NavigationLink(value: session) {
-                    if session.sessionComplete! {
+                    if session.sessionComplete != nil && session.sessionComplete! {
                         SessionRowExpired(dc: dc, session: session)
                     } else {
                         SessionRow(dc: dc, session: session)

@@ -20,6 +20,9 @@ struct SessionRow: View {
                 HStack {
                     SessionRowSeriesName(series: series!, expired: false)
                     Spacer()
+                    if session.sessionInProgress != nil && session.sessionInProgress! {
+                        LiveCircleView()
+                    }
                 }.padding(.bottom, -2)
                 HStack {
                     Text(session.circuit.circuit)
