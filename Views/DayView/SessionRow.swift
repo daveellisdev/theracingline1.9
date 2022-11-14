@@ -8,13 +8,33 @@
 import SwiftUI
 
 struct SessionRow: View {
+    
+    let session: Session
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            HStack {
+                Text(session.seriesId)
+                Spacer()
+            }
+            HStack {
+                Text(session.session.sessionName)
+                Spacer()
+                if session.getDurationText != nil {
+                    Text(session.getDurationText!)
+                }
+            }
+            HStack {
+                Text(session.raceStartTimeAsString())
+                Spacer()
+                Text(session.timeFromNow)
+            }
+        }
     }
 }
 
 struct SessionRow_Previews: PreviewProvider {
     static var previews: some View {
-        SessionRow()
+        SessionRow(session: exampleSession)
     }
 }

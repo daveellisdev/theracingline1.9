@@ -19,7 +19,7 @@ struct DayView: View {
         NavigationStack(path: $navStack) {
             List(sessions) { session in
                 NavigationLink(value: session) {
-                    Text("Session")
+                    SessionRow(session: session)
                 }
             }.navigationDestination(for: Session.self) { session in
                 Text("Session Page")
