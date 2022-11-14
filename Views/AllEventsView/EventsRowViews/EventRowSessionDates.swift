@@ -32,8 +32,8 @@ struct EventRowSessionDates: View {
                         .font(.caption)
                         .foregroundColor(.gray)
                 }
-                
             }
+        } else {
             HStack {
                 if raceEvent.firstSessionDateAsString != raceEvent.lastSessionDateAsString {
                     Text("Sessions:")
