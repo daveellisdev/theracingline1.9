@@ -17,13 +17,16 @@ struct SessionView: View {
         let series = dc.getSeriesById(seriesId: session.seriesId)
         let circuitName: String = session.circuit.circuit
         let circuitLayout: String? = session.circuit.circuitLayout
-        let circuitInfo = dc.getCircuitByName(circuit: session.circuit.circuit)
+        let circuitInfo = dc.getCircuitByName(circuit: circuitName)
+        
         if series != nil {
             ScrollView {
                 VStack {
-                    
-                    SessionViewSessionUpcoiming(dc: dc, session: session, series: series!)
-                    
+                    if session.sessionInProgress != nil && session.sessionInProgress! {
+                        SessionViewSessionLive(dc: dc, session: session)
+                    } else {
+                        SessionViewSessionUpcoiming(dc: dc, session: session, series: series!)
+                    }
                     GroupBox {
                         HStack {
                             Text("Official Links")
