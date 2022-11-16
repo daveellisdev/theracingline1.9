@@ -26,11 +26,11 @@ struct EventViewSessionRowExpired: View {
                     HStack {
                         Text(session.session.sessionName)
                             .font(.caption)
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                         Spacer()
                         Text("Completed")
                             .font(.caption)
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                     } // hstack
                 } // vstack
                 Spacer()

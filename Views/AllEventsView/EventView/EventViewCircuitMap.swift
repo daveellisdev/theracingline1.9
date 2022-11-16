@@ -11,6 +11,7 @@ import MapKit
 struct EventViewCircuitMap: View {
     
     var circuit: Circuit
+    var circuitLayout: String?
 
     var body: some View {
         
@@ -20,7 +21,7 @@ struct EventViewCircuitMap: View {
             HStack {
                 Text("Circuit Information")
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                 Spacer()
                 
             } // hstack
@@ -32,9 +33,9 @@ struct EventViewCircuitMap: View {
                             .fontWeight(.bold)
                         Spacer()
                     } // hstack
-                    if(circuit.layout != nil) {
+                    if(circuitLayout != nil) {
                         HStack {
-                            Text("Layout: \(circuit.layout!)")
+                            Text("Layout: \(circuitLayout!)")
                             Spacer()
                         }
                     }

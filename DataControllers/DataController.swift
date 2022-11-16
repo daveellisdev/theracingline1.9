@@ -102,7 +102,6 @@ class DataController: ObservableObject {
             sessions.append(contentsOf: event.sessions)
         }
         sessions.sort { $0.raceStartTime < $1.raceStartTime }
-        print(sessions)
         return sessions
     }
 } // CONTROLER

@@ -8,7 +8,7 @@
 import Foundation
 import SwiftDate
 
-struct Session: Codable, Identifiable {
+struct Session: Codable, Identifiable, Hashable {
     let id: Int
     let seriesId: String
     let circuit: CircuitInfo
@@ -142,9 +142,17 @@ struct Session: Codable, Identifiable {
         
     }
     
-    var timeFromNow: String {
+    func timeFromNow() -> String {
         
           return self.raceStartTime.toRelative(since: Date().convertTo(region: Region.UTC))
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func ==(lhs: Session, rhs: Session) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 
