@@ -18,7 +18,6 @@ struct SessionView: View {
         let circuitName: String = session.circuit.circuit
         let circuitLayout: String? = session.circuit.circuitLayout
         let circuitInfo = dc.getCircuitByName(circuit: session.circuit.circuit)
-        
         if series != nil {
             ScrollView {
                 VStack {
@@ -90,7 +89,7 @@ struct SessionView: View {
                     }
                 } // vstack
             } // scrollview
-            .navigationTitle("Formula 1")
+            .navigationTitle(series!.seriesInfo.name)
             .padding(.horizontal)
         }
     }
