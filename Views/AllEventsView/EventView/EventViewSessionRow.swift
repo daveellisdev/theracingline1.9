@@ -31,6 +31,8 @@ struct EventViewSessionRow: View {
                         if let duration = session.getDurationText {
                             Text(duration)
                                 .font(.caption)
+                            Image(systemName: "clock.arrow.2.circlepath")
+                                .font(.caption2)
                         }
                     } // hstack
                     HStack {

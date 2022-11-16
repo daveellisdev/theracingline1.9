@@ -26,7 +26,7 @@ struct DayView: View {
                     }
                 }
             }.navigationDestination(for: Session.self) { session in
-                Text("Session Page")
+                SessionView(dc: dc, session: session)
             }
             .navigationTitle("Sessions")
         }
