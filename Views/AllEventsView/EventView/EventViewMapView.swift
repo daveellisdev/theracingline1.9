@@ -11,8 +11,9 @@ import MapKit
 struct EventViewMapView: View {
     
     @State var region: MKCoordinateRegion
-//    @State private var mapType: MKMapType = .satellite
-    
+
+//    @State var regionTest = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: CLLocationDegrees(25.049136), longitude: CLLocationDegrees(55.236425)), span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02))
+//
     var body: some View {
         
         Map(coordinateRegion: $region)

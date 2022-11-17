@@ -23,7 +23,6 @@ struct EventViewCircuitMap: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                 Spacer()
-                
             } // hstack
             GroupBox {
                 VStack {
