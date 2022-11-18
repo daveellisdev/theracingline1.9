@@ -95,6 +95,19 @@ class DataController: ObservableObject {
         }
     }
     
+    func createColorDictionary(series: [Series]) -> [String:Color] {
+        
+        var seriesDictionary: [String:Color] = [:]
+        for seriesDetails in series {
+            
+            let seriesName = seriesDetails.seriesInfo.shortName
+            let seriesColors = Color(red: Double(seriesDetails.colourValues.dark[0] / 255), green: Double(seriesDetails.colourValues.dark[1] / 255), blue: Double(seriesDetails.colourValues.dark[2] / 255))
+            
+            seriesDictionary[seriesName] = seriesColors
+        }
+        return seriesDictionary
+    }
+    
     func createSessions(events: [RaceEvent]) -> [Session] {
         
         var sessions: [Session] = []
