@@ -13,6 +13,7 @@ class DataController: ObservableObject {
     static var shared = DataController()
     
     @Published var series: [Series] = []
+    @Published var seriesColors: [String:Color] = [:]
     @Published var circuits: [Circuit] = []
     @Published var events: [RaceEvent] = []
     @Published var sessions: [Session] = []
@@ -56,6 +57,7 @@ class DataController: ObservableObject {
                     
                     // series
                     self.series = json.series
+                    self.seriesColors = self.createColorDictionary(series: self.series)
                     
                     // circuits
                     self.circuits = json.circuits
