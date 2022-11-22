@@ -15,7 +15,7 @@ struct DashboardView: View {
     var body: some View {
         ScrollView {
             
-            RaceChart(dc: dc, sessions: [exampleSession])
+            RaceChart(dc: dc)
             
             GroupBox {
                 HStack {

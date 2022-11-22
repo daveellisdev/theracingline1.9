@@ -26,6 +26,7 @@ struct Session: Codable, Identifiable, Hashable {
         formatter.dateFormat = "MMM dd y HH:mm"
         
         let raceStartTime = formatter.date(from: timeString)
+
         return raceStartTime!
     }
     
