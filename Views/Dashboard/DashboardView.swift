@@ -7,14 +7,47 @@
 
 import SwiftUI
 
+
 struct DashboardView: View {
+    
+    @ObservedObject var dc: DataController
+    
     var body: some View {
-        Text("Dashboard")
+        ScrollView {
+            
+            RaceChart(dc: dc)
+            
+            GroupBox {
+                HStack {
+                    Text("Live Now")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    Spacer()
+                }
+            }
+            
+            GroupBox {
+                HStack {
+                    Text("Up Next")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    Spacer()
+                }
+            }
+            GroupBox {
+                HStack {
+                    Text("You may like...")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    Spacer()
+                }
+            }.navigationTitle("Dasboard")
+        }.padding(.horizontal)
     }
 }
 
 struct DashboardView_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView()
+        DashboardView(dc: DataController())
     }
 }

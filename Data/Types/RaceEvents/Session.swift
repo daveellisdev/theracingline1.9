@@ -26,10 +26,18 @@ struct Session: Codable, Identifiable, Hashable {
         formatter.dateFormat = "MMM dd y HH:mm"
         
         let raceStartTime = formatter.date(from: timeString)
+
         return raceStartTime!
     }
     
     func raceStartTimeAsString() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        
+        return formatter.string(from: raceStartTime)
+    }
+    
+    func raceStartDateAsString() -> String {
         let formatter = DateFormatter()
         if raceStartTime.compare(.isThisYear) {
             formatter.dateFormat = "MMM d"
@@ -54,21 +62,24 @@ struct Session: Codable, Identifiable, Hashable {
         return dateInUTC
     }
     
-    var raceEndTime: Date? {
+    var raceEndTime: Date {
 
         let durationLength = self.duration.durationMinutes
         let raceEndTime = self.raceStartTime + durationLength.minutes
         return raceEndTime
-
+    }
+    
+    func raceEndTimeAsString() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        
+        return formatter.string(from: raceEndTime)
     }
     
     var sessionInProgress: Bool? {
-        if raceEndTime == nil {
-            return nil
-        }
-        
+
         let now = Date()
-        if now > raceStartTime && now < raceEndTime! {
+        if now > raceStartTime && now < raceEndTime {
             return true
         } else {
             return false
@@ -76,12 +87,10 @@ struct Session: Codable, Identifiable, Hashable {
     }
     
     var sessionComplete: Bool? {
-        if raceEndTime == nil {
-            return nil
-        }
+
         
         let now = Date()
-        if now > raceEndTime! {
+        if now > raceEndTime {
             return true
         } else {
             return false
