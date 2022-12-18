@@ -18,11 +18,6 @@ struct LiveCircleView: View {
             .frame(width: 10)
             .foregroundColor(.white)
             .colorMultiply(flashColour)
-//                .onAppear() {
-//                    withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
-//                        self.liveColour = flashColour
-//                    }
-//                }
     }
 }
 

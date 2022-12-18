@@ -36,6 +36,8 @@ struct EventViewSessionRowLive: View {
                         } // if let duration
                     } // hstack
                     HStack {
+                        Text(session.raceStartDateAsString())
+                            .font(.caption)
                         Text(session.raceStartTimeAsString())
                             .font(.caption)
                         Spacer()
