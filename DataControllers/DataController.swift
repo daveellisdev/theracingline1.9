@@ -70,6 +70,8 @@ class DataController: ObservableObject {
                     var sortedSessions = self.createSessions(events: self.events)
                     sortedSessions.sort{ $0.raceStartTime < $1.raceStartTime}
                     self.sessions = sortedSessions
+                    
+                    // next five sessions
                     print("Decoded")
                 }
             } catch let jsonError as NSError {
@@ -97,32 +99,6 @@ class DataController: ObservableObject {
         }
     }
     
-//    func createChartColorPairs(series: [Series]) -> [KeyValuePairs<String, Color>] {
-//
-//        var seriesDictionary: [String:Color]
-//        for seriesDetails in series {
-//
-//            let seriesName = seriesDetails.seriesInfo.shortName
-//
-//            let darkR = Double(seriesDetails.colourValues.dark[0])
-//            let darkG = Double(seriesDetails.colourValues.dark[1])
-//            let darkB = Double(seriesDetails.colourValues.dark[2])
-//
-//            let seriesColors = Color(red: darkR / 255, green: darkG / 255, blue: darkB / 255)
-//
-//            seriesDictionary[seriesName] = seriesColors
-//        }
-//
-////        let kvp = KeyValuePairs(dictionaryLiteral: seriesDictionary)
-//        let tupletArray = seriesDictionary.map { (key, value) in
-//            (key, value)
-//        }
-//
-//        let kvp = KeyValuePairs(dictionaryLiteral: tupletArray)
-//
-//        return kvp
-//    }
-    
     func createSessions(events: [RaceEvent]) -> [Session] {
         
         var sessions: [Session] = []
@@ -134,20 +110,3 @@ class DataController: ObservableObject {
         return sessions
     }
 } // CONTROLER
-
-//extension KeyValuePairs {
-//    init<C: Collection>(_ collection: C) where C.Element == Self.Element {
-//        let elements = Array(collection)
-//
-//        // FIXME: THIS IS FUNDAMENTALLY BROKEN, UNDEFINED BEHAVIOUR
-//        // ARC will release the `elements` array by the end of this initializer, but
-//        // its internal buffer pointer will have been copied into `self` without a retain,
-//        // causing it to be a dangling reference
-//
-//        // As the name implies, this is unsafe, and a total hack. It relies on the current implementation
-//        // of KeyValuePairs, which is a struct wrapping a single `let _elements: [(Key, Value)]` property:
-//        // https://github.com/apple/swift/blob/e497c559975d0a9611c2f634eacdc9126edfc85d/stdlib/public/core/KeyValuePairs.swift#L75-L78
-//        // In fairness, this implementation is `@frozen`, so it's actually somewhat reasonable to rely on.
-//        self = unsafeBitCast(elements, to: Self.self)
-//    }
-//}
