@@ -38,17 +38,14 @@ struct EventViewSessionRow: View {
                     HStack {
                         Text(session.raceStartDateAsString())
                             .font(.caption)
+                        Text(session.raceStartTimeAsString())
+                                                    .font(.caption)
                         Spacer()
                         Text(session.timeFromNow())
                             .font(.caption)
                         Image(systemName: "clock")
                             .font(.caption2)
                     } // hstack
-                    HStack {
-                        Text(session.raceStartTimeAsString())
-                            .font(.caption)
-                        Spacer()
-                    }
                 } // vstack
                 Spacer()
             } // hstack

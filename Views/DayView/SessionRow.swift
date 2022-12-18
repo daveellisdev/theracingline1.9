@@ -46,6 +46,10 @@ struct SessionRow: View {
                     }
                 }
                 HStack {
+                    Text(session.raceStartDateAsString())
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .fontWeight(.bold)
                     Text(session.raceStartTimeAsString())
                         .font(.caption)
                         .foregroundColor(.secondary)

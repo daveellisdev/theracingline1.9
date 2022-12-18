@@ -41,6 +41,8 @@ struct SessionViewSessionUpcoiming: View {
             }
             .font(.caption)
             HStack {
+                Text(session.raceStartDateAsString())
+                    .font(.caption)
                 Text(session.raceStartTimeAsString())
                     .font(.caption)
                 Spacer()
