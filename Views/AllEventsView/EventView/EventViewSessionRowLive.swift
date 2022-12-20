@@ -17,7 +17,7 @@ struct EventViewSessionRowLive: View {
         
         let series = getSeriesById(id: session.seriesId)
         let duration = session.duration.durationMinutes
-        let timeComplete = (Date() - session.raceStartTime) / 60
+        let timeComplete = (Date() - session.raceStartTime()) / 60
         GroupBox() {
             HStack {
                 VStack(alignment: .leading) {
@@ -30,7 +30,7 @@ struct EventViewSessionRowLive: View {
                         Text(session.session.sessionName)
                             .font(.caption)
                         Spacer()
-                        if let duration = session.getDurationText {
+                        if let duration = session.getDurationText() {
                             Text(duration)
                                 .font(.caption)
                         } // if let duration

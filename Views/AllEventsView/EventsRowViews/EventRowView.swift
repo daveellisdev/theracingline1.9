@@ -25,8 +25,8 @@ struct EventRowView: View {
                             .font(.title3)
                             .fontWeight(.bold)
                         Spacer()
-                        if raceEvent.sessionInProgress != nil {
-                            if raceEvent.sessionInProgress! {
+                        if raceEvent.sessionInProgress() != nil {
+                            if raceEvent.sessionInProgress()! {
                                 LiveCircleView()
                             } // if true
                         } // if not nil

@@ -20,7 +20,7 @@ struct SessionRow: View {
                 HStack {
                     SessionRowSeriesName(series: series!, expired: false)
                     Spacer()
-                    if session.sessionInProgress != nil && session.sessionInProgress! {
+                    if session.sessionInProgress() != nil && session.sessionInProgress()! {
                         LiveCircleView()
                     }
                 }.padding(.bottom, -2)
@@ -35,8 +35,8 @@ struct SessionRow: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                     Spacer()
-                    if session.getDurationText != nil {
-                        Text(session.getDurationText!)
+                    if session.getDurationText() != nil {
+                        Text(session.getDurationText()!)
                             .font(.caption)
                             .foregroundColor(.secondary)
                         Image(systemName: "clock.arrow.2.circlepath")

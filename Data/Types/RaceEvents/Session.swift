@@ -16,7 +16,7 @@ struct Session: Codable, Identifiable, Hashable {
     let date: SessionDate
     let duration: Duration
     
-    var raceStartTime: Date {
+    func raceStartTime() -> Date {
         // strip the string down
         
         let timeArray = self.date.date.split(separator: " ")
@@ -34,21 +34,21 @@ struct Session: Codable, Identifiable, Hashable {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         
-        return formatter.string(from: raceStartTime)
+        return formatter.string(from: raceStartTime())
     }
     
     func raceStartDateAsString() -> String {
         let formatter = DateFormatter()
-        if raceStartTime.compare(.isThisYear) {
+        if raceStartTime().compare(.isThisYear) {
             formatter.dateFormat = "MMM d"
         } else {
             formatter.dateFormat = "MMM d yyyy"
         }
         
-        return formatter.string(from: raceStartTime)
+        return formatter.string(from: raceStartTime())
     }
     
-    var raceStartTimeInRegion: DateInRegion {
+    func raceStartTimeInRegion() -> DateInRegion {
         // strip the string down
         
         let timeArray = self.date.date.split(separator: " ")
@@ -62,10 +62,10 @@ struct Session: Codable, Identifiable, Hashable {
         return dateInUTC
     }
     
-    var raceEndTime: Date {
+    func raceEndTime() -> Date {
 
         let durationLength = self.duration.durationMinutes
-        let raceEndTime = self.raceStartTime + durationLength.minutes
+        let raceEndTime = self.raceStartTime() + durationLength.minutes
         return raceEndTime
     }
     
@@ -73,31 +73,31 @@ struct Session: Codable, Identifiable, Hashable {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         
-        return formatter.string(from: raceEndTime)
+        return formatter.string(from: raceEndTime())
     }
     
-    var sessionInProgress: Bool? {
+    func sessionInProgress() -> Bool? {
 
         let now = Date()
-        if now > raceStartTime && now < raceEndTime {
+        if now > raceStartTime() && now < raceEndTime() {
             return true
         } else {
             return false
         }
     }
     
-    var sessionComplete: Bool? {
+    func sessionComplete() -> Bool? {
 
         
         let now = Date()
-        if now > raceEndTime {
+        if now > raceEndTime() {
             return true
         } else {
             return false
         }
     }
     
-    var getDurationText: String? {
+    func getDurationText() -> String? {
      
         if duration.tba != nil {
             return nil
@@ -153,7 +153,7 @@ struct Session: Codable, Identifiable, Hashable {
     
     func timeFromNow() -> String {
         
-          return self.raceStartTime.toRelative(since: Date().convertTo(region: Region.UTC))
+        return self.raceStartTime().toRelative(since: Date().convertTo(region: Region.UTC))
     }
     
     func hash(into hasher: inout Hasher) {
@@ -168,3 +168,5 @@ struct Session: Codable, Identifiable, Hashable {
 var exampleSession = Session(id: 123, seriesId: "f1", circuit: exampleCircuitInfo, session: exampleSessionInfo, date: exampleSessionDate, duration: exampleDuration)
 var exampleSession2 = Session(id: 123, seriesId: "f1", circuit: exampleCircuitInfo2, session: exampleSessionInfo2, date: exampleSessionDate2, duration: exampleDuration2)
 var exampleSession3 = Session(id: 123, seriesId: "f1", circuit: exampleCircuitInfo2, session: exampleSessionInfo2, date: exampleSessionDate3, duration: exampleDuration3)
+
+var exampleSessions = [exampleSession, exampleSession2, exampleSession3, exampleSession, exampleSession2, exampleSession3]

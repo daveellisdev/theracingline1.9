@@ -28,7 +28,7 @@ struct EventViewSessionRow: View {
                         Text(session.session.sessionName)
                             .font(.caption)
                         Spacer()
-                        if let duration = session.getDurationText {
+                        if let duration = session.getDurationText() {
                             Text(duration)
                                 .font(.caption)
                             Image(systemName: "clock.arrow.2.circlepath")
