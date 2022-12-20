@@ -16,76 +16,76 @@ struct RaceEvent: Codable, Identifiable, Hashable {
     let seriesIds: [String]
     let sessions: [Session]
     
-    var firstRaceDateAsString: String? {
+    func firstRaceDateAsString() -> String? {
         
         // filter out non races
         let races = self.sessions.filter({ $0.session.sessionType == "R" })
         if races.isEmpty {
             return nil
         } else {
-            let firstRace = races.min { $0.raceStartTime < $1.raceStartTime }
-            let firstRaceDate = firstRace!.raceStartTime
+            let firstRace = races.min { $0.raceStartTime() < $1.raceStartTime() }
+            let firstRaceDate = firstRace!.raceStartTime()
             return dateAsString(date: firstRaceDate)
         }
     }
     
-    var lastRaceDateAsString: String? {
+    func lastRaceDateAsString() -> String? {
         // filter out non races
         let races = self.sessions.filter({ $0.session.sessionType == "R" })
         if races.isEmpty {
             return nil
         } else {
-            let lastRace = races.max { $0.raceStartTime < $1.raceStartTime }
-            let lastRaceDate = lastRace!.raceStartTime
+            let lastRace = races.max { $0.raceStartTime() < $1.raceStartTime() }
+            let lastRaceDate = lastRace!.raceStartTime()
             return dateAsString(date: lastRaceDate)
         }
     }
     
-    var firstSessionDateAsString: String {
+    func firstSessionDateAsString() -> String {
         
         let firstSession = self.sessions.first 
         let firstSessionDate = firstSession!.raceStartTime
-        return dateAsString(date: firstSessionDate)
+        return dateAsString(date: firstSessionDate())
         
     }
     
-    var lastSessionDateAsString: String {
+    func lastSessionDateAsString() -> String {
         
         let lastSession = self.sessions.last
         let lastSessionDate = lastSession!.raceStartTime
-        return dateAsString(date: lastSessionDate)
+        return dateAsString(date: lastSessionDate())
     }
     
-    var firstRaceDate: Date {
+    func firstRaceDate() -> Date {
         // filter out non races
         let races = self.sessions.filter({ $0.session.sessionType == "R" })
         if races.isEmpty {
             // if no races then return first session
-            return self.firstSessionDate
+            return self.firstSessionDate()
         } else {
-            let firstRace = races.min { $0.raceStartTime < $1.raceStartTime }
-            return firstRace!.raceStartTime
+            let firstRace = races.min { $0.raceStartTime() < $1.raceStartTime() }
+            return firstRace!.raceStartTime()
         }
     }
     
-    var firstSessionDate: Date {
+    func firstSessionDate() -> Date {
         
         let firstSession = self.sessions.first
-        return firstSession!.raceStartTime
+        return firstSession!.raceStartTime()
     }
     
-    var sessionInProgress: Bool? {
-        let liveSessions = self.sessions.filter({ $0.sessionInProgress != nil && $0.sessionInProgress != false})
+    func sessionInProgress() -> Bool? {
+        let liveSessions = self.sessions.filter({ $0.sessionInProgress() != nil && $0.sessionInProgress() != false})
         
         return !liveSessions.isEmpty
     }
     
-    var eventInProgress: Bool? {
+    func eventInProgress() -> Bool? {
         // get first & last sessions
         let firstSession = self.sessions.first
-        let firstSessionDate = firstSession!.raceStartTime
+        let firstSessionDate = firstSession!.raceStartTime()
         let lastSession = self.sessions.last
-        let lastSessionDate = lastSession!.raceStartTime
+        let lastSessionDate = lastSession!.raceStartTime()
         
         // get first & last sessions
         let races = self.sessions.filter({ $0.session.sessionType == "R" })
@@ -94,23 +94,23 @@ struct RaceEvent: Codable, Identifiable, Hashable {
         if races.isEmpty {
             firstRaceDate = nil
         } else {
-            let firstRace = races.min { $0.raceStartTime < $1.raceStartTime }
-            firstRaceDate = firstRace!.raceStartTime
+            let firstRace = races.min { $0.raceStartTime() < $1.raceStartTime() }
+            firstRaceDate = firstRace!.raceStartTime()
         }
         
         let lastRaceDate: Date?
         if races.isEmpty {
             lastRaceDate = nil
         } else {
-            let lastRace = races.max { $0.raceStartTime < $1.raceStartTime }
-            lastRaceDate = lastRace!.raceStartTime
+            let lastRace = races.max { $0.raceStartTime() < $1.raceStartTime() }
+            lastRaceDate = lastRace!.raceStartTime()
         }
         
         // get end time of last race
         let lastRaceFinishingTime: Date?
         if lastRaceDate != nil {
-            let lastRace = races.max { $0.raceStartTime < $1.raceStartTime }
-            lastRaceFinishingTime = lastRace!.raceEndTime
+            let lastRace = races.max { $0.raceStartTime() < $1.raceStartTime() }
+            lastRaceFinishingTime = lastRace!.raceEndTime()
         } else {
             lastRaceFinishingTime = nil
         }
@@ -165,7 +165,7 @@ struct RaceEvent: Codable, Identifiable, Hashable {
     func timeFromNow() -> String {
         
         let firstSession = self.sessions.first
-        let firstSessionDate = firstSession!.raceStartTimeInRegion
+        let firstSessionDate = firstSession!.raceStartTimeInRegion()
         return firstSessionDate.toRelative(since: Date().convertTo(region: Region.UTC))
     }
     
@@ -178,7 +178,7 @@ struct RaceEvent: Codable, Identifiable, Hashable {
     }
     
     func sessionsSortedByDate() -> [Session] {
-        let sortedSessions = self.sessions.sorted { $0.raceStartTime < $1.raceStartTime }
+        let sortedSessions = self.sessions.sorted { $0.raceStartTime() < $1.raceStartTime() }
         
         return sortedSessions
     }

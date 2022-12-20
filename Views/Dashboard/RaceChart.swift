@@ -26,19 +26,21 @@ struct RaceChart: View {
                 HStack {
                     ScrollView(.horizontal) {
                         Chart {
-                            ForEach(Array(dc.sessions.enumerated()), id: \.offset) { index, session in
-//
+//                            exampleSessions
+                            // dc.sessionsWithinNextTwelveHours
+                            ForEach(Array(exampleSessions.enumerated()), id: \.offset) {
+                                index, session in
                                 let seriesInfo = dc.getSeriesById(seriesId: session.seriesId)
-//
+
                                 if seriesInfo != nil {
                                     let red = Double(seriesInfo!.colourValues.dark[0])
                                     let green = Double(seriesInfo!.colourValues.dark[1])
                                     let blue = Double(seriesInfo!.colourValues.dark[2])
                                     let color = Color(red: red / 255, green: green / 255, blue: blue / 255)
-//
+
                                     BarMark(
-                                        xStart: .value("Start", session.raceStartTime),
-                                        xEnd: .value("End", session.raceEndTime),
+                                        xStart: .value("Start", session.raceStartTime()),
+                                        xEnd: .value("End", session.raceEndTime()),
                                         y: .value(seriesInfo!.seriesInfo.shortName, 1+index),
                                         height: 30
                                     ) // barmark
@@ -54,7 +56,7 @@ struct RaceChart: View {
                         } // chart
                         .chartYAxis(.hidden)
                         .chartLegend(.hidden)
-                        .chartXScale(domain: Date()...Date()+6.hours)
+                        .chartXScale(domain: Date()...Date()+12.hours)
                         .chartYScale(domain: 0...4)
                         .frame(width: 500, height: 200)
                         .padding()

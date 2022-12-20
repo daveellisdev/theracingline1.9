@@ -15,7 +15,7 @@ struct SessionViewSessionLive: View {
     var body: some View {
         
         let duration = session.duration.durationMinutes
-        let timeComplete = (Date() - session.raceStartTime) / 60
+        let timeComplete = (Date() - session.raceStartTime()) / 60
         
         GroupBox {
             VStack {
@@ -23,7 +23,7 @@ struct SessionViewSessionLive: View {
                     Text(session.session.sessionName)
                     Spacer()
                     if session.getDurationText != nil {
-                        Text(session.getDurationText!)
+                        Text(session.getDurationText()!)
                         Image(systemName: "clock.arrow.2.circlepath")
                             .font(.caption2)
                     }

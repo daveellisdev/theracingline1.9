@@ -15,7 +15,7 @@ struct SessionViewSessionUpcoiming: View {
     
     var body: some View {
         
-        let durationText = session.getDurationText
+        let durationText = session.getDurationText()
         
         GroupBox {
             HStack {

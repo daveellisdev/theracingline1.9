@@ -15,7 +15,6 @@ struct AllEventsView: View {
     var body: some View {
         
         let events = dc.events
-        
         NavigationStack(path: $navStack) {
             List(events) { event in
                 NavigationLink(value: event){

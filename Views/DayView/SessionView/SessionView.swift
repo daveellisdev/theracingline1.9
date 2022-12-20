@@ -22,7 +22,7 @@ struct SessionView: View {
         if series != nil {
             ScrollView {
                 VStack {
-                    if session.sessionInProgress != nil && session.sessionInProgress! {
+                    if session.sessionInProgress() != nil && session.sessionInProgress()! {
                         SessionViewSessionLive(dc: dc, session: session)
                     } else {
                         SessionViewSessionUpcoiming(dc: dc, session: session, series: series!)

@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import SwiftDate
 
 class DataController: ObservableObject {
     
@@ -20,6 +21,12 @@ class DataController: ObservableObject {
     
     init() {
         downloadData()
+    }
+    
+    var sessionsWithinNextTwelveHours: [Session] {
+        let twelveHoursAway = Date() + 12.hours
+        let nextSessions = sessions.filter { $0.raceStartTime() < twelveHoursAway }
+        return nextSessions
     }
     
     // DOWNLOAD DATA
@@ -62,16 +69,16 @@ class DataController: ObservableObject {
                     print("Circuits Done")
                     // events
                     var sortedEvents = json.events
-                    sortedEvents.sort {$0.firstRaceDate < $1.firstRaceDate}
+                    sortedEvents.sort {$0.firstRaceDate() < $1.firstRaceDate()}
                     self.events = sortedEvents
                     print("Events Done")
                     
                     // sessions
                     var sortedSessions = self.createSessions(events: self.events)
-                    sortedSessions.sort{ $0.raceStartTime < $1.raceStartTime}
+                    sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
                     self.sessions = sortedSessions
+                    print("Sessions Done")
                     
-                    // next five sessions
                     print("Decoded")
                 }
             } catch let jsonError as NSError {
@@ -105,7 +112,7 @@ class DataController: ObservableObject {
         for event in events {
             sessions.append(contentsOf: event.sessions)
         }
-        sessions.sort { $0.raceStartTime < $1.raceStartTime }
+        sessions.sort { $0.raceStartTime() < $1.raceStartTime() }
         
         return sessions
     }
