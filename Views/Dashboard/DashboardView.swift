@@ -11,38 +11,42 @@ import SwiftUI
 struct DashboardView: View {
     
     @ObservedObject var dc: DataController
+    @State var navStack = NavigationPath()
     
     var body: some View {
-        ScrollView {
-            
-            RaceChart(dc: dc)
-            
-            GroupBox {
-                HStack {
-                    Text("Live Now")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    Spacer()
+        NavigationStack(path: $navStack) {
+            ScrollView {
+                
+                RaceChart(dc: dc)
+                
+                GroupBox {
+                    HStack {
+                        Text("Live Now")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        Spacer()
+                    }
                 }
-            }
-            
-            GroupBox {
-                HStack {
-                    Text("Up Next")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    Spacer()
+                
+                GroupBox {
+                    HStack {
+                        Text("Up Next")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        Spacer()
+                    }
                 }
-            }
-            GroupBox {
-                HStack {
-                    Text("You may like...")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    Spacer()
+                GroupBox {
+                    HStack {
+                        Text("You may like...")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        Spacer()
+                    }
                 }
             }.navigationTitle("Dasboard")
-        }.padding(.horizontal)
+            .padding(.horizontal)
+        }
     }
 }
 
