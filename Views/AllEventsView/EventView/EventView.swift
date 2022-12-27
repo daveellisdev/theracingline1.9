@@ -33,10 +33,10 @@ struct EventView: View {
                 } //hstack
                 
                 ForEach(raceEvent.sessionsSortedByDate()) { session in
-                    if (session.sessionComplete() != nil && session.sessionComplete()!) {
+                    if session.isComplete() {
                         // if session has passed
                         EventViewSessionRowExpired(dc: dc, session: session)
-                    } else if session.sessionInProgress() != nil && session.sessionInProgress()! {
+                    } else if session.isInProgress() {
                         // if in progress
                         EventViewSessionRowLive(dc: dc, session: session)
                     } else {

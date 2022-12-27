@@ -76,7 +76,7 @@ struct Session: Codable, Identifiable, Hashable {
         return formatter.string(from: raceEndTime())
     }
     
-    func sessionInProgress() -> Bool? {
+    func isInProgress() -> Bool {
 
         let now = Date()
         if now > raceStartTime() && now < raceEndTime() {
@@ -86,9 +86,8 @@ struct Session: Codable, Identifiable, Hashable {
         }
     }
     
-    func sessionComplete() -> Bool? {
+    func isComplete() -> Bool {
 
-        
         let now = Date()
         if now > raceEndTime() {
             return true

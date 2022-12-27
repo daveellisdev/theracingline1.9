@@ -56,7 +56,7 @@ struct EventRowSessionDates: View {
         }
         
         Spacer()
-        Text("\(raceEvent.timeFromNow())")
+        Text("\(raceEvent.firstSessionTimeFromNow())")
             .font(.caption)
             .foregroundColor(.secondary)
         Image(systemName: "clock")
