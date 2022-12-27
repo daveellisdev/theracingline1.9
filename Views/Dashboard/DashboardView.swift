@@ -16,34 +16,19 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack(path: $navStack) {
             ScrollView {
-                
-                RaceChart(dc: dc)
-                
-                GroupBox {
-                    HStack {
-                        Text("Live Now")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        Spacer()
-                    }
+                if dc.sessionsWithinNextTwelveHours.count > 0 {
+                    RaceChart(dc: dc)
+
                 }
                 
-                GroupBox {
-                    HStack {
-                        Text("Up Next")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        Spacer()
-                    }
+                if dc.liveSessions.count > 0 {
+                    LiveSessionsView(dc: dc)
                 }
-                GroupBox {
-                    HStack {
-                        Text("You may like...")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        Spacer()
-                    }
-                }
+                
+                UpNextSessionsView()
+                
+                RecommendedSeriesView()
+                
             }.navigationTitle("Dasboard")
             .padding(.horizontal)
         }
