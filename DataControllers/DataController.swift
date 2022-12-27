@@ -29,6 +29,10 @@ class DataController: ObservableObject {
         return nextSessions
     }
     
+    var timeLineHeight: CGFloat {
+        return CGFloat(sessionsWithinNextTwelveHours.count * 50)
+    }
+    
     // DOWNLOAD DATA
     
     func downloadData() {
