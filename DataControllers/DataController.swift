@@ -21,6 +21,7 @@ class DataController: ObservableObject {
     @Published var eventsInProgressAndUpcoming: [RaceEvent] = []
 
     @Published var sessions: [Session] = []
+    @Published var seessionsInProgressAndUpcoming: [Session] = []
     @Published var liveSessions: [Session] = []
     @Published var sessionsWithinNextTwelveHours: [Session] = []
     
@@ -63,6 +64,8 @@ class DataController: ObservableObject {
             do {
                 let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
                 
+                let now = Date()
+
                 DispatchQueue.main.async {
                     // series
                     self.series = json.series
@@ -72,7 +75,6 @@ class DataController: ObservableObject {
                     // circuits
                     self.circuits = json.circuits
                     print("Circuits Done")
-                    
                     
                     // events
                     var sortedEvents = json.events
@@ -87,7 +89,7 @@ class DataController: ObservableObject {
                         }
                     ;}
                     
-                    self.eventsInProgressAndUpcoming = sortedEvents.filter { !$0.eventComplete() }                    
+                    self.eventsInProgressAndUpcoming = sortedEvents.filter { !$0.eventComplete() }
                                         
                     print("Events Done")
                     
@@ -95,9 +97,11 @@ class DataController: ObservableObject {
                     var sortedSessions = self.createSessions(events: self.events)
                     sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
                     self.sessions = sortedSessions
+                    
+                    self.seessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() }
+                    
                     print("Sessions Done")
                     
-                    let now = Date()
                     let twelveHoursAway = Date() + 12.hours
                     self.sessionsWithinNextTwelveHours = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now }
                     
