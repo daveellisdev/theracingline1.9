@@ -18,15 +18,10 @@ class DataController: ObservableObject {
     @Published var events: [RaceEvent] = []
     @Published var sessions: [Session] = []
     @Published var liveSessions: [Session] = []
+    @Published var sessionsWithinNextTwelveHours: [Session] = []
     
     init() {
         downloadData()
-    }
-    
-    var sessionsWithinNextTwelveHours: [Session] {
-        let twelveHoursAway = Date() + 12.hours
-        let nextSessions = sessions.filter { $0.raceStartTime() < twelveHoursAway }
-        return nextSessions
     }
     
     var timeLineHeight: CGFloat {
@@ -82,6 +77,12 @@ class DataController: ObservableObject {
                     sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
                     self.sessions = sortedSessions
                     print("Sessions Done")
+                    
+                    // next 12 hours
+                    let now = Date()
+                    let twelveHoursAway = Date() + 12.hours
+                    self.sessionsWithinNextTwelveHours = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now }
+                    print("12 Hours of sessions Done")
                     
                     print("Decoded")
                 }
