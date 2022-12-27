@@ -27,9 +27,9 @@ struct RaceChart: View {
                     ScrollView(.horizontal) {
                         Chart {
 //                            exampleSessions
-                            // dc.sessionsWithinNextTwelveHours
-                            ForEach(Array(exampleSessions.enumerated()), id: \.offset) {
-                                index, session in
+// dc.sessionsWithinNextTwelveHours
+                            ForEach(Array(exampleSessions.enumerated()), id: \.offset) { index, session in
+
                                 let seriesInfo = dc.getSeriesById(seriesId: session.seriesId)
 
                                 if seriesInfo != nil {
@@ -57,8 +57,8 @@ struct RaceChart: View {
                         .chartYAxis(.hidden)
                         .chartLegend(.hidden)
                         .chartXScale(domain: Date()...Date()+12.hours)
-                        .chartYScale(domain: 0...4)
-                        .frame(width: 500, height: 200)
+                        .chartYScale(domain: 0...exampleSessions.count)
+                        .frame(width: 500, height: dc.timeLineHeight)
                         .padding()
                     }
                 }
