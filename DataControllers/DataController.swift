@@ -65,6 +65,14 @@ class DataController: ObservableObject {
                 let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
                 
                 let now = Date()
+                
+                var sortedEvents = json.events
+                sortedEvents.sort {$0.firstRaceDate() < $1.firstRaceDate()}
+                
+                var sortedSessions = self.createSessions(events: self.events)
+                sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
+                
+                let twelveHoursAway = Date() + 12.hours
 
                 DispatchQueue.main.async {
                     // series
@@ -77,8 +85,6 @@ class DataController: ObservableObject {
                     print("Circuits Done")
                     
                     // events
-                    var sortedEvents = json.events
-                    sortedEvents.sort {$0.firstRaceDate() < $1.firstRaceDate()}
                     self.events = sortedEvents
                     
                     self.eventsInProgress = sortedEvents.filter {
@@ -94,8 +100,7 @@ class DataController: ObservableObject {
                     print("Events Done")
                     
                     // sessions
-                    var sortedSessions = self.createSessions(events: self.events)
-                    sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
+                    
                     self.sessions = sortedSessions
                     
                     self.seessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() }
@@ -103,7 +108,6 @@ class DataController: ObservableObject {
                     self.liveSessions = sortedSessions.filter { $0.isInProgress() }
                     print("Sessions Done")
                     
-                    let twelveHoursAway = Date() + 12.hours
                     self.sessionsWithinNextTwelveHours = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now }
                     
                     print("Decoded")
