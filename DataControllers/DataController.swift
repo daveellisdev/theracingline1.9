@@ -100,6 +100,7 @@ class DataController: ObservableObject {
                     
                     self.seessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() }
                     
+                    self.liveSessions = sortedSessions.filter { $0.isInProgress() }
                     print("Sessions Done")
                     
                     let twelveHoursAway = Date() + 12.hours
