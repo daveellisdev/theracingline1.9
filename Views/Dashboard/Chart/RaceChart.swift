@@ -39,7 +39,7 @@ struct RaceChart: View {
                                     let color = Color(red: red / 255, green: green / 255, blue: blue / 255)
 
                                     BarMark(
-                                        xStart: .value("Start", session.raceStartTime()),
+                                        xStart: .value("Start", calculateChartRaceStartTime(startDate: session.raceStartTime())),
                                         xEnd: .value("End", session.raceEndTime()),
                                         y: .value(seriesInfo!.seriesInfo.shortName, 1+index),
                                         height: 30
@@ -58,12 +58,23 @@ struct RaceChart: View {
                         .chartLegend(.hidden)
                         .chartXScale(domain: Date()...Date()+24.hours)
                         .chartYScale(domain: 0...dc.sessionsWithinNextTwelveHours.count)
-                        .frame(width: 1000, height: dc.timeLineHeight)
+                        .frame(width: 2000, height: dc.timeLineHeight)
                         .padding()
                     }
                 }
             }
         }
+    }
+}
+
+func calculateChartRaceStartTime(startDate: Date) -> Date {
+    
+    let now = Date() - 10.minutes
+    
+    if startDate < now {
+        return now
+    } else {
+        return startDate
     }
 }
 

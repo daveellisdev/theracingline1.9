@@ -22,11 +22,9 @@ struct SessionViewSessionLive: View {
                 HStack {
                     Text(session.session.sessionName)
                     Spacer()
-                    if session.getDurationText != nil {
-                        Text(session.getDurationText()!)
-                        Image(systemName: "clock.arrow.2.circlepath")
-                            .font(.caption2)
-                    }
+                    Text(session.getDurationText()!)
+                    Image(systemName: "clock.arrow.2.circlepath")
+                        .font(.caption2)
                 }
                 HStack {
                     Text(session.circuit.circuit)
@@ -36,6 +34,7 @@ struct SessionViewSessionLive: View {
                     }
                 }
                 HStack {
+                    Text(session.raceStartDateAsString())
                     Text(session.raceStartTimeAsString())
                     Spacer()
                     LiveCircleView()
