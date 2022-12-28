@@ -14,7 +14,7 @@ struct DayView: View {
     
     var body: some View {
         
-        let sessions = dc.seessionsInProgressAndUpcoming
+        let sessions = dc.sessionsInProgressAndUpcoming
         
         NavigationStack(path: $navStack) {
             List(sessions) { session in

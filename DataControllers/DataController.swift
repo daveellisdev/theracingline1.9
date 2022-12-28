@@ -21,7 +21,7 @@ class DataController: ObservableObject {
     @Published var eventsInProgressAndUpcoming: [RaceEvent] = []
 
     @Published var sessions: [Session] = []
-    @Published var seessionsInProgressAndUpcoming: [Session] = []
+    @Published var sessionsInProgressAndUpcoming: [Session] = []
     @Published var liveSessions: [Session] = []
     @Published var sessionsWithinNextTwelveHours: [Session] = []
     
@@ -63,30 +63,25 @@ class DataController: ObservableObject {
             
             do {
                 let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
-                
-                let now = Date()
-                
-                var sortedEvents = json.events
-                sortedEvents.sort {$0.firstRaceDate() < $1.firstRaceDate()}
-                
-                var sortedSessions = self.createSessions(events: self.events)
-                sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
-                
-                let twelveHoursAway = Date() + 12.hours
 
                 DispatchQueue.main.async {
+                    
+                    let now = Date()
+                    let twelveHoursAway = Date() + 12.hours
+
                     // series
                     self.series = json.series
                     print("Series Done")
-                    
                     
                     // circuits
                     self.circuits = json.circuits
                     print("Circuits Done")
                     
                     // events
-                    self.events = sortedEvents
+                    var sortedEvents = json.events
+                    sortedEvents.sort {$0.firstRaceDate() < $1.firstRaceDate()}
                     
+                    self.events = sortedEvents
                     self.eventsInProgress = sortedEvents.filter {
                         if $0.eventInProgress() != nil && $0.eventInProgress()! {
                             return true
@@ -96,27 +91,27 @@ class DataController: ObservableObject {
                     ;}
                     
                     self.eventsInProgressAndUpcoming = sortedEvents.filter { !$0.eventComplete() }
-                                        
                     print("Events Done")
                     
                     // sessions
-                    
+                    var sortedSessions = self.createSessions(events: self.events)
+                    sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
+                
                     self.sessions = sortedSessions
-                    
-                    self.seessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() }
-                    
+                    self.sessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() }
                     self.liveSessions = sortedSessions.filter { $0.isInProgress() }
+                    self.sessionsWithinNextTwelveHours = sortedSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) }
+                    self.sessionsWithinNextTwelveHours.reverse()
                     print("Sessions Done")
                     
-                    self.sessionsWithinNextTwelveHours = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now }
                     
-                    print("Decoded")
-                }
+                    print("Decoding Finished")
+                } // dispatchqueue
             } catch let jsonError as NSError {
                 print(jsonError)
                 print(jsonError.underlyingErrors)
                 print(jsonError.localizedDescription)
-            }
+            } // do catch
 
         }.resume()
     } // DOWNLOADDATA
@@ -138,7 +133,7 @@ class DataController: ObservableObject {
     }
     
     func createSessions(events: [RaceEvent]) -> [Session] {
-        
+
         var sessions: [Session] = []
         for event in events {
             sessions.append(contentsOf: event.sessions)
