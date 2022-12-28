@@ -34,7 +34,7 @@ struct EventViewSessionRowLive: View {
                             Text(duration)
                                 .font(.caption)
                         } // if let duration
-                    } // hstack
+                    }.padding(.top, 0) // hstack
                     HStack {
                         Text(session.raceStartDateAsString())
                             .font(.caption)
@@ -44,7 +44,7 @@ struct EventViewSessionRowLive: View {
                         LiveCircleView()
                         Text("In Progress")
                             .font(.caption)
-                    } // hstack
+                    }.padding(.top, -10) // hstack
                     if timeComplete < Double(duration) {
                         let timeLeftDouble = (Double(duration) - timeComplete).rounded()
                         let timeLeft = Int(timeLeftDouble)
@@ -55,7 +55,7 @@ struct EventViewSessionRowLive: View {
                                 Spacer()
                                 Text("\(timeLeft) minutes")
                                     .font(.caption)
-                            } // hstack
+                            }.padding(.top, -10) // hstack
                             ProgressView(value: timeComplete, total: Double(duration))
                                 .font(.caption)
                         } // vstack
@@ -66,7 +66,7 @@ struct EventViewSessionRowLive: View {
                                 Text("Session Complete")
                                     .font(.caption)
                                 Spacer()
-                            } // hstack
+                            }.padding(.top, -10) // hstack
                             ProgressView(value: 100.0, total: 100.0)
                                 .font(.caption)
                         } // vstack
