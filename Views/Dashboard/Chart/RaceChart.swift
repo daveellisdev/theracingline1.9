@@ -22,6 +22,8 @@ struct RaceChart: View {
                         .font(.title2)
                         .fontWeight(.bold)
                     Spacer()
+                    Text("next 12 hours")
+                        .font(.caption)
                 }
                 HStack {
                     ScrollView(.horizontal) {
