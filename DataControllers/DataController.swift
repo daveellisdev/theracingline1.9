@@ -24,6 +24,7 @@ class DataController: ObservableObject {
     @Published var sessionsInProgressAndUpcoming: [Session] = []
     @Published var liveSessions: [Session] = []
     @Published var sessionsWithinNextTwelveHours: [Session] = []
+    @Published var sessionsWithinNextTwelveHoursButNotLive: [Session] = []
     
     init() {
         downloadData()
@@ -102,6 +103,7 @@ class DataController: ObservableObject {
                     self.liveSessions = sortedSessions.filter { $0.isInProgress() }
                     self.sessionsWithinNextTwelveHours = sortedSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) }
                     self.sessionsWithinNextTwelveHours.reverse()
+                    self.sessionsWithinNextTwelveHoursButNotLive = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now }
                     print("Sessions Done")
                     
                     

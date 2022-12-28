@@ -21,7 +21,7 @@ struct LiveSessionsView: View {
                 } // hstack
                 
                 ForEach(dc.liveSessions) { session in
-                    EventViewSessionRowLive(dc: dc, session: session)
+                    LiveSessionRow(dc: dc, session: session)
                 } // foreach
             } // vstack
         } // groupbox

@@ -25,7 +25,7 @@ struct DashboardView: View {
                     LiveSessionsView(dc: dc)
                 }
                 
-                UpNextSessionsView()
+                UpNextSessionsView(dc: dc)
                 
                 RecommendedSeriesView()
                 
