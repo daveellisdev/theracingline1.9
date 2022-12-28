@@ -28,7 +28,7 @@ struct RaceChart: View {
                         Chart {
 //                            exampleSessions
 // dc.sessionsWithinNextTwelveHours
-                            ForEach(Array(exampleSessions.enumerated()), id: \.offset) { index, session in
+                            ForEach(Array(dc.sessionsWithinNextTwelveHours.enumerated()), id: \.offset) { index, session in
 
                                 let seriesInfo = dc.getSeriesById(seriesId: session.seriesId)
 
@@ -56,9 +56,9 @@ struct RaceChart: View {
                         } // chart
                         .chartYAxis(.hidden)
                         .chartLegend(.hidden)
-                        .chartXScale(domain: Date()...Date()+12.hours)
-                        .chartYScale(domain: 0...exampleSessions.count)
-                        .frame(width: 500, height: dc.timeLineHeight)
+                        .chartXScale(domain: Date()...Date()+24.hours)
+                        .chartYScale(domain: 0...dc.sessionsWithinNextTwelveHours.count)
+                        .frame(width: 1000, height: dc.timeLineHeight)
                         .padding()
                     }
                 }

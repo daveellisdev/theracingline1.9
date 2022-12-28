@@ -16,10 +16,10 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack(path: $navStack) {
             ScrollView {
-                if dc.sessionsWithinNextTwelveHours.count > 0 {
+//                if dc.sessionsWithinNextTwelveHours.count > 0 {
                     RaceChart(dc: dc)
 
-                }
+//                }
                 
                 if dc.liveSessions.count > 0 {
                     LiveSessionsView(dc: dc)
