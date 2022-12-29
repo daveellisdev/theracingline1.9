@@ -40,7 +40,7 @@ struct DashboardView: View {
                     UpNextSessionsView(dc: dc, sessions: dc.sessionsNextTenUpcomingButNotInProgress, text: "next 10 sessions")
                 }
                 
-                RecommendedSeriesView()
+//                RecommendedSeriesView()
                 
             }.navigationTitle("Dasboard")
             .padding(.horizontal)

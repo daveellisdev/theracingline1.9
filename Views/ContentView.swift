@@ -26,7 +26,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("Events", systemImage: "flag.fill")
                 }
-            SeriesView()
+            SeriesView(dc: dc)
                 .tabItem {
                     Label("Series", systemImage: "list.number")
                 }

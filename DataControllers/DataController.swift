@@ -14,6 +14,8 @@ class DataController: ObservableObject {
     static var shared = DataController()
     
     @Published var series: [Series] = []
+    @Published var seriesList: [SeriesList] = []
+    
     @Published var circuits: [Circuit] = []
     
     @Published var events: [RaceEvent] = []
@@ -122,6 +124,19 @@ class DataController: ObservableObject {
         }.resume()
     } // DOWNLOADDATA
     
+    func createSessions(events: [RaceEvent]) -> [Session] {
+
+        var sessions: [Session] = []
+        for event in events {
+            sessions.append(contentsOf: event.sessions)
+        }
+        sessions.sort { $0.raceStartTime() < $1.raceStartTime() }
+        
+        return sessions
+    }
+    
+    // MARK: - UTILITIES
+    
     func getSeriesById(seriesId: String) -> Series? {
         if let index = self.series.firstIndex(where: {$0.seriesInfo.id == seriesId}) {
             return series[index]
@@ -138,14 +153,8 @@ class DataController: ObservableObject {
         }
     }
     
-    func createSessions(events: [RaceEvent]) -> [Session] {
-
-        var sessions: [Session] = []
-        for event in events {
-            sessions.append(contentsOf: event.sessions)
-        }
-        sessions.sort { $0.raceStartTime() < $1.raceStartTime() }
-        
-        return sessions
+    func getEventsBySeriesId(seriesId: String) -> [RaceEvent] {
+        let events = self.events.filter { $0.seriesIds.contains(seriesId) }
+        return events
     }
 } // CONTROLER
