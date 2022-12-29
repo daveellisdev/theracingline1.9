@@ -1,16 +1,15 @@
 //
-//  EventRowSeriesName.swift
+//  SeriesViewSeriesName.swift
 //  theracingline
 //
-//  Created by Dave on 05/11/2022.
+//  Created by Dave on 29/12/2022.
 //
 
 import SwiftUI
 
-struct EventRowSeriesName: View {
+struct SeriesViewSeriesName: View {
     
     let series: Series
-    let shortName: Bool
     
     var body: some View {
         
@@ -33,21 +32,15 @@ struct EventRowSeriesName: View {
                       endPoint: .init(x: 0.5, y: 0.6)
                     ))
                 .frame(width: 8, height: 16)
-            if shortName {
-                Text(series.seriesInfo.shortName)
-                    .font(.caption)
-                    .fontWeight(.bold)
-            } else {
-                Text(series.seriesInfo.name)
-                    .font(.caption)
-                    .fontWeight(.bold)
-            }
+            Text(series.seriesInfo.name)
+                .font(.title3)
+                .fontWeight(.bold)
         }
     }
 }
 
-struct EventRowSeriesName_Previews: PreviewProvider {
+struct SeriesViewSeriesName_Previews: PreviewProvider {
     static var previews: some View {
-        EventRowSeriesName(series: exampleSeries, shortName: true)
+        SeriesViewSeriesName(series: exampleSeries)
     }
 }
