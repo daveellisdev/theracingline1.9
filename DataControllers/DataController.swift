@@ -21,6 +21,8 @@ class DataController: ObservableObject {
     @Published var eventsInProgressAndUpcoming: [RaceEvent] = []
 
     @Published var sessions: [Session] = []
+    @Published var sessionsUpcomingButNotInProgress: [Session] = []
+    @Published var sessionsNextTenUpcomingButNotInProgress: [Session] = []
     @Published var sessionsInProgressAndUpcoming: [Session] = []
     @Published var liveSessions: [Session] = []
     @Published var sessionsWithinNextTwelveHours: [Session] = []
@@ -31,7 +33,7 @@ class DataController: ObservableObject {
     }
     
     var timeLineHeight: CGFloat {
-        return CGFloat(sessionsWithinNextTwelveHours.count * 50)
+        return CGFloat((sessionsWithinNextTwelveHours.count * 50) - 20)
     }
     
     // DOWNLOAD DATA
@@ -100,6 +102,8 @@ class DataController: ObservableObject {
                 
                     self.sessions = sortedSessions
                     self.sessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() }
+                    self.sessionsUpcomingButNotInProgress = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() }
+                    self.sessionsNextTenUpcomingButNotInProgress = Array(self.sessionsUpcomingButNotInProgress.prefix(10))
                     self.liveSessions = sortedSessions.filter { $0.isInProgress() }
                     self.sessionsWithinNextTwelveHours = sortedSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) }
                     self.sessionsWithinNextTwelveHours.reverse()

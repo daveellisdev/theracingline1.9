@@ -9,6 +9,8 @@ import SwiftUI
 
 struct UpNextSessionsView: View {
     @ObservedObject var dc: DataController
+    var sessions: [Session]
+    var text: String
 
     var body: some View {
         GroupBox {
@@ -18,10 +20,10 @@ struct UpNextSessionsView: View {
                         .font(.title2)
                         .fontWeight(.bold)
                     Spacer()
-                    Text("next 12 hours")
+                    Text(text)
                         .font(.caption)
                 } // hstack
-                ForEach(dc.sessionsWithinNextTwelveHoursButNotLive) { session in
+                ForEach(sessions) { session in
                     UpNextSessionRow(dc: dc, session: session)
                 }
             } // vstack
@@ -31,6 +33,6 @@ struct UpNextSessionsView: View {
 
 struct UpNextSessionsView_Previews: PreviewProvider {
     static var previews: some View {
-        UpNextSessionsView(dc: DataController())
+        UpNextSessionsView(dc: DataController(), sessions: [exampleSession, exampleSession2, exampleSession3], text: "Next 12 hours")
     }
 }
