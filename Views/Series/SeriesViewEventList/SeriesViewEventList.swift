@@ -22,7 +22,7 @@ struct SeriesViewEventList: View {
                 SeriesViewEventListRow(series: series, event: event)
             }
         }.navigationDestination(for: RaceEvent.self) { event in
-            SeriesViewEventView()
+            SeriesViewEventView(event: event)
         }.navigationTitle(series.seriesInfo.name)
     }
 }
