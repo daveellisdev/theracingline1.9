@@ -86,31 +86,41 @@ struct EventViewLinks: View {
                                     EventRowSeriesName(series: series, shortName: false)
                                     Spacer()
                                 } // hstack
-                                ForEach(series.streaming) { stream in
-                                    VStack {
-                                        ZStack {
-                                            Link(destination: URL(string: stream.url)!) {
-                                                GroupBox {
-                                                    HStack {
-                                                        Text(stream.country)
-                                                            .font(.caption)
-                                                            .fontWeight(.bold)
-                                                        Text(stream.name)
-                                                            .font(.caption)
-                                                            .fontWeight(.bold)
-                                                        Spacer()
-                                                        Image(systemName: "arrow.up.right.square")
-                                                            .font(.caption)
-                                                    }.padding(-5)
-                                                } // groupbox
-                                            } // link
-                                        } // zstack
-                                    } // vstack
-                                } //foreach
+                                if series.streaming.count > 0 {
+                                    ForEach(series.streaming) { stream in
+                                        VStack {
+                                            ZStack {
+                                                Link(destination: URL(string: stream.url)!) {
+                                                    GroupBox {
+                                                        HStack {
+                                                            Text(stream.country)
+                                                                .font(.caption)
+                                                                .fontWeight(.bold)
+                                                            Text(stream.name)
+                                                                .font(.caption)
+                                                                .fontWeight(.bold)
+                                                            Spacer()
+                                                            Image(systemName: "arrow.up.right.square")
+                                                                .font(.caption)
+                                                        }.padding(-5)
+                                                    } // groupbox
+                                                } // link
+                                            } // zstack
+                                        } // vstack
+                                    } //foreach
+                                } else {
+                                    GroupBox {
+                                        HStack {
+                                            Text("No Streaming Available")
+                                                .font(.caption)
+                                            Spacer()
+                                        }
+                                    }
+                                }
                             } // vstack
                         } // groupbox
                     } // iflet
-                } // if single series    
+                } // if single series
             } // foreach
         } // groupbox
     } // body
