@@ -11,6 +11,7 @@ struct EventViewLinks: View {
     
     var dc: DataController
     var raceEvent: RaceEvent
+    var singleSeries: String? // if this string exists, forEach should only use this
     
     var body: some View {
         
@@ -24,44 +25,46 @@ struct EventViewLinks: View {
             } // hstack
             
             ForEach(raceEvent.seriesIds, id: \.self) { seriesId in
-                if let series = getSeriesById(id: seriesId) {
-                    GroupBox {
-                        VStack {
-                            HStack {
-                                EventRowSeriesName(series: series, shortName: false)
-                                Spacer()
-                            } // hstack
+                if singleSeries == nil || (singleSeries != nil && singleSeries! == seriesId) {
+                    if let series = getSeriesById(id: seriesId) {
+                        GroupBox {
                             VStack {
-                                Link(destination: URL(string: series.links.official)!) {
-                                    GroupBox {
-                                        HStack {
-                                            Text("Official Site")
-                                                .font(.caption)
-                                                .fontWeight(.bold)
-                                            Spacer()
-                                            Image(systemName: "arrow.up.right.square")
-                                                .font(.caption)
-                                        }.padding(-5)
-                                    } // groupbox
-                                } // link
+                                HStack {
+                                    EventRowSeriesName(series: series, shortName: false)
+                                    Spacer()
+                                } // hstack
+                                VStack {
+                                    Link(destination: URL(string: series.links.official)!) {
+                                        GroupBox {
+                                            HStack {
+                                                Text("Official Site")
+                                                    .font(.caption)
+                                                    .fontWeight(.bold)
+                                                Spacer()
+                                                Image(systemName: "arrow.up.right.square")
+                                                    .font(.caption)
+                                            }.padding(-5)
+                                        } // groupbox
+                                    } // link
+                                    
                                 
-                            
-                                Link(destination: URL(string: series.links.timing)!) {
-                                    GroupBox {
-                                        HStack {
-                                            Text("Live Timing")
-                                                .font(.caption)
-                                                .fontWeight(.bold)
-                                            Spacer()
-                                            Image(systemName: "arrow.up.right.square")
-                                                .font(.caption)
-                                        }.padding(-5)
-                                    } // groupbox
-                                } // link
+                                    Link(destination: URL(string: series.links.timing)!) {
+                                        GroupBox {
+                                            HStack {
+                                                Text("Live Timing")
+                                                    .font(.caption)
+                                                    .fontWeight(.bold)
+                                                Spacer()
+                                                Image(systemName: "arrow.up.right.square")
+                                                    .font(.caption)
+                                            }.padding(-5)
+                                        } // groupbox
+                                    } // link
+                                } // vstack
                             } // vstack
-                        } // vstack
-                    } // groupbox
-                } // iflet
+                        } // groupbox
+                    } // iflet
+                } // if single series
             } // foreach
         } // groupbox
         
@@ -75,37 +78,49 @@ struct EventViewLinks: View {
             } // hstack
             
             ForEach(raceEvent.seriesIds, id: \.self) { seriesId in
-                if let series = getSeriesById(id: seriesId) {
-                    GroupBox {
-                        VStack {
-                            HStack {
-                                EventRowSeriesName(series: series, shortName: false)
-                                Spacer()
-                            } // hstack
-                            ForEach(series.streaming) { stream in
-                                VStack {
-                                    ZStack {
-                                        Link(destination: URL(string: stream.url)!) {
-                                            GroupBox {
-                                                HStack {
-                                                    Text(stream.country)
-                                                        .font(.caption)
-                                                        .fontWeight(.bold)
-                                                    Text(stream.name)
-                                                        .font(.caption)
-                                                        .fontWeight(.bold)
-                                                    Spacer()
-                                                    Image(systemName: "arrow.up.right.square")
-                                                        .font(.caption)
-                                                }.padding(-5)
-                                            } // groupbox
-                                        } // link
-                                    } // zstack
-                                } // vstack
-                            } //foreach
-                        } // vstack
-                    } // groupbox
-                } // iflet
+                if singleSeries == nil || (singleSeries != nil && singleSeries! == seriesId) {
+                    if let series = getSeriesById(id: seriesId) {
+                        GroupBox {
+                            VStack {
+                                HStack {
+                                    EventRowSeriesName(series: series, shortName: false)
+                                    Spacer()
+                                } // hstack
+                                if series.streaming.count > 0 {
+                                    ForEach(series.streaming) { stream in
+                                        VStack {
+                                            ZStack {
+                                                Link(destination: URL(string: stream.url)!) {
+                                                    GroupBox {
+                                                        HStack {
+                                                            Text(stream.country)
+                                                                .font(.caption)
+                                                                .fontWeight(.bold)
+                                                            Text(stream.name)
+                                                                .font(.caption)
+                                                                .fontWeight(.bold)
+                                                            Spacer()
+                                                            Image(systemName: "arrow.up.right.square")
+                                                                .font(.caption)
+                                                        }.padding(-5)
+                                                    } // groupbox
+                                                } // link
+                                            } // zstack
+                                        } // vstack
+                                    } //foreach
+                                } else {
+                                    GroupBox {
+                                        HStack {
+                                            Text("No Streaming Available")
+                                                .font(.caption)
+                                            Spacer()
+                                        }
+                                    }
+                                }
+                            } // vstack
+                        } // groupbox
+                    } // iflet
+                } // if single series
             } // foreach
         } // groupbox
     } // body

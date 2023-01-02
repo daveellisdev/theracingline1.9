@@ -13,6 +13,7 @@ struct SeriesViewEventList: View {
     @Binding var navStack: NavigationPath
     
     let series: Series
+
     
     var body: some View {
         
@@ -22,7 +23,7 @@ struct SeriesViewEventList: View {
                 SeriesViewEventListRow(series: series, event: event)
             }
         }.navigationDestination(for: RaceEvent.self) { event in
-            SeriesViewEventView(event: event)
+            SeriesViewEventView(dc: dc, event: event, seriesId: series.seriesInfo.id)
         }.navigationTitle(series.seriesInfo.name)
     }
 }
