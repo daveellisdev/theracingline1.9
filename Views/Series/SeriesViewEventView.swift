@@ -15,6 +15,11 @@ struct SeriesViewEventView: View {
     let seriesId: String
     
     var body: some View {
+        
+        let circuitName: String = event.sessions[0].circuit.circuit
+        let circuitLayout: String? = event.sessions[0].circuit.circuitLayout
+        let circuitInfo = dc.getCircuitByName(circuit: circuitName)
+        
         List {
             VStack{
                 EventViewCircuitInfo(raceEvent: event)
@@ -69,16 +74,17 @@ struct SeriesViewEventView: View {
                     EventViewLinks(dc: dc, raceEvent: event, singleSeries: seriesId)
                 } // vstack
                 GroupBox {
-                    Text("Circuit Map")
-                }
-                GroupBox {
-                    Text("Previous and next race buttons")
-                }
+                    if circuitLayout != nil {
+                        EventViewCircuitMap(circuit: circuitInfo!, circuitLayout: circuitLayout)
+                    }
+                } // circuit groupbox
             }
         }.navigationTitle(event.eventName)
         
         
     }
+    
+    
 }
 
 struct SeriesViewEventView_Previews: PreviewProvider {
