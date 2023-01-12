@@ -24,7 +24,10 @@ class DataController: ObservableObject {
 
     @Published var sessions: [Session] = []
     @Published var sessionsUpcomingButNotInProgress: [Session] = []
+    @Published var sessionsUpcomingButNotInTheNextTwelveHours: [Session] = []
     @Published var sessionsNextTenUpcomingButNotInProgress: [Session] = []
+    @Published var sessionsNextTenUpcomingButNotInTheNextTwelveHours: [Session] = []
+
     @Published var sessionsInProgressAndUpcoming: [Session] = []
     @Published var liveSessions: [Session] = []
     @Published var sessionsWithinNextTwelveHours: [Session] = []
@@ -105,7 +108,12 @@ class DataController: ObservableObject {
                     self.sessions = sortedSessions
                     self.sessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() }
                     self.sessionsUpcomingButNotInProgress = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() }
+                    self.sessionsUpcomingButNotInTheNextTwelveHours = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway }
+
                     self.sessionsNextTenUpcomingButNotInProgress = Array(self.sessionsUpcomingButNotInProgress.prefix(10))
+                    self.sessionsNextTenUpcomingButNotInTheNextTwelveHours = Array(self.sessionsUpcomingButNotInTheNextTwelveHours.prefix(10))
+
+
                     self.liveSessions = sortedSessions.filter { $0.isInProgress() }
                     self.sessionsWithinNextTwelveHours = sortedSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) }
                     self.sessionsWithinNextTwelveHours.reverse()

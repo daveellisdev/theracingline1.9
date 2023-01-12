@@ -16,7 +16,9 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack(path: $navStack) {
             ScrollView {
+                PremiumBar()
                 if dc.sessionsWithinNextTwelveHours.count > 0 {
+                    // only visible for races within the next 12 hours
                     RaceChart(dc: dc)
                 } else {
                     GroupBox {
@@ -31,13 +33,16 @@ struct DashboardView: View {
                 }
                 
                 if dc.liveSessions.count > 0 {
+                    // only visible for live events
                     LiveSessionsView(dc: dc)
                 }
                 
                 if dc.sessionsWithinNextTwelveHoursButNotLive.count > 0 {
+                    // only visible if series within the next 12 hours
                     UpNextSessionsView(dc: dc, sessions: dc.sessionsWithinNextTwelveHoursButNotLive, text: "next 12 hours")
                 } else {
-                    UpNextSessionsView(dc: dc, sessions: dc.sessionsNextTenUpcomingButNotInProgress, text: "next 10 sessions")
+                    // visible at all times. Series within next 12 hours removed
+                    UpNextSessionsView(dc: dc, sessions: dc.sessionsNextTenUpcomingButNotInTheNextTwelveHours, text: "next 10 sessions")
                 }
                 
 //                RecommendedSeriesView()

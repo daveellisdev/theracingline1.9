@@ -8,13 +8,30 @@
 import SwiftUI
 
 struct SettingsView: View {
+    
+    @ObservedObject var dc: DataController
+    @State var navStack = NavigationPath()
+    
     var body: some View {
-        Text("Settings")
-    }
+        NavigationStack(path: $navStack) {
+            ScrollView {
+                VStack {
+                    AboutView()
+                    PremiumBar()
+                    PremiumBoxView()
+                    SeriesSettings()
+                    LinksView()
+                    PrivacyView()
+                    VersionView()
+                } // vstack
+            }.navigationTitle("Dasboard")
+                .padding(.horizontal)
+        } // navstack
+    } // body
 }
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        SettingsView(dc: DataController())
     }
 }
