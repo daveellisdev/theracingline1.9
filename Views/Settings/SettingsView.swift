@@ -18,7 +18,7 @@ struct SettingsView: View {
                 VStack {
                     AboutView()
                     PremiumBar()
-                    PremiumBoxView()
+//                    PremiumBoxView()
                     SeriesSettings()
                     LinksView()
                     PrivacyView()

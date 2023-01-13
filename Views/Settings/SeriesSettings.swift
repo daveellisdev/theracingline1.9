@@ -9,11 +9,25 @@ import SwiftUI
 
 struct SeriesSettings: View {
     var body: some View {
-        GroupBox(label: SettingsLabelView(labelText: "Series", labelImage: "app.badge")){
+        GroupBox(label: SettingsLabelView(labelText: "Series", labelImage: "list.number")){
             Divider().padding(.vertical, 4)
-            Text("FAV SERIES")
-            Text("VISIBLE SERIES")
-            Text("NOTIFICATIONS")
+            HStack {
+                Image(systemName: "list.star")
+                Text("Favourite Series")
+                Spacer()
+            }
+            Divider().padding(.vertical, 4)
+            HStack {
+                Image(systemName: "list.bullet")
+                Text("Visible Series")
+                Spacer()
+            }
+            Divider().padding(.vertical, 4)
+            HStack {
+                Image(systemName: "app.badge")
+                Text("Notifications")
+                Spacer()
+            }
         }
     }
 }

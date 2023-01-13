@@ -11,7 +11,10 @@ struct VersionView: View {
     var body: some View {
         GroupBox(label: SettingsLabelView(labelText: "Version", labelImage: "info.circle")) {
             Divider().padding(.vertical, 4)
-            Text("VERSION")
+            HStack {
+                Text("Version 2.0")
+                Spacer()
+            }
         } //GROUPBOX
     }
 }

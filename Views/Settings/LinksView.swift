@@ -12,8 +12,18 @@ struct LinksView: View {
         
         GroupBox(label: SettingsLabelView(labelText: "Links", labelImage: "link")) {
             Divider().padding(.vertical, 4)
-            Text("FAQS")
-            Text("LINKS")
+            HStack {
+                Image(systemName: "questionmark.bubble.fill")
+                Text("FAQs")
+                Spacer()
+            }
+            Divider().padding(.vertical, 4)
+
+            HStack {
+                Image(systemName: "link")
+                Text("Links")
+                Spacer()
+            }
         } //GROUPBOX
     }
 }

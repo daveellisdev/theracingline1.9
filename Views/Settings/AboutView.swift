@@ -19,7 +19,7 @@ struct AboutView: View {
                     .frame(width: 80, height: 80)
                     .cornerRadius(9)
                 Text("TheRacingLine is your personalised motorsport calendar tool. Custom notification times for the series you care about. All in a lightweight, independently-developed app.")
-                    .font(.footnote)
+                    .font(.caption)
             }
         }
     }

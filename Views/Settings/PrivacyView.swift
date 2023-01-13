@@ -11,8 +11,17 @@ struct PrivacyView: View {
     var body: some View {
         GroupBox(label: SettingsLabelView(labelText: "Privacy", labelImage: "lock")) {
             Divider().padding(.vertical, 4)
-            Text("PRIVACY")
-            Text("T&CS")
+            HStack {
+                Image(systemName: "lock.shield.fill")
+                Text("Privacy Policy")
+                Spacer()
+            }
+            Divider().padding(.vertical, 4)
+            HStack {
+                Image(systemName: "newspaper")
+                Text("T&Cs")
+                Spacer()
+            }
         } //GROUPBOX
     }
 }
