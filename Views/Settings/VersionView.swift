@@ -13,6 +13,7 @@ struct VersionView: View {
             Divider().padding(.vertical, 4)
             HStack {
                 Text("Version 2.0")
+                    .font(.caption)
                 Spacer()
             }
         } //GROUPBOX
