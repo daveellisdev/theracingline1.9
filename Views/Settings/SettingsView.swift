@@ -20,7 +20,7 @@ struct SettingsView: View {
                     PremiumBar()
 //                    PremiumBoxView()
                     SeriesSettings()
-                    LinksView()
+//                    LinksView()
                     PrivacyView(navStack: navStack)
                     VersionView()
                 } // vstack
