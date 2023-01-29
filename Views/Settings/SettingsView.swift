@@ -21,7 +21,7 @@ struct SettingsView: View {
 //                    PremiumBoxView()
                     SeriesSettings()
                     LinksView()
-                    PrivacyView()
+                    PrivacyView(navStack: navStack)
                     VersionView()
                 } // vstack
             }.navigationTitle("Dasboard")
