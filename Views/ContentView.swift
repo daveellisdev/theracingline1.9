@@ -30,7 +30,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("Series", systemImage: "list.number")
                 }
-            SettingsView()
+            SettingsView(dc: dc)
                 .tabItem {
                     Label("Settings", systemImage: "slider.horizontal.3")
                 }
