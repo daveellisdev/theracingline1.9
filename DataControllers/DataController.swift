@@ -40,7 +40,14 @@ class DataController: ObservableObject {
     @Published var sessionsWithinNextTwelveHours: [Session] = []
     @Published var sessionsWithinNextTwelveHoursButNotLive: [Session] = []
     
+    @Published var seriesSettings: [SeriesSavedData] = []
+    
     init() {
+        // load user saved settings
+        
+        // load previously downloaded json
+        
+        // download new json
         downloadData()
     }
     
@@ -156,6 +163,15 @@ class DataController: ObservableObject {
         
         return sessions
     }
+    
+    // MARK: - INITIALISE SAVE DATA
+    
+    // Visible, Favourite, Notifications
+    
+    // Notifications - Offset, Sessions, Sound
+    // MARK: - SAVING DATA
+    
+    // MARK: - LOADING DATA
     
     // MARK: - UTILITIES
     

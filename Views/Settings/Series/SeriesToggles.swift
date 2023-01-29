@@ -10,7 +10,7 @@ import SwiftUI
 struct SeriesToggle: View {
     
     @ObservedObject var dc: DataController
-    @State private var isOn = false
+    @State private var isOn = true
     var type: toggleType
     var series: Series
     
