@@ -19,12 +19,12 @@ struct SettingsView: View {
                     AboutView()
                     PremiumBar()
 //                    PremiumBoxView()
-                    SeriesSettings()
+                    SeriesSettings(dc: dc, navStack: navStack)
 //                    LinksView()
                     PrivacyView(navStack: navStack)
                     VersionView()
                 } // vstack
-            }.navigationTitle("Dasboard")
+            }.navigationTitle("Settings")
                 .padding(.horizontal)
         } // navstack
     } // body

@@ -14,7 +14,14 @@ class DataController: ObservableObject {
     static var shared = DataController()
     
     @Published var series: [Series] = []
-    @Published var seriesList: [SeriesList] = []
+    @Published var seriesSingleSeater: [Series] = []
+    @Published var seriesSportscars: [Series] = []
+    @Published var seriesTouringcars: [Series] = []
+    @Published var seriesStockcars: [Series] = []
+    @Published var seriesRally: [Series] = []
+    @Published var seriesBikes: [Series] = []
+    @Published var seriesOther: [Series] = []
+//    @Published var seriesList: [SeriesList] = []
     
     @Published var circuits: [Circuit] = []
     
@@ -41,7 +48,7 @@ class DataController: ObservableObject {
         return CGFloat((sessionsWithinNextTwelveHours.count * 50) - 20)
     }
     
-    // DOWNLOAD DATA
+    // MARK: - DOWNLOAD DATA
     
     func downloadData() {
         print("DownloadDataRun")
@@ -79,6 +86,13 @@ class DataController: ObservableObject {
 
                     // series
                     self.series = json.series
+                    self.seriesSingleSeater = self.series.filter{ $0.seriesInfo.type == "Single Seater"}
+                    self.seriesSportscars = self.series.filter{ $0.seriesInfo.type == "Sportscars"}
+                    self.seriesTouringcars = self.series.filter{ $0.seriesInfo.type == "Touring Cars"}
+                    self.seriesStockcars = self.series.filter{ $0.seriesInfo.type == "Stock Cars"}
+                    self.seriesRally = self.series.filter{ $0.seriesInfo.type == "Rally"}
+                    self.seriesBikes = self.series.filter{ $0.seriesInfo.type == "Bikes"}
+                    self.seriesOther = self.series.filter{ $0.seriesInfo.type == "Other"}
                     print("Series Done")
                     
                     // circuits
