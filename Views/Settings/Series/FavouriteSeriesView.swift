@@ -39,7 +39,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(singleSeaters, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
             
@@ -53,7 +53,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(sportscars, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
             
@@ -66,7 +66,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(touringcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
             
@@ -79,7 +79,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(stockcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
             
@@ -92,7 +92,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(rally, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
             
@@ -105,7 +105,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(bikes, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
             
@@ -118,9 +118,20 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(others, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
+        }
+    }
+    
+    func getFavouriteFromSeries(series: Series) -> Bool {
+        let seriesInfo = series.seriesInfo
+        let seriesSavedSettings = dc.seriesSavedSettings.filter { $0.seriesInfo.id == seriesInfo.id }
+        
+        if seriesSavedSettings.isEmpty {
+            return true
+        } else {
+            return seriesSavedSettings[0].favourite
         }
     }
 }

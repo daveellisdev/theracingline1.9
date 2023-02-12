@@ -37,7 +37,7 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }
                 ForEach(singleSeaters, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .visible, series: series)
+                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
             
@@ -51,7 +51,7 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }
                 ForEach(sportscars, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .visible, series: series)
+                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
             
@@ -64,7 +64,7 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }
                 ForEach(touringcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .visible, series: series)
+                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
             
@@ -77,7 +77,7 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }
                 ForEach(stockcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .visible, series: series)
+                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
             
@@ -90,7 +90,7 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }
                 ForEach(rally, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .visible, series: series)
+                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
             
@@ -103,7 +103,7 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }
                 ForEach(bikes, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .visible, series: series)
+                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
             
@@ -116,12 +116,25 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }
                 ForEach(others, id: \.self) { series in
-                    SeriesToggle(dc: dc, type: .visible, series: series)
+                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
         }
     }
+    
+    func getVisibilityFromSeries(series: Series) -> Bool {
+        let seriesInfo = series.seriesInfo
+        let seriesSavedSettings = dc.seriesSavedSettings.filter { $0.seriesInfo.id == seriesInfo.id }
+        
+        if seriesSavedSettings.isEmpty {
+            return true
+        } else {
+            return seriesSavedSettings[0].visible
+        }
+    }
 }
+
+
 
 struct VisibleSeriesView_Previews: PreviewProvider {
     static var previews: some View {

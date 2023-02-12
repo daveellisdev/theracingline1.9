@@ -10,7 +10,7 @@ import SwiftUI
 struct SeriesToggle: View {
     
     @ObservedObject var dc: DataController
-    @State private var isOn = true
+    @State var isOn: Bool
     var type: toggleType
     var series: Series
     
@@ -19,10 +19,12 @@ struct SeriesToggle: View {
             Toggle(series.seriesInfo.name, isOn: $isOn)
         }.padding(.horizontal)
     }
+    
+    
 }
 
 struct SeriesToggle_Previews: PreviewProvider {
     static var previews: some View {
-        SeriesToggle(dc: DataController(), type: .visible, series: exampleSeries)
+        SeriesToggle(dc: DataController(), isOn: true, type: .visible, series: exampleSeries)
     }
 }
