@@ -41,6 +41,7 @@ class DataController: ObservableObject {
     @Published var sessionsWithinNextTwelveHoursButNotLive: [Session] = []
     
     @Published var seriesSavedSettings: [SeriesSavedData] = []
+    @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, notificationOffset: 900, notificationSound: "1")
     
     init() {
         // load user saved settings
@@ -88,8 +89,8 @@ class DataController: ObservableObject {
             self.decodeData(data: data)
             
             // initiate settings check
+            self.initSavedSettings(data: data)
             
-
         }.resume()
         
     } // DOWNLOADDATA
@@ -214,10 +215,11 @@ class DataController: ObservableObject {
     func initSavedSettings(data: Data) {
         
         // if no saved settings exist, then create it
+        let decoder = JSONDecoder()
+
         if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
             
             // decode the downloaded data
-            let decoder = JSONDecoder()
             if let fullDataDownload = try? decoder.decode(FullDataDownload.self.self, from: data) {
                 let seriesList = fullDataDownload.series
             
@@ -265,24 +267,21 @@ class DataController: ObservableObject {
                     }
                     
                     // save updated settings
-                    self.saveSavedSettings()
-                }
-                
-                
+                    
+                } // else create settings
             } // try decoding full data
             
             // Notifications - Offset, Sessions, Sound
+            if defaults.data(forKey: "applicationSavedSettings") == nil {
+                // if no saved settings, create defaults
+                let defaultSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, notificationOffset: 900, notificationSound: "1")
+                self.applicationSavedSettings = defaultSettings
+            } // check for saved settings
+            
+            self.saveSavedSettings()
+
         } // if defaults exist
-        
-        
-    }
-    
-    
-    
-    // MARK: - CREATE SAVED SETTINGS
-    func createSavedSettings() {
-        
-    }
+    } // init saved settings
     
     // MARK: - SAVING SAVED SETTINGS
     func saveSavedSettings() {
@@ -291,6 +290,10 @@ class DataController: ObservableObject {
             let encoder = JSONEncoder()
             if let encoded = try? encoder.encode(self.seriesSavedSettings) {
                 defaults.set(encoded, forKey: "savedSeriesSettings")
+            }
+            
+            if let encoded = try? encoder.encode(self.applicationSavedSettings) {
+                defaults.set(encoded, forKey: "applicationSavedSettings")
             }
         }
     }
