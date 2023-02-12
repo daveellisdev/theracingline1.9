@@ -48,6 +48,7 @@ class DataController: ObservableObject {
         
         // load previously downloaded json
         loadSeriesAndSessionData()
+        loadSavedSettings()
         
         // download new json
         downloadData()
@@ -187,8 +188,10 @@ class DataController: ObservableObject {
             if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
                 
                 if let data = defaults.data(forKey: "seriesAndSessionData") {
-                    self.decodeData(data: data)
-                    print("Data loaded")
+                    DispatchQueue.main.async{
+                        self.decodeData(data: data)
+                    }
+                    print("Loaded Series Data")
                 } // if let data
             } // if let defaults
         } // dispatchqueee
@@ -205,7 +208,7 @@ class DataController: ObservableObject {
                 defaults.set(data, forKey: "seriesAndSessionData")
                 defaults.synchronize() // MAYBE DO NOT NEED
                 
-                print("Saved Data")
+                print("Saved Series Data")
             } // if let defaults
         } // dispatch queue
     }
@@ -247,9 +250,6 @@ class DataController: ObservableObject {
                             self.seriesSavedSettings = seriesSavedSettings
                         }
                         
-                        // save updated settings
-
-                        
                     } // if var seriesSavedSettings
                 } else { // try decoding settings
                     // if settings does not exist
@@ -265,9 +265,6 @@ class DataController: ObservableObject {
                     DispatchQueue.main.async {
                         self.seriesSavedSettings = seriesSavedSettings
                     }
-                    
-                    // save updated settings
-                    
                 } // else create settings
             } // try decoding full data
             
@@ -275,7 +272,9 @@ class DataController: ObservableObject {
             if defaults.data(forKey: "applicationSavedSettings") == nil {
                 // if no saved settings, create defaults
                 let defaultSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, notificationOffset: 900, notificationSound: "1")
-                self.applicationSavedSettings = defaultSettings
+                DispatchQueue.main.async {
+                    self.applicationSavedSettings = defaultSettings
+                }
             } // check for saved settings
             
             self.saveSavedSettings()
@@ -285,22 +284,47 @@ class DataController: ObservableObject {
     
     // MARK: - SAVING SAVED SETTINGS
     func saveSavedSettings() {
-        if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
-            
-            let encoder = JSONEncoder()
-            if let encoded = try? encoder.encode(self.seriesSavedSettings) {
-                defaults.set(encoded, forKey: "savedSeriesSettings")
-            }
-            
-            if let encoded = try? encoder.encode(self.applicationSavedSettings) {
-                defaults.set(encoded, forKey: "applicationSavedSettings")
+        DispatchQueue.global().async {
+            if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
+                
+                let encoder = JSONEncoder()
+                if let encoded = try? encoder.encode(self.seriesSavedSettings) {
+                    defaults.set(encoded, forKey: "savedSeriesSettings")
+                }
+                
+                if let encoded = try? encoder.encode(self.applicationSavedSettings) {
+                    defaults.set(encoded, forKey: "applicationSavedSettings")
+                }
             }
         }
     }
     
     // MARK: - LOADING SAVED SETTINGS
     func loadSavedSettings() {
-        
+        DispatchQueue.global().async {
+            if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
+                let decoder = JSONDecoder()
+
+                if let data = defaults.data(forKey: "savedSeriesSettings") {
+                    if let seriesSavedSettings = try? decoder.decode([SeriesSavedData].self, from: data){
+                        DispatchQueue.main.async{
+                            self.seriesSavedSettings = seriesSavedSettings
+                            print("Loaded Saved Series Settings")
+                        }
+                    }
+                    
+                } // if let data
+                
+                if let data = defaults.data(forKey: "applicationSavedSettings") {
+                    if let applicationSavedSettings = try? decoder.decode(ApplicationSavedSettings.self, from: data) {
+                        DispatchQueue.main.async {
+                            self.applicationSavedSettings = applicationSavedSettings
+                            print("Loaded Application Saved Settings")
+                        }
+                    }
+                }
+            } // if let defaults
+        } // dispatchqueee
     }
     
     // MARK: - UTILITIES
