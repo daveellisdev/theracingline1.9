@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum toggleType {
+enum ToggleType {
     case visible
     case favourite
     case notification

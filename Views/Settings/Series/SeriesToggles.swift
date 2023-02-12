@@ -11,7 +11,7 @@ struct SeriesToggle: View {
     
     @ObservedObject var dc: DataController
     @State var isOn: Bool
-    var type: toggleType
+    var type: ToggleType
     var series: Series
     
     var body: some View {
@@ -19,13 +19,20 @@ struct SeriesToggle: View {
             Toggle(series.seriesInfo.name, isOn: $isOn)
                 .onChange(of: isOn) { value in
                     // update value in the dc file
-                    
+                    updateSavedSettings(type: type, series: series, newValue: isOn)
                     // save the settings
                 }
         }.padding(.horizontal)
     }
     
-    
+    func updateSavedSettings(type: ToggleType, series: Series, newValue: Bool) {
+        
+        // update previously saved setting
+        
+        
+        // save settings
+        dc.saveSavedSettings()
+    }
 }
 
 struct SeriesToggle_Previews: PreviewProvider {
