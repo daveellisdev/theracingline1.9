@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SeriesSavedData {
+struct SeriesSavedData: Decodable, Encodable {
     
     let id = UUID()
     let seriesInfo: SeriesInfo

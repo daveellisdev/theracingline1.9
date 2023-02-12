@@ -40,7 +40,7 @@ class DataController: ObservableObject {
     @Published var sessionsWithinNextTwelveHours: [Session] = []
     @Published var sessionsWithinNextTwelveHoursButNotLive: [Session] = []
     
-    @Published var seriesSettings: [SeriesSavedData] = []
+    @Published var seriesSavedSettings: [SeriesSavedData] = []
     
     init() {
         // load user saved settings
@@ -84,7 +84,11 @@ class DataController: ObservableObject {
                 return
             }
             
+            // decode and dispatch data
             self.decodeData(data: data)
+            
+            // initiate settings check
+            
 
         }.resume()
         
@@ -173,7 +177,7 @@ class DataController: ObservableObject {
         } // do catch
     }
     
-    // MARK: - LOAD DATA
+    // MARK: - LOAD SERIES DATA
     
     func loadSeriesAndSessionData() {
         print("Loading previous data")
@@ -181,8 +185,9 @@ class DataController: ObservableObject {
             
             if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
                 
-                if let data = defaults.data(forKey: "seriesAndSessionData"){
+                if let data = defaults.data(forKey: "seriesAndSessionData") {
                     self.decodeData(data: data)
+                    print("Data loaded")
                 } // if let data
             } // if let defaults
         } // dispatchqueee
@@ -191,6 +196,7 @@ class DataController: ObservableObject {
     // MARK: - SAVE SERIES DATA
     
     func saveSeriesAndSessionData(data: Data) {
+        print("Saving Data")
         DispatchQueue.global().async {
             
             if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
@@ -199,23 +205,100 @@ class DataController: ObservableObject {
                 defaults.synchronize() // MAYBE DO NOT NEED
                 
                 print("Saved Data")
-
-                
             } // if let defaults
-            
         } // dispatch queue
     }
-    
-    // MARK: - LOAD SERIES DATA
-    
+
     // MARK: - INITIALISE SAVED SETTINGS
     
-    // Visible, Favourite, Notifications
+    func initSavedSettings(data: Data) {
+        
+        // if no saved settings exist, then create it
+        if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
+            
+            // decode the downloaded data
+            let decoder = JSONDecoder()
+            if let fullDataDownload = try? decoder.decode(FullDataDownload.self.self, from: data) {
+                let seriesList = fullDataDownload.series
+            
+                // if exists, then fetch it
+                if let settings = defaults.data(forKey: "savedSeriesSettings") {
+                    
+                    // decode the savedData
+                    if var seriesSavedSettings = try? decoder.decode([SeriesSavedData].self, from: settings) {
+                        
+                        // check if saved data contains all series
+                        for series in seriesList {
+                            let seriesId = series.seriesInfo.id
+                            
+                            let savedSeriesMatch = seriesSavedSettings.filter {$0.seriesInfo.id == seriesId}
+                            
+                            // none found, add series
+                            if savedSeriesMatch.count == 0 {
+                                let newSavedSeries: SeriesSavedData = SeriesSavedData(seriesInfo: series.seriesInfo, visible: true, favourite: true, notifications: true)
+                                seriesSavedSettings.append(newSavedSeries)
+                            } // if
+                        } // for loop
+                                                
+                        // publish updated settings
+                        DispatchQueue.main.async {
+                            self.seriesSavedSettings = seriesSavedSettings
+                        }
+                        
+                        // save updated settings
+
+                        
+                    } // if var seriesSavedSettings
+                } else { // try decoding settings
+                    // if settings does not exist
+
+                    var seriesSavedSettings: [SeriesSavedData] = []
+                    
+                    for series in seriesList {
+                        let newSavedSeries: SeriesSavedData = SeriesSavedData(seriesInfo: series.seriesInfo, visible: true, favourite: true, notifications: true)
+                        seriesSavedSettings.append(newSavedSeries)
+                    }
+                    
+                    // publish updated settings
+                    DispatchQueue.main.async {
+                        self.seriesSavedSettings = seriesSavedSettings
+                    }
+                    
+                    // save updated settings
+                    self.saveSavedSettings()
+                }
+                
+                
+            } // try decoding full data
+            
+            // Notifications - Offset, Sessions, Sound
+        } // if defaults exist
+        
+        
+    }
     
-    // Notifications - Offset, Sessions, Sound
+    
+    
+    // MARK: - CREATE SAVED SETTINGS
+    func createSavedSettings() {
+        
+    }
+    
     // MARK: - SAVING SAVED SETTINGS
+    func saveSavedSettings() {
+        if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
+            
+            let encoder = JSONEncoder()
+            if let encoded = try? encoder.encode(self.seriesSavedSettings) {
+                defaults.set(encoded, forKey: "savedSeriesSettings")
+            }
+        }
+    }
     
     // MARK: - LOADING SAVED SETTINGS
+    func loadSavedSettings() {
+        
+    }
     
     // MARK: - UTILITIES
     
