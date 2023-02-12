@@ -141,8 +141,10 @@ class DataController: ObservableObject {
                     self.sessionsWithinNextTwelveHoursButNotLive = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now }
                     print("Sessions Done")
                     
-                    
                     print("Decoding Finished")
+                    
+                    self.saveSeriesAndSessionData(data: data)
+                    print("Saved Data")
                 } // dispatchqueue
             } catch let jsonError as NSError {
                 print(jsonError)
@@ -164,14 +166,34 @@ class DataController: ObservableObject {
         return sessions
     }
     
-    // MARK: - INITIALISE SAVE DATA
+    // MARK: - LOAD DATA
+    
+    
+    // MARK: - SAVE SERIES DATA
+    
+    func saveSeriesAndSessionData(data: Data) {
+        DispatchQueue.global().async {
+            
+            if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
+                
+                
+            defaults.set(data, forKey: "seriesAndSessionData")
+            defaults.synchronize() // MAYBE DO NOT NEED
+            }
+            
+        }
+    }
+    
+    // MARK: - LOAD SERIES DATA
+    
+    // MARK: - INITIALISE SAVED SETTINGS
     
     // Visible, Favourite, Notifications
     
     // Notifications - Offset, Sessions, Sound
-    // MARK: - SAVING DATA
+    // MARK: - SAVING SAVED SETTINGS
     
-    // MARK: - LOADING DATA
+    // MARK: - LOADING SAVED SETTINGS
     
     // MARK: - UTILITIES
     
