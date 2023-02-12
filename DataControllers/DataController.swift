@@ -46,6 +46,7 @@ class DataController: ObservableObject {
         // load user saved settings
         
         // load previously downloaded json
+        loadSeriesAndSessionData()
         
         // download new json
         downloadData()
@@ -58,7 +59,7 @@ class DataController: ObservableObject {
     // MARK: - DOWNLOAD DATA
     
     func downloadData() {
-        print("DownloadDataRun")
+        print("Downloading Data")
         
         let keys = Keys()
         let key = keys.getKey()
@@ -164,7 +165,6 @@ class DataController: ObservableObject {
                 print("Decoding Finished")
                 
                 self.saveSeriesAndSessionData(data: data)
-                print("Saved Data")
             } // dispatchqueue
         } catch let jsonError as NSError {
             print(jsonError)
@@ -175,7 +175,8 @@ class DataController: ObservableObject {
     
     // MARK: - LOAD DATA
     
-    func loadSeriesData() {
+    func loadSeriesAndSessionData() {
+        print("Loading previous data")
         DispatchQueue.global().async {
             
             if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
@@ -196,6 +197,9 @@ class DataController: ObservableObject {
 
                 defaults.set(data, forKey: "seriesAndSessionData")
                 defaults.synchronize() // MAYBE DO NOT NEED
+                
+                print("Saved Data")
+
                 
             } // if let defaults
             
@@ -235,4 +239,5 @@ class DataController: ObservableObject {
         let events = self.events.filter { $0.seriesIds.contains(seriesId) }
         return events
     }
+    
 } // CONTROLER
