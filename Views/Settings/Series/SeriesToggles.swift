@@ -17,6 +17,11 @@ struct SeriesToggle: View {
     var body: some View {
         HStack {
             Toggle(series.seriesInfo.name, isOn: $isOn)
+                .onChange(of: isOn) { value in
+                    // update value in the dc file
+                    
+                    // save the settings
+                }
         }.padding(.horizontal)
     }
     
