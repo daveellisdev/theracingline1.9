@@ -1,16 +1,16 @@
 //
-//  FavouriteSeriesView.swift
+//  SeriesNotificationSettings.swift
 //  theracingline
 //
-//  Created by Dave on 29/01/2023.
+//  Created by Dave on 18/02/2023.
 //
 
 import SwiftUI
 
-struct FavouriteSeriesView: View {
+struct SeriesNotificationSettings: View {
     
     @ObservedObject var dc: DataController
-    
+
     var body: some View {
         
         let singleSeaters = dc.seriesSingleSeater
@@ -22,14 +22,12 @@ struct FavouriteSeriesView: View {
         let others = dc.seriesOther
         
         ScrollView {
-            GroupBox {
-                Text("This tab defines which series apprear in the Dashboard. This allows you to keep your dashboard clean for the series you value the most. If you mark a series as a favourite, it will also mark is as visible.")
-                    .font(.caption)
-                    
-                    
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal, 10)
+//            GroupBox {
+//                Text("This tab defines which series apprear in the Day, Event and Series tabs.")
+//                    .font(.caption)
+//            }
+//            .frame(maxWidth: .infinity)
+//            .padding(.horizontal, 10)
             Group {
                 HStack {
                     Text("Single Seaters")
@@ -39,7 +37,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(singleSeaters, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
             
@@ -53,7 +51,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(sportscars, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
             
@@ -66,7 +64,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(touringcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
             
@@ -79,7 +77,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(stockcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
             
@@ -92,7 +90,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(rally, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
             
@@ -105,7 +103,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(bikes, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
             
@@ -118,26 +116,26 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }
                 ForEach(others, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
         }
     }
     
-    func getFavouriteFromSeries(series: Series) -> Bool {
+    func getNotificationFromSeries(series: Series) -> Bool {
         let seriesInfo = series.seriesInfo
         let seriesSavedSettings = dc.seriesSavedSettings.filter { $0.seriesInfo.id == seriesInfo.id }
         
         if seriesSavedSettings.isEmpty {
             return true
         } else {
-            return seriesSavedSettings[0].favourite
+            return seriesSavedSettings[0].notifications
         }
     }
 }
 
-struct FavouriteSeriesView_Previews: PreviewProvider {
+struct SeriesNotificationSettings_Previews: PreviewProvider {
     static var previews: some View {
-        FavouriteSeriesView(dc: DataController())
+        SeriesNotificationSettings(dc: DataController())
     }
 }

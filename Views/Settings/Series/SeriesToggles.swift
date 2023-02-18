@@ -18,9 +18,7 @@ struct SeriesToggle: View {
         HStack {
             Toggle(series.seriesInfo.name, isOn: $isOn)
                 .onChange(of: isOn) { value in
-                    // update value in the dc file
                     updateSavedSettings(type: type, series: series, newValue: isOn)
-                    // save the settings
                 }
         }.padding(.horizontal)
     }
@@ -28,7 +26,7 @@ struct SeriesToggle: View {
     func updateSavedSettings(type: ToggleType, series: Series, newValue: Bool) {
         
         // update previously saved setting
-        
+        dc.updatedSeriesSavedSettings(type: type, series: series, newValue: newValue)
         
         // save settings
         dc.saveSavedSettings()

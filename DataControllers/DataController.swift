@@ -13,6 +13,7 @@ class DataController: ObservableObject {
     
     static var shared = DataController()
     
+    @Published var seriesUnfiltered: [Series] = []
     @Published var series: [Series] = []
     @Published var seriesSingleSeater: [Series] = []
     @Published var seriesSportscars: [Series] = []
@@ -21,7 +22,6 @@ class DataController: ObservableObject {
     @Published var seriesRally: [Series] = []
     @Published var seriesBikes: [Series] = []
     @Published var seriesOther: [Series] = []
-//    @Published var seriesList: [SeriesList] = []
     
     @Published var circuits: [Circuit] = []
     
@@ -29,16 +29,27 @@ class DataController: ObservableObject {
     @Published var eventsInProgress: [RaceEvent] = []
     @Published var eventsInProgressAndUpcoming: [RaceEvent] = []
 
+    // visible filtered
     @Published var sessions: [Session] = []
     @Published var sessionsUpcomingButNotInProgress: [Session] = []
     @Published var sessionsUpcomingButNotInTheNextTwelveHours: [Session] = []
     @Published var sessionsNextTenUpcomingButNotInProgress: [Session] = []
     @Published var sessionsNextTenUpcomingButNotInTheNextTwelveHours: [Session] = []
-
     @Published var sessionsInProgressAndUpcoming: [Session] = []
     @Published var liveSessions: [Session] = []
     @Published var sessionsWithinNextTwelveHours: [Session] = []
     @Published var sessionsWithinNextTwelveHoursButNotLive: [Session] = []
+    
+    // favourite filtered
+    @Published var favouriteSessions: [Session] = []
+    @Published var favouriteSessionsUpcomingButNotInProgress: [Session] = []
+    @Published var favouriteSessionsUpcomingButNotInTheNextTwelveHours: [Session] = []
+    @Published var favouriteSessionsNextTenUpcomingButNotInProgress: [Session] = []
+    @Published var favouriteSessionsNextTenUpcomingButNotInTheNextTwelveHours: [Session] = []
+    @Published var favouriteSessionsInProgressAndUpcoming: [Session] = []
+    @Published var favouriteLiveSessions: [Session] = []
+    @Published var favouriteSessionsWithinNextTwelveHours: [Session] = []
+    @Published var favouriteSessionsWithinNextTwelveHoursButNotLive: [Session] = []
     
     @Published var seriesSavedSettings: [SeriesSavedData] = []
     @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, notificationOffset: 900, notificationSound: "1")
@@ -119,14 +130,15 @@ class DataController: ObservableObject {
                 let twelveHoursAway = Date() + 12.hours
 
                 // series
-                self.series = json.series
-                self.seriesSingleSeater = self.series.filter{ $0.seriesInfo.type == "Single Seater"}
-                self.seriesSportscars = self.series.filter{ $0.seriesInfo.type == "Sportscars"}
-                self.seriesTouringcars = self.series.filter{ $0.seriesInfo.type == "Touring Cars"}
-                self.seriesStockcars = self.series.filter{ $0.seriesInfo.type == "Stock Cars"}
-                self.seriesRally = self.series.filter{ $0.seriesInfo.type == "Rally"}
-                self.seriesBikes = self.series.filter{ $0.seriesInfo.type == "Bikes"}
-                self.seriesOther = self.series.filter{ $0.seriesInfo.type == "Other"}
+                self.seriesUnfiltered = json.series
+                self.series = self.seriesUnfiltered.filter { self.checkSetting(type: .visible, seriesId: $0.seriesInfo.id) }
+                self.seriesSingleSeater = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Single Seater"}
+                self.seriesSportscars = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Sportscars"}
+                self.seriesTouringcars = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Touring Cars"}
+                self.seriesStockcars = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Stock Cars"}
+                self.seriesRally = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Rally"}
+                self.seriesBikes = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Bikes"}
+                self.seriesOther = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Other"}
                 print("Series Done")
                 
                 // circuits
@@ -152,20 +164,37 @@ class DataController: ObservableObject {
                 // sessions
                 var sortedSessions = self.createSessions(events: self.events)
                 sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
-            
-                self.sessions = sortedSessions
-                self.sessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() }
-                self.sessionsUpcomingButNotInProgress = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() }
-                self.sessionsUpcomingButNotInTheNextTwelveHours = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway }
+                
+                // visible sessions
+                self.sessions = sortedSessions.filter { self.checkSetting(type: .visible, seriesId: $0.seriesId) }
+                self.sessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() && self.checkSetting(type: .visible, seriesId: $0.seriesId) }
+                self.sessionsUpcomingButNotInProgress = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && self.checkSetting(type: .visible, seriesId: $0.seriesId) }
+                self.sessionsUpcomingButNotInTheNextTwelveHours = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway && self.checkSetting(type: .visible, seriesId: $0.seriesId) }
 
                 self.sessionsNextTenUpcomingButNotInProgress = Array(self.sessionsUpcomingButNotInProgress.prefix(10))
                 self.sessionsNextTenUpcomingButNotInTheNextTwelveHours = Array(self.sessionsUpcomingButNotInTheNextTwelveHours.prefix(10))
 
 
-                self.liveSessions = sortedSessions.filter { $0.isInProgress() }
-                self.sessionsWithinNextTwelveHours = sortedSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) }
+                self.liveSessions = sortedSessions.filter { $0.isInProgress() && self.checkSetting(type: .visible, seriesId: $0.seriesId) }
+                self.sessionsWithinNextTwelveHours = sortedSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) && self.checkSetting(type: .visible, seriesId: $0.seriesId) }
                 self.sessionsWithinNextTwelveHours.reverse()
-                self.sessionsWithinNextTwelveHoursButNotLive = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now }
+                self.sessionsWithinNextTwelveHoursButNotLive = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now && self.checkSetting(type: .visible, seriesId: $0.seriesId) }
+                
+                // favourite filtered
+                self.favouriteSessions = sortedSessions.filter { self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
+                self.favouriteSessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() && self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
+                self.favouriteSessionsUpcomingButNotInProgress = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
+                self.favouriteSessionsUpcomingButNotInTheNextTwelveHours = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway && self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
+
+                self.favouriteSessionsNextTenUpcomingButNotInProgress = Array(self.favouriteSessionsUpcomingButNotInProgress.prefix(10))
+                self.favouriteSessionsNextTenUpcomingButNotInTheNextTwelveHours = Array(self.favouriteSessionsUpcomingButNotInTheNextTwelveHours.prefix(10))
+
+
+                self.favouriteLiveSessions = sortedSessions.filter { $0.isInProgress() && self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
+                self.favouriteSessionsWithinNextTwelveHours = sortedSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) && self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
+                self.favouriteSessionsWithinNextTwelveHours.reverse()
+                self.favouriteSessionsWithinNextTwelveHoursButNotLive = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now && self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
+                
                 print("Sessions Done")
                 
                 print("Decoding Finished")
@@ -299,6 +328,29 @@ class DataController: ObservableObject {
         }
     }
     
+    // MARK: - UPDATED SERIES SAVED SETTINGS
+    
+    func updatedSeriesSavedSettings(type: ToggleType, series: Series, newValue: Bool) {
+        if var savedSeries = self.seriesSavedSettings.first(where: {$0.seriesInfo.id == series.seriesInfo.id}) {
+            
+            switch type {
+            case .visible:
+                savedSeries.visible = newValue
+            case .favourite:
+                savedSeries.favourite = newValue
+                if newValue == true {
+                    savedSeries.visible = newValue
+                }
+            case .notification:
+                savedSeries.notifications = newValue
+            }
+            
+            if let index = self.seriesSavedSettings.firstIndex(where: {$0.seriesInfo.id == series.seriesInfo.id}) {
+                self.seriesSavedSettings[index] = savedSeries
+            }
+        }
+    }
+    
     // MARK: - LOADING SAVED SETTINGS
     func loadSavedSettings() {
         DispatchQueue.global().async {
@@ -325,6 +377,24 @@ class DataController: ObservableObject {
                 }
             } // if let defaults
         } // dispatchqueee
+    }
+    
+    // MARK: - CHECK VISFAVNOT SETTINGS
+    
+    func checkSetting(type: ToggleType, seriesId: String) -> Bool {
+        
+        if let savedSeries = self.seriesSavedSettings.first(where: {$0.seriesInfo.id == seriesId}) {
+            switch type {
+            case .visible:
+                return savedSeries.visible
+            case .favourite:
+                return savedSeries.favourite
+            case .notification:
+                return savedSeries.notifications
+            }
+        }
+        
+        return false
     }
     
     // MARK: - UTILITIES

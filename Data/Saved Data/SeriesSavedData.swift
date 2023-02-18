@@ -11,8 +11,8 @@ struct SeriesSavedData: Decodable, Encodable {
     
     let id = UUID()
     let seriesInfo: SeriesInfo
-    let visible: Bool
-    let favourite: Bool
-    let notifications: Bool
+    var visible: Bool
+    var favourite: Bool
+    var notifications: Bool
     
 }

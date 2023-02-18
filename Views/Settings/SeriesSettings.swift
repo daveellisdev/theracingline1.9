@@ -30,7 +30,7 @@ struct SeriesSettings: View {
             Divider().padding(.vertical, 4)
             
             NavigationLink {
-                Text("Notifications")
+                NotificationsSettingsView(dc: dc, navStack: navStack)
             } label: {
                 HStack {
                     Image(systemName: "app.badge")
