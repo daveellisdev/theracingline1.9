@@ -131,7 +131,7 @@ class DataController: ObservableObject {
 
                 // series
                 self.seriesUnfiltered = json.series
-                self.series = self.seriesUnfiltered.filter { self.checkSetting(type: .visible, seriesId: $0.seriesInfo.id) }
+                self.series = self.seriesUnfiltered.filter { self.checkSessionSetting(type: .visible, seriesId: $0.seriesInfo.id) }
                 self.seriesSingleSeater = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Single Seater"}
                 self.seriesSportscars = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Sportscars"}
                 self.seriesTouringcars = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Touring Cars"}
@@ -166,34 +166,34 @@ class DataController: ObservableObject {
                 sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
                 
                 // visible sessions
-                self.sessions = sortedSessions.filter { self.checkSetting(type: .visible, seriesId: $0.seriesId) }
-                self.sessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() && self.checkSetting(type: .visible, seriesId: $0.seriesId) }
-                self.sessionsUpcomingButNotInProgress = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && self.checkSetting(type: .visible, seriesId: $0.seriesId) }
-                self.sessionsUpcomingButNotInTheNextTwelveHours = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway && self.checkSetting(type: .visible, seriesId: $0.seriesId) }
+                self.sessions = sortedSessions.filter { self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
+                self.sessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
+                self.sessionsUpcomingButNotInProgress = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
+                self.sessionsUpcomingButNotInTheNextTwelveHours = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
 
                 self.sessionsNextTenUpcomingButNotInProgress = Array(self.sessionsUpcomingButNotInProgress.prefix(10))
                 self.sessionsNextTenUpcomingButNotInTheNextTwelveHours = Array(self.sessionsUpcomingButNotInTheNextTwelveHours.prefix(10))
 
 
-                self.liveSessions = sortedSessions.filter { $0.isInProgress() && self.checkSetting(type: .visible, seriesId: $0.seriesId) }
-                self.sessionsWithinNextTwelveHours = sortedSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) && self.checkSetting(type: .visible, seriesId: $0.seriesId) }
+                self.liveSessions = sortedSessions.filter { $0.isInProgress() && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
+                self.sessionsWithinNextTwelveHours = sortedSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
                 self.sessionsWithinNextTwelveHours.reverse()
-                self.sessionsWithinNextTwelveHoursButNotLive = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now && self.checkSetting(type: .visible, seriesId: $0.seriesId) }
+                self.sessionsWithinNextTwelveHoursButNotLive = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
                 
                 // favourite filtered
-                self.favouriteSessions = sortedSessions.filter { self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
-                self.favouriteSessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() && self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
-                self.favouriteSessionsUpcomingButNotInProgress = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
-                self.favouriteSessionsUpcomingButNotInTheNextTwelveHours = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway && self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
+                self.favouriteSessions = sortedSessions.filter { self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
+                self.favouriteSessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() && self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
+                self.favouriteSessionsUpcomingButNotInProgress = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
+                self.favouriteSessionsUpcomingButNotInTheNextTwelveHours = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway && self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
 
                 self.favouriteSessionsNextTenUpcomingButNotInProgress = Array(self.favouriteSessionsUpcomingButNotInProgress.prefix(10))
                 self.favouriteSessionsNextTenUpcomingButNotInTheNextTwelveHours = Array(self.favouriteSessionsUpcomingButNotInTheNextTwelveHours.prefix(10))
 
 
-                self.favouriteLiveSessions = sortedSessions.filter { $0.isInProgress() && self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
-                self.favouriteSessionsWithinNextTwelveHours = sortedSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) && self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
+                self.favouriteLiveSessions = sortedSessions.filter { $0.isInProgress() && self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
+                self.favouriteSessionsWithinNextTwelveHours = sortedSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) && self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
                 self.favouriteSessionsWithinNextTwelveHours.reverse()
-                self.favouriteSessionsWithinNextTwelveHoursButNotLive = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now && self.checkSetting(type: .favourite, seriesId: $0.seriesId) }
+                self.favouriteSessionsWithinNextTwelveHoursButNotLive = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now && self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
                 
                 print("Sessions Done")
                 
@@ -381,7 +381,7 @@ class DataController: ObservableObject {
     
     // MARK: - CHECK VISFAVNOT SETTINGS
     
-    func checkSetting(type: ToggleType, seriesId: String) -> Bool {
+    func checkSessionSetting(type: ToggleType, seriesId: String) -> Bool {
         
         if let savedSeries = self.seriesSavedSettings.first(where: {$0.seriesInfo.id == seriesId}) {
             switch type {
