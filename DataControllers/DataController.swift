@@ -52,7 +52,7 @@ class DataController: ObservableObject {
     @Published var favouriteSessionsWithinNextTwelveHoursButNotLive: [Session] = []
     
     @Published var seriesSavedSettings: [SeriesSavedData] = []
-    @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, notificationOffset: 900, notificationSound: "1")
+    @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "1")
     
     init() {
         // load user saved settings
@@ -300,7 +300,7 @@ class DataController: ObservableObject {
             // Notifications - Offset, Sessions, Sound
             if defaults.data(forKey: "applicationSavedSettings") == nil {
                 // if no saved settings, create defaults
-                let defaultSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, notificationOffset: 900, notificationSound: "1")
+                let defaultSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "flyby_notification_no_bell.aiff")
                 DispatchQueue.main.async {
                     self.applicationSavedSettings = defaultSettings
                 }
@@ -326,6 +326,7 @@ class DataController: ObservableObject {
                 }
             }
         }
+        print("Saved Settings Run")
     }
     
     // MARK: - UPDATED SERIES SAVED SETTINGS
@@ -379,6 +380,22 @@ class DataController: ObservableObject {
         } // dispatchqueee
     }
     
+    // MARK: - UPDATE NOTIFICATION SAVED SETTINGS
+    
+    func updateNotificationSavedSettings(sessionTypeEnum: SessionType, newValue: Bool) {
+        
+        switch sessionTypeEnum {
+        case .race:
+            self.applicationSavedSettings.raceNotifications = newValue
+        case .qualifying:
+            self.applicationSavedSettings.qualifyingNotifications = newValue
+        case .practice:
+            self.applicationSavedSettings.practiceNotifications = newValue
+        case .testing:
+            self.applicationSavedSettings.testingNotifications = newValue
+        }
+    }
+    
     // MARK: - CHECK VISFAVNOT SETTINGS
     
     func checkSessionSetting(type: ToggleType, seriesId: String) -> Bool {
@@ -395,6 +412,26 @@ class DataController: ObservableObject {
         }
         
         return false
+    }
+    
+    // MARK: - LOAD NOTIFICATION OFFSET
+    
+    func loadNotificationOffset() -> NotificationOffset {
+        let fullTimeInSeconds = self.applicationSavedSettings.notificationOffset
+        
+        let days = (fullTimeInSeconds / 86400)
+        let hours = (fullTimeInSeconds % 86400) / 3600
+        let minutes = ((fullTimeInSeconds % 86400) % 3600) / 60
+        print(days, hours, minutes)
+        let notificationOffset = NotificationOffset(days: days, hours: hours, minutes: minutes)
+        
+        return notificationOffset
+    }
+    
+    // MARK: - UPDATE NOTIFICATION OFFSET
+    func updateNotificationOffset(days: Int, hours: Int, minutes: Int) {
+        let seconds = (days * 86400) + (hours * 3600) + (minutes * 60)
+        self.applicationSavedSettings.notificationOffset = seconds
     }
     
     // MARK: - UTILITIES

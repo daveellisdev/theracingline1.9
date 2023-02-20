@@ -14,12 +14,15 @@ struct NotificationsSettingsView: View {
     @State var selected = 0
     
     var body: some View {
+        
+        let notficationOffset = dc.loadNotificationOffset()
+        
         NavigationStack(path: $navStack) {
             VStack {
                 Picker(selection: $selected, label: Text("Picker"), content: {
                     Text("Series").tag(0)
                     Text("Sessions").tag(1)
-                    Text("Offset").tag(3)
+                    Text("Offset").tag(2)
                 }).pickerStyle(SegmentedPickerStyle())
                 .padding()
                 .onChange(of: selected, perform: { value in
@@ -29,9 +32,9 @@ struct NotificationsSettingsView: View {
                 if selected == 0 {
                     SeriesNotificationSettings(dc: dc)
                 } else if selected == 1 {
-                    //
+                    NotificationSessionsSettings(dc: dc)
                 } else if selected == 2 {
-                    
+                    NotificationOffsetPicker(dc: dc, selectedDays: notficationOffset.days, selectedHours: notficationOffset.hours, selectedMinutes: notficationOffset.minutes)
                 }
             } // vstack
             .navigationTitle("Notifications")

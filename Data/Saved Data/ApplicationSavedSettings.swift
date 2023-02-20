@@ -8,9 +8,10 @@
 import Foundation
 
 struct ApplicationSavedSettings: Decodable, Encodable {
-    let raceNotifications: Bool
-    let qualifyingNotifications: Bool
-    let practiceNotifications: Bool
-    let notificationOffset: Int
-    let notificationSound: String
+    var raceNotifications: Bool
+    var qualifyingNotifications: Bool
+    var practiceNotifications: Bool
+    var testingNotifications: Bool
+    var notificationOffset: Int
+    var notificationSound: String
 }

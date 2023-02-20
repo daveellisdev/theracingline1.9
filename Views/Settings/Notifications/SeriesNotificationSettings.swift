@@ -28,6 +28,10 @@ struct SeriesNotificationSettings: View {
 //            }
 //            .frame(maxWidth: .infinity)
 //            .padding(.horizontal, 10)
+            GroupBox {
+                Text("Select which series you'd like to receive notifications for.")
+                    .font(.caption)
+            }
             Group {
                 HStack {
                     Text("Single Seaters")

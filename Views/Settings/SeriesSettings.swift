@@ -40,6 +40,20 @@ struct SeriesSettings: View {
 
                 }
             } // navlink
+            
+            Divider().padding(.vertical, 4)
+            
+            NavigationLink {
+                SoundSettingsView(dc: dc, navStack: navStack)
+            } label: {
+                HStack {
+                    Image(systemName: "waveform")
+                    Text("Notification Sound")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+
+                }
+            } // navlink
         } // groupbox
         .foregroundColor(.primary)
 

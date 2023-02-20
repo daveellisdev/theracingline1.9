@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     
     @ObservedObject var dc: DataController
+    
     @State var navStack = NavigationPath()
     
     var body: some View {
@@ -28,6 +29,8 @@ struct SettingsView: View {
                 .padding(.horizontal)
         } // navstack
     } // body
+    
+    
 }
 
 struct SettingsView_Previews: PreviewProvider {
