@@ -17,8 +17,10 @@ struct AllEventsView: View {
         let events = dc.eventsInProgressAndUpcoming
         NavigationStack(path: $navStack) {
             List(events) { event in
-                NavigationLink(value: event){
-                    EventRowView(dc: dc, raceEvent: event)
+                if event.shouldBeVisible(seriesSettings: dc.seriesSavedSettings) {
+                    NavigationLink(value: event){
+                        EventRowView(dc: dc, raceEvent: event)
+                    }
                 }
             }.navigationDestination(for: RaceEvent.self) { event in
                 EventView(dc: dc, raceEvent: event)

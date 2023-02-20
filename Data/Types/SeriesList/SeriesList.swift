@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct SeriesList: Codable, Identifiable {
-    
-    let id = UUID()
-    let seriesInfo: SeriesInfo
-    let colourValues: ColourValues
-    let links: Links
-    let streaming: [Streaming]
-    let events: [RaceEvent]
-    
-}
+//struct SeriesList: Codable, Identifiable {
+//    
+//    let id = UUID()
+//    let seriesInfo: SeriesInfo
+//    let colourValues: ColourValues
+//    let links: Links
+//    let streaming: [Streaming]
+//    let events: [RaceEvent]
+//    
+//}

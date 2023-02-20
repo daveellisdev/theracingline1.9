@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     
     @ObservedObject var dc: DataController
+    
     @State var navStack = NavigationPath()
     
     var body: some View {
@@ -19,15 +20,17 @@ struct SettingsView: View {
                     AboutView()
                     PremiumBar()
 //                    PremiumBoxView()
-                    SeriesSettings()
+                    SeriesSettings(dc: dc, navStack: navStack)
 //                    LinksView()
                     PrivacyView(navStack: navStack)
                     VersionView()
                 } // vstack
-            }.navigationTitle("Dasboard")
+            }.navigationTitle("Settings")
                 .padding(.horizontal)
         } // navstack
     } // body
+    
+    
 }
 
 struct SettingsView_Previews: PreviewProvider {
