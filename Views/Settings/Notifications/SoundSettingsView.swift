@@ -28,6 +28,7 @@ struct SoundSettingsView: View {
                 
                     Button(action: {
                         updateSelectedSound(soundName: soundFile.filename)
+                        playSounds(soundName: soundFile.filename)
                     }) {
                         if soundFile.filename == activeSound {
                             SoundSettingRowView(content: soundFile.name, symbol: "checkmark")
