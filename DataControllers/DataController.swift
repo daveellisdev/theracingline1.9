@@ -29,6 +29,7 @@ class DataController: ObservableObject {
     @Published var eventsInProgress: [RaceEvent] = []
     @Published var eventsInProgressAndUpcoming: [RaceEvent] = []
 
+    @Published var unfilteredSessions: [Session] = []
     // visible filtered
     @Published var sessions: [Session] = []
     @Published var sessionsUpcomingButNotInProgress: [Session] = []
@@ -165,6 +166,7 @@ class DataController: ObservableObject {
                 var sortedSessions = self.createSessions(events: self.events)
                 sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
                 
+                self.unfilteredSessions = sortedSessions
                 // visible sessions
                 self.sessions = sortedSessions.filter { self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
                 self.sessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }

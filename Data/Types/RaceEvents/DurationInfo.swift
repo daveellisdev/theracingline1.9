@@ -12,6 +12,25 @@ struct Duration: Codable {
     let duration: Int
     let tba: Bool?
     let durationMinutes: Int
+    
+    var durationTypeEnum: DurationType {
+        switch durationType {
+        case "L":
+            return .laps
+        case "T":
+            return .time
+        case "DKM":
+            return .distanceKm
+        case "DM":
+            return .distamceMiles
+        case "AD":
+            return .allDay
+        case "NO":
+            return .noDuration
+        default:
+            return .noDuration
+        }
+    }
 }
 
 
