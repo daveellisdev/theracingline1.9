@@ -10,8 +10,10 @@ import SwiftUI
 import SwiftDate
 
 class DataController: ObservableObject {
-    
+        
     static var shared = DataController()
+    
+    @ObservedObject var nc = NotificationController.shared
     
     @Published var seriesUnfiltered: [Series] = []
     @Published var series: [Series] = []
@@ -64,6 +66,7 @@ class DataController: ObservableObject {
         
         // download new json
         downloadData()
+        
     }
     
     var timeLineHeight: CGFloat {
@@ -198,8 +201,10 @@ class DataController: ObservableObject {
                 self.favouriteSessionsWithinNextTwelveHoursButNotLive = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now && self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
                 
                 print("Sessions Done")
-                
                 print("Decoding Finished")
+
+                self.nc.initiateNotifications()
+                print("Initiating Notifications")
                 
                 self.saveSeriesAndSessionData(data: data)
             } // dispatchqueue
@@ -424,7 +429,7 @@ class DataController: ObservableObject {
         let days = (fullTimeInSeconds / 86400)
         let hours = (fullTimeInSeconds % 86400) / 3600
         let minutes = ((fullTimeInSeconds % 86400) % 3600) / 60
-        print(days, hours, minutes)
+
         let notificationOffset = NotificationOffset(days: days, hours: hours, minutes: minutes)
         
         return notificationOffset

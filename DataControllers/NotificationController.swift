@@ -13,8 +13,33 @@ import SwiftUI
 class NotificationController: ObservableObject {
     
     static var shared = NotificationController()
+
+    // MARK: - NOTIFICATION INIT
+    func initiateNotifications() {
+        let current = UNUserNotificationCenter.current()
+        current.getNotificationSettings(completionHandler: { permission in
+            switch permission.authorizationStatus  {
+            case .authorized:
+                print("User granted permission for notification")
+                self.rebuildNotifications()
+            case .denied:
+                print("User denied notification permission")
+            case .notDetermined:
+                print("Notification permission haven't been asked yet")
+                self.requestPermission()
+            case .provisional:
+                // @available(iOS 12.0, *)
+                print("The application is authorized to post non-interruptive user notifications.")
+            case .ephemeral:
+                // @available(iOS 14.0, *)
+                print("The application is temporarily authorized to post notifications. Only available to app clips.")
+            @unknown default:
+                print("Unknow Status")
+            }
+        })
+    }
     
-    @ObservedObject var dc = DataController.shared
+    // MARK: - PERMISSIONS REQUEST
     
     func requestPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
@@ -27,10 +52,11 @@ class NotificationController: ObservableObject {
     }
     
     // MARK: - REBUILD NOTIFICATIONS
+    
     func rebuildNotifications(){
-        
+        print("Rebuild notifications called")
         // get all sessions
-        let fullSessionList = dc.unfilteredSessions
+        let fullSessionList = self.getSessionList()!
 
         // clear notifications
         clearNotifications()
@@ -40,10 +66,10 @@ class NotificationController: ObservableObject {
         
         //filter sessions based on preferences
         let sessionsFilteredByNotifications = filterSeriesByPreferences(unfilteredSessions: fullSessionList)
-        
         //loop through remaining sessions and set notifications
         for (index, session) in sessionsFilteredByNotifications.enumerated() {
-            if index < 40 && (session.date.tba != nil && !session.date.tba!) {
+
+            if index < 40 && (session.date.tba == nil || !session.date.tba!) {
                 setNotifictions(session: session)
             }
         }
@@ -52,8 +78,9 @@ class NotificationController: ObservableObject {
     // MARK: - SET SESSION NOTIFICATION
     
     func setNotifictions(session: Session) {
-        
-        let timeOffset = dc.applicationSavedSettings.notificationOffset
+        print("Notification setup for \(session.seriesId) - \(session.session.sessionName)")
+        let notificationSavedSettings = self.getSavedSettings()!
+        let timeOffset = notificationSavedSettings.notificationOffset
         let currentDate = Date()
 
         let secondsBetweenNowAndRace = Int(currentDate.getInterval(toDate: session.raceStartTime(), component: .second))
@@ -61,26 +88,27 @@ class NotificationController: ObservableObject {
         
         if secondsUntilNotification > 0 {
             let messageString = buildNotificationTimeString(session: session)
-            
-            let content = UNMutableNotificationContent()
-            content.title = session.series
-            content.subtitle = "\(session.circuit.circuit) - \(session.session.sessionName)"
-            content.body = messageString
-            content.sound = UNNotificationSound.init(named: UNNotificationSoundName(rawValue: dc.applicationSavedSettings.notificationSound))
-            if #available(iOS 15.0, *) {
-                content.interruptionLevel = .timeSensitive
-            }
+            if let series = getSeriesById(seriesId: session.seriesId) {
+                let content = UNMutableNotificationContent()
+                content.title = series.seriesInfo.name
+                content.subtitle = "\(session.circuit.circuit) - \(session.session.sessionName)"
+                content.body = messageString
+                content.sound = UNNotificationSound.init(named: UNNotificationSoundName(rawValue: notificationSavedSettings.notificationSound))
+                if #available(iOS 15.0, *) {
+                    content.interruptionLevel = .timeSensitive
+                }
 
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(secondsUntilNotification), repeats: false)
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(secondsUntilNotification), repeats: false)
 
-            // choose a random identifier
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+                // choose a random identifier
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
 
-            // add our notification request
-            UNUserNotificationCenter.current().add(request) { (error) in
-                if let error = error {
-                   print("Unable to add notification request, \(error.localizedDescription)")
-                 }
+                // add our notification request
+                UNUserNotificationCenter.current().add(request) { (error) in
+                    if let error = error {
+                       print("Unable to add notification request, \(error.localizedDescription)")
+                     }
+                }
             }
         }
     }
@@ -137,7 +165,8 @@ class NotificationController: ObservableObject {
         var hoursString = ""
         var minutesString = ""
         
-        let notificationTime = getNotificationTime()
+        let applicationSavedSettings = self.getSavedSettings()!
+        let notificationTime = self.getNotificationTime(savedSettings: applicationSavedSettings)
         
         let days = notificationTime.days
         let hours = notificationTime.hours
@@ -189,18 +218,78 @@ class NotificationController: ObservableObject {
     }
     
     // MARK: - GET NOTIFICATION TIME
-    func getNotificationTime() -> NotificationOffset {
-        let notificiationOffset = dc.loadNotificationOffset()
-         return notificiationOffset
+    func getNotificationTime(savedSettings: ApplicationSavedSettings) -> NotificationOffset {
+        
+        let fullTimeInSeconds = savedSettings.notificationOffset
+        
+        let days = (fullTimeInSeconds / 86400)
+        let hours = (fullTimeInSeconds % 86400) / 3600
+        let minutes = ((fullTimeInSeconds % 86400) % 3600) / 60
+        print(days, hours, minutes)
+        let notificationOffset = NotificationOffset(days: days, hours: hours, minutes: minutes)
+        
+        return notificationOffset
+        
+    }
+    func getSavedSettings() -> ApplicationSavedSettings? {
+        
+        if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
+            let decoder = JSONDecoder()
+            
+            if let data = defaults.data(forKey: "applicationSavedSettings") {
+                if let applicationSavedSettings = try? decoder.decode(ApplicationSavedSettings.self, from: data) {
+                    return applicationSavedSettings
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    func getSeriesSavedSettings() -> [SeriesSavedData]? {
+        
+        if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
+            let decoder = JSONDecoder()
+
+            if let data = defaults.data(forKey: "savedSeriesSettings") {
+                if let seriesSavedSettings = try? decoder.decode([SeriesSavedData].self, from: data){
+                    return seriesSavedSettings
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    // MARK: - GET SESSION LIST
+    func getSessionList() -> [Session]? {
+        if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
+            
+            if let data = defaults.data(forKey: "seriesAndSessionData") {
+                do {
+                    let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
+                    var sessions = self.createSessions(events: json.events)
+                    sessions.sort { $0.raceStartTime() < $1.raceStartTime()}
+                    return sessions
+                } catch let jsonError as NSError {
+                    print(jsonError)
+                    print(jsonError.underlyingErrors)
+                    print(jsonError.localizedDescription)
+                }
+                
+            } // if let data
+        } // if let defaults
+        
+        return nil
     }
     
     // MARK: - FILTER SERIES BY PREFERENCES
     func filterSeriesByPreferences(unfilteredSessions: [Session]) -> [Session] {
         
-        let seriesSavedSettings = dc.seriesSavedSettings
-        let applicationSavedSettings = dc.applicationSavedSettings
+        let seriesSavedSettings = self.getSeriesSavedSettings()!
+        let applicationSavedSettings = self.getSavedSettings()!
         
-        
+         
         let filteredBySessionType = unfilteredSessions.filter {
             // filter by session types
             if ($0.session.sessionTypeEnum == .testing && !applicationSavedSettings.testingNotifications) || ($0.session.sessionTypeEnum == .practice && !applicationSavedSettings.practiceNotifications) || ($0.session.sessionTypeEnum == .qualifying && !applicationSavedSettings.qualifyingNotifications) || ($0.session.sessionTypeEnum == .race && !applicationSavedSettings.raceNotifications) {
@@ -224,6 +313,47 @@ class NotificationController: ObservableObject {
             }
             
         }
-        return filteredBySessionType
+        
+        let now = Date()
+        let filteredByDate: [Session] = filteredBySeries.filter { $0.raceStartTime() > now }
+    
+        return filteredByDate
+    }
+    
+    func createSessions(events: [RaceEvent]) -> [Session] {
+
+        var sessions: [Session] = []
+        for event in events {
+            sessions.append(contentsOf: event.sessions)
+        }
+        sessions.sort { $0.raceStartTime() < $1.raceStartTime() }
+        
+        return sessions
+    }
+    
+    func getSeriesById(seriesId: String) -> Series? {
+        if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
+            
+            if let data = defaults.data(forKey: "seriesAndSessionData") {
+                do {
+                    let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
+                    let series = json.series
+                    
+                    if let index = series.firstIndex(where: {$0.seriesInfo.id == seriesId}) {
+                        return series[index]
+                    } else {
+                        return nil
+                    }
+                    
+                } catch let jsonError as NSError {
+                    print(jsonError)
+                    print(jsonError.underlyingErrors)
+                    print(jsonError.localizedDescription)
+                }
+                
+            } // if let data
+        } // if let defaults
+        
+        return nil
     }
 }
