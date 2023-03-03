@@ -9,39 +9,44 @@ import SwiftUI
 
 struct PremiumBar: View {
     
-    static let gradientStart = Color(red: 0 / 255, green: 97 / 255, blue: 255 / 255)
-    static let gradientEnd = Color(red: 69 / 255, green: 202 / 255, blue: 255 / 255)
-    
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 10)
-                .fill(LinearGradient(
-                      gradient: .init(colors: [Self.gradientStart, Self.gradientEnd]),
-                      startPoint: .leading,
-                      endPoint: .trailing
-                    ))
-                .frame(height: 120)
+                .foregroundColor(.blue)
+                .frame(height: 150)
             VStack {
                 HStack {
-                    Text("TRL Premium")
-                        .font(.title2)
+                    Spacer()
+                    Text("TRL Pro")
+                        .font(.title)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                     Spacer()
                 }
+                Spacer()
                 HStack {
-                    Text("Subscribe now for race times, notifications and more")
-                        .font(.callout)
-                        .foregroundColor(.white)
+                    Spacer()
+                    Image(systemName: "app.badge")
+                    Spacer()
+                    Image(systemName: "stopwatch")
+                    Spacer()
+                    Image(systemName: "square.dashed.inset.filled")
+                    Spacer()
+                    Image(systemName: "flag.checkered")
                     Spacer()
                 }
+                .foregroundColor(.white)
+                .fontWeight(.bold)
+                Spacer()
                 HStack {
-                    Text("See more...")
+                    Text("Customisable notifications for your selected series, race times in your time zone, widgets and more.")
                         .font(.caption)
+                        .fontWeight(.bold)
                         .foregroundColor(.white)
-                    Spacer()
-                }.padding(.top, 1)
+                        .multilineTextAlignment(.center)
+                }
             }.padding()
+                .frame(height: 150)
         }
     }
 }
