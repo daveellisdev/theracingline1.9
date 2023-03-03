@@ -11,14 +11,22 @@ import SwiftUI
 struct DashboardView: View {
     
     @ObservedObject var dc: DataController
+    
     @State var navStack = NavigationPath()
-    
-    
+    @State private var showingFilterSheet = false
     
     var body: some View {
         NavigationStack(path: $navStack) {
             ScrollView {
-                PremiumBar()
+                
+                Button {
+                    showingFilterSheet = true
+                } label: {
+                    PremiumBar()
+                }.sheet(isPresented: $showingFilterSheet){
+                    SubscriptionView()
+                }
+                
                 if dc.favouriteSessionsWithinNextTwelveHours.count > 0 {
                     // only visible for races within the next 12 hours
                     RaceChart(dc: dc)

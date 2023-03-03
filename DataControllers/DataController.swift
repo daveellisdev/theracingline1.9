@@ -61,7 +61,7 @@ class DataController: ObservableObject {
         // load user saved settings
         
         // load previously downloaded json
-        loadSeriesAndSessionData()
+//        loadSeriesAndSessionData()
         loadSavedSettings()
         
         // download new json
@@ -135,6 +135,7 @@ class DataController: ObservableObject {
 
                 // series
                 self.seriesUnfiltered = json.series
+//                self.series = self.seriesUnfiltered
                 self.series = self.seriesUnfiltered.filter { self.checkSessionSetting(type: .visible, seriesId: $0.seriesInfo.id) }
                 self.seriesSingleSeater = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Single Seater"}
                 self.seriesSportscars = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Sportscars"}

@@ -12,14 +12,20 @@ struct SettingsView: View {
     @ObservedObject var dc: DataController
     
     @State var navStack = NavigationPath()
-    
+    @State private var showingFilterSheet = false
+
     var body: some View {
         NavigationStack(path: $navStack) {
             ScrollView {
                 VStack {
                     AboutView()
-                    PremiumBar()
-//                    PremiumBoxView()
+                    Button {
+                        showingFilterSheet = true
+                    } label: {
+                        PremiumBar()
+                    }.sheet(isPresented: $showingFilterSheet){
+                        SubscriptionView()
+                    }
                     SeriesSettings(dc: dc, navStack: navStack)
 //                    LinksView()
                     PrivacyView(navStack: navStack)
