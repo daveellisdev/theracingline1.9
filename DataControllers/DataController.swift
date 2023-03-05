@@ -8,12 +8,22 @@
 import Foundation
 import SwiftUI
 import SwiftDate
+import StoreKit
+
 
 class DataController: ObservableObject {
+    
+    let productIDs = ["dev.daveellis.theracingline.coffee",
+                      "dev.daveellis.theracingline.bronze",
+                      "dev.daveellis.theracingline.silver",
+                      "dev.daveellis.theracingline.gold",
+                      "dev.daveellis.theracingline.annual"]
         
     static var shared = DataController()
     
     @ObservedObject var nc = NotificationController.shared
+    
+//    @Published var storeManager = StoreManager()
     
     @Published var seriesUnfiltered: [Series] = []
     @Published var series: [Series] = []
@@ -55,13 +65,17 @@ class DataController: ObservableObject {
     @Published var favouriteSessionsWithinNextTwelveHoursButNotLive: [Session] = []
     
     @Published var seriesSavedSettings: [SeriesSavedData] = []
-    @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "1")
+    @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "1", subscribed: false)
     
     init() {
+//        SKPaymentQueue.default().add(storeManager)
+//        storeManager.getProducts(productIDs: productIDs)
+//        self.applicationSavedSettings.subscribed = storeManager.restoreSubscriptionStatus()
+        
         // load user saved settings
         
         // load previously downloaded json
-//        loadSeriesAndSessionData()
+        loadSeriesAndSessionData()
         loadSavedSettings()
         
         // download new json
@@ -135,7 +149,6 @@ class DataController: ObservableObject {
 
                 // series
                 self.seriesUnfiltered = json.series
-//                self.series = self.seriesUnfiltered
                 self.series = self.seriesUnfiltered.filter { self.checkSessionSetting(type: .visible, seriesId: $0.seriesInfo.id) }
                 self.seriesSingleSeater = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Single Seater"}
                 self.seriesSportscars = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Sportscars"}
@@ -169,8 +182,8 @@ class DataController: ObservableObject {
                 // sessions
                 var sortedSessions = self.createSessions(events: self.events)
                 sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
-                
-                self.unfilteredSessions = sortedSessions
+
+                self.sessions = sortedSessions
                 // visible sessions
                 self.sessions = sortedSessions.filter { self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
                 self.sessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
@@ -308,7 +321,7 @@ class DataController: ObservableObject {
             // Notifications - Offset, Sessions, Sound
             if defaults.data(forKey: "applicationSavedSettings") == nil {
                 // if no saved settings, create defaults
-                let defaultSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "flyby_notification_no_bell.aiff")
+                let defaultSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "flyby_notification_no_bell.aiff", subscribed: false)
                 DispatchQueue.main.async {
                     self.applicationSavedSettings = defaultSettings
                 }
@@ -345,9 +358,12 @@ class DataController: ObservableObject {
             switch type {
             case .visible:
                 savedSeries.visible = newValue
+                if !newValue {
+                    savedSeries.favourite = newValue
+                }
             case .favourite:
                 savedSeries.favourite = newValue
-                if newValue == true {
+                if newValue {
                     savedSeries.visible = newValue
                 }
             case .notification:
@@ -408,7 +424,7 @@ class DataController: ObservableObject {
     
     func checkSessionSetting(type: ToggleType, seriesId: String) -> Bool {
         
-        if let savedSeries = self.seriesSavedSettings.first(where: {$0.seriesInfo.id == seriesId}) {
+        if let savedSeries = seriesSavedSettings.first(where: {$0.seriesInfo.id == seriesId}) {
             switch type {
             case .visible:
                 return savedSeries.visible
@@ -418,8 +434,8 @@ class DataController: ObservableObject {
                 return savedSeries.notifications
             }
         }
-        
-        return false
+
+        return true
     }
     
     // MARK: - LOAD NOTIFICATION OFFSET
