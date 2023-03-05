@@ -14,4 +14,5 @@ struct ApplicationSavedSettings: Decodable, Encodable {
     var testingNotifications: Bool
     var notificationOffset: Int
     var notificationSound: String
+    var subscribed: Bool
 }
