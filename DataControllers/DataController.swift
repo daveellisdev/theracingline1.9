@@ -22,47 +22,132 @@ class DataController: ObservableObject {
     static var shared = DataController()
     
     @ObservedObject var nc = NotificationController.shared
-    
 //    @Published var storeManager = StoreManager()
     
+    // MARK: - SERIES
     @Published var seriesUnfiltered: [Series] = []
-    @Published var series: [Series] = []
-    @Published var seriesSingleSeater: [Series] = []
-    @Published var seriesSportscars: [Series] = []
-    @Published var seriesTouringcars: [Series] = []
-    @Published var seriesStockcars: [Series] = []
-    @Published var seriesRally: [Series] = []
-    @Published var seriesBikes: [Series] = []
-    @Published var seriesOther: [Series] = []
     
+    var series: [Series] {
+        return self.seriesUnfiltered.filter { self.checkSessionSetting(type: .visible, seriesId: $0.seriesInfo.id) }
+    }
+    var seriesSingleSeater: [Series] {
+        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Single Seater"}
+    }
+    var seriesSportscars: [Series] {
+        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Sportscars"}
+    }
+    var seriesTouringcars: [Series] {
+        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Touring Cars"}
+    }
+    var seriesStockcars: [Series] {
+        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Stock Cars"}
+    }
+    var seriesRally: [Series] {
+        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Rally"}
+    }
+    var seriesBikes: [Series] {
+        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Bikes"}
+    }
+    var seriesOther: [Series] {
+        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Other"}
+    }
+    
+    // MARK: - CIRCUITS
     @Published var circuits: [Circuit] = []
     
+    // MARK: - EVENTS
     @Published var events: [RaceEvent] = []
-    @Published var eventsInProgress: [RaceEvent] = []
-    @Published var eventsInProgressAndUpcoming: [RaceEvent] = []
+    var eventsInProgress: [RaceEvent] {
+        return self.events.filter {
+            if $0.eventInProgress() != nil && $0.eventInProgress()! {
+                return true
+            } else {
+                return false
+            }
+        ;}
+    }
+    var eventsInProgressAndUpcoming: [RaceEvent] {
+        return self.events.filter { !$0.eventComplete() }
+    }
+    
+    // MARK: - SESSIONS
 
     @Published var unfilteredSessions: [Session] = []
-    // visible filtered
-    @Published var sessions: [Session] = []
-    @Published var sessionsUpcomingButNotInProgress: [Session] = []
-    @Published var sessionsUpcomingButNotInTheNextTwelveHours: [Session] = []
-    @Published var sessionsNextTenUpcomingButNotInProgress: [Session] = []
-    @Published var sessionsNextTenUpcomingButNotInTheNextTwelveHours: [Session] = []
-    @Published var sessionsInProgressAndUpcoming: [Session] = []
-    @Published var liveSessions: [Session] = []
-    @Published var sessionsWithinNextTwelveHours: [Session] = []
-    @Published var sessionsWithinNextTwelveHoursButNotLive: [Session] = []
+    
+    // SESSIONS VISIBLE
+    var sessions: [Session] {
+        return self.unfilteredSessions.filter { self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
+    }
+    var sessionsInProgressAndUpcoming: [Session] {
+        return self.sessions.filter { !$0.isComplete() }
+    }
+    var sessionsUpcomingButNotInProgress: [Session] {
+        return self.sessions.filter { !$0.isComplete() && !$0.isInProgress() }
+    }
+    var sessionsUpcomingButNotInTheNextTwelveHours: [Session] {
+        let twelveHoursAway = Date() + 12.hours
+        
+        return self.sessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway }
+    }
+    var sessionsNextTenUpcomingButNotInProgress: [Session] {
+        return Array(self.sessionsUpcomingButNotInProgress.prefix(10))
+    }
+    var sessionsNextTenUpcomingButNotInTheNextTwelveHours: [Session] {
+        return Array(self.sessionsUpcomingButNotInTheNextTwelveHours.prefix(10))
+    }
+    
+    var liveSessions: [Session] {
+        return self.sessions.filter { $0.isInProgress() }
+    }
+    var sessionsWithinNextTwelveHours: [Session] {
+        let now = Date()
+        let twelveHoursAway = Date() + 12.hours
+        
+        return self.sessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) }
+    }
+    var sessionsWithinNextTwelveHoursButNotLive: [Session] {
+        let now = Date()
+        let twelveHoursAway = Date() + 12.hours
+        
+        return self.sessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now }
+    }
     
     // favourite filtered
-    @Published var favouriteSessions: [Session] = []
-    @Published var favouriteSessionsUpcomingButNotInProgress: [Session] = []
-    @Published var favouriteSessionsUpcomingButNotInTheNextTwelveHours: [Session] = []
-    @Published var favouriteSessionsNextTenUpcomingButNotInProgress: [Session] = []
-    @Published var favouriteSessionsNextTenUpcomingButNotInTheNextTwelveHours: [Session] = []
-    @Published var favouriteSessionsInProgressAndUpcoming: [Session] = []
-    @Published var favouriteLiveSessions: [Session] = []
-    @Published var favouriteSessionsWithinNextTwelveHours: [Session] = []
-    @Published var favouriteSessionsWithinNextTwelveHoursButNotLive: [Session] = []
+    var favouriteSessions: [Session] {
+        return self.sessions.filter { self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
+    }
+    var favouriteSessionsInProgressAndUpcoming: [Session] {
+        return self.favouriteSessions.filter { !$0.isComplete() }
+    }
+    var favouriteSessionsUpcomingButNotInProgress: [Session] {
+        return self.favouriteSessions.filter { !$0.isComplete() && !$0.isInProgress() }
+    }
+    var favouriteSessionsUpcomingButNotInTheNextTwelveHours: [Session] {
+        let twelveHoursAway = Date() + 12.hours
+        
+        return self.favouriteSessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway }
+    }
+    var favouriteSessionsNextTenUpcomingButNotInProgress: [Session] {
+        return Array(self.favouriteSessionsUpcomingButNotInProgress.prefix(10))
+    }
+    var favouriteSessionsNextTenUpcomingButNotInTheNextTwelveHours: [Session] {
+        return Array(self.favouriteSessionsUpcomingButNotInTheNextTwelveHours.prefix(10))
+    }
+    var favouriteLiveSessions: [Session] {
+        return self.favouriteSessions.filter { $0.isInProgress() }
+    }
+    var favouriteSessionsWithinNextTwelveHours: [Session] {
+        let now = Date()
+        let twelveHoursAway = Date() + 12.hours
+        
+        return self.favouriteSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) } .reversed()
+    }
+    var favouriteSessionsWithinNextTwelveHoursButNotLive: [Session] {
+        let now = Date()
+        let twelveHoursAway = Date() + 12.hours
+        
+        return self.favouriteSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now }
+    }
     
     @Published var seriesSavedSettings: [SeriesSavedData] = []
     @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "1", subscribed: false)
@@ -143,20 +228,9 @@ class DataController: ObservableObject {
             let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
 
             DispatchQueue.main.async {
-                
-                let now = Date()
-                let twelveHoursAway = Date() + 12.hours
 
                 // series
                 self.seriesUnfiltered = json.series
-                self.series = self.seriesUnfiltered.filter { self.checkSessionSetting(type: .visible, seriesId: $0.seriesInfo.id) }
-                self.seriesSingleSeater = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Single Seater"}
-                self.seriesSportscars = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Sportscars"}
-                self.seriesTouringcars = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Touring Cars"}
-                self.seriesStockcars = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Stock Cars"}
-                self.seriesRally = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Rally"}
-                self.seriesBikes = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Bikes"}
-                self.seriesOther = self.seriesUnfiltered.filter { $0.seriesInfo.type == "Other"}
                 print("Series Done")
                 
                 // circuits
@@ -166,55 +240,15 @@ class DataController: ObservableObject {
                 // events
                 var sortedEvents = json.events
                 sortedEvents.sort {$0.firstRaceDate() < $1.firstRaceDate()}
-                
                 self.events = sortedEvents
-                self.eventsInProgress = sortedEvents.filter {
-                    if $0.eventInProgress() != nil && $0.eventInProgress()! {
-                        return true
-                    } else {
-                        return false
-                    }
-                ;}
-                
-                self.eventsInProgressAndUpcoming = sortedEvents.filter { !$0.eventComplete() }
                 print("Events Done")
                 
                 // sessions
                 var sortedSessions = self.createSessions(events: self.events)
                 sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
-
-                self.sessions = sortedSessions
-                // visible sessions
-                self.sessions = sortedSessions.filter { self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
-                self.sessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
-                self.sessionsUpcomingButNotInProgress = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
-                self.sessionsUpcomingButNotInTheNextTwelveHours = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
-
-                self.sessionsNextTenUpcomingButNotInProgress = Array(self.sessionsUpcomingButNotInProgress.prefix(10))
-                self.sessionsNextTenUpcomingButNotInTheNextTwelveHours = Array(self.sessionsUpcomingButNotInTheNextTwelveHours.prefix(10))
-
-
-                self.liveSessions = sortedSessions.filter { $0.isInProgress() && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
-                self.sessionsWithinNextTwelveHours = sortedSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
-                self.sessionsWithinNextTwelveHours.reverse()
-                self.sessionsWithinNextTwelveHoursButNotLive = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now && self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
-                
-                // favourite filtered
-                self.favouriteSessions = sortedSessions.filter { self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
-                self.favouriteSessionsInProgressAndUpcoming = sortedSessions.filter { !$0.isComplete() && self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
-                self.favouriteSessionsUpcomingButNotInProgress = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
-                self.favouriteSessionsUpcomingButNotInTheNextTwelveHours = sortedSessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway && self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
-
-                self.favouriteSessionsNextTenUpcomingButNotInProgress = Array(self.favouriteSessionsUpcomingButNotInProgress.prefix(10))
-                self.favouriteSessionsNextTenUpcomingButNotInTheNextTwelveHours = Array(self.favouriteSessionsUpcomingButNotInTheNextTwelveHours.prefix(10))
-
-
-                self.favouriteLiveSessions = sortedSessions.filter { $0.isInProgress() && self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
-                self.favouriteSessionsWithinNextTwelveHours = sortedSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) && self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
-                self.favouriteSessionsWithinNextTwelveHours.reverse()
-                self.favouriteSessionsWithinNextTwelveHoursButNotLive = sortedSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now && self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
-                
+                self.unfilteredSessions = sortedSessions
                 print("Sessions Done")
+                
                 print("Decoding Finished")
 
                 self.nc.initiateNotifications()
