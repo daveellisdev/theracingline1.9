@@ -34,7 +34,11 @@ struct ContentView: View {
                 .tabItem {
                     Label("Settings", systemImage: "slider.horizontal.3")
                 }
+        }.onAppear() {
+            dc.storeManager.restoreSubscriptionStatus()
+            dc.downloadData()
         }
+        
     }
 }
 

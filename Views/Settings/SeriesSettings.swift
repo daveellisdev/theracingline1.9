@@ -27,33 +27,38 @@ struct SeriesSettings: View {
                 }
             } // navlink
             
-            Divider().padding(.vertical, 4)
             
-            NavigationLink {
-                NotificationsSettingsView(dc: dc, navStack: navStack)
-            } label: {
-                HStack {
-                    Image(systemName: "app.badge")
-                    Text("Notifications")
-                    Spacer()
-                    Image(systemName: "chevron.right")
+            if dc.storeManager.subscribed {
+                
+                Divider().padding(.vertical, 4)
+                
+                NavigationLink {
+                    NotificationsSettingsView(dc: dc, navStack: navStack)
+                } label: {
+                    HStack {
+                        Image(systemName: "app.badge")
+                        Text("Notifications")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                        
+                    }
+                } // navlink
+                
+                Divider().padding(.vertical, 4)
+            
+                NavigationLink {
+                    SoundSettingsView(dc: dc, navStack: navStack)
+                } label: {
+                    HStack {
+                        Image(systemName: "waveform")
+                        Text("Notification Sound")
+                        Spacer()
+                        Image(systemName: "chevron.right")
 
-                }
-            } // navlink
-            
-            Divider().padding(.vertical, 4)
-            
-            NavigationLink {
-                SoundSettingsView(dc: dc, navStack: navStack)
-            } label: {
-                HStack {
-                    Image(systemName: "waveform")
-                    Text("Notification Sound")
-                    Spacer()
-                    Image(systemName: "chevron.right")
+                    }
+                } // navlink
+            }
 
-                }
-            } // navlink
         } // groupbox
         .foregroundColor(.primary)
 

@@ -18,15 +18,16 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack(path: $navStack) {
             ScrollView {
-                
-                Button {
-                    showingFilterSheet = true
-                } label: {
-                    PremiumBar()
-                }.sheet(isPresented: $showingFilterSheet){
-                    SubscriptionView()
+                if !dc.storeManager.subscribed {
+                    Button {
+                        showingFilterSheet = true
+                    } label: {
+                        PremiumBar()
+                    }.sheet(isPresented: $showingFilterSheet){
+                        SubscriptionView(dc: dc)
+                    }
                 }
-                
+
                 if dc.favouriteSessionsWithinNextTwelveHours.count > 0 {
                     // only visible for races within the next 12 hours
                     RaceChart(dc: dc)
@@ -57,7 +58,7 @@ struct DashboardView: View {
                 
 //                RecommendedSeriesView()
                 
-            }.navigationTitle("Dasboard")
+            }.navigationTitle("Dashboard")
             .padding(.horizontal)
         }
     }

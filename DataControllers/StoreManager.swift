@@ -14,6 +14,7 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     
 //    @ObservedObject var data = DataController.shared
 //    @ObservedObject var notificatons = NotificationController.shared
+    @Published var subscribed = false
 
     //FETCH PRODUCTS
     var request: SKProductsRequest!
@@ -71,11 +72,14 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
                 UserDefaults.standard.setValue(true, forKey: transaction.payment.productIdentifier)
                 queue.finishTransaction(transaction)
                 transactionState = .purchased
-                updateUserAccess(productIdentifier: transaction.payment.productIdentifier)
+                self.subscribed = true
+                NotificationController().initiateNotifications()
             case .restored:
                 UserDefaults.standard.setValue(true, forKey: transaction.payment.productIdentifier)
                 queue.finishTransaction(transaction)
                 transactionState = .restored
+                self.subscribed = true
+                NotificationController().initiateNotifications()
             case .failed, .deferred:
                 print("Payment Queue Error: \(String(describing: transaction.error))")
                 queue.finishTransaction(transaction)
@@ -86,10 +90,10 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
         }
     }
     
-    func restoreProducts() {
-//        print("Restoring products ...")
-        SKPaymentQueue.default().restoreCompletedTransactions()
-    }
+//    func restoreProducts() {
+////        print("Restoring products ...")
+//        SKPaymentQueue.default().restoreCompletedTransactions()
+//    }
     
     func updateUserAccess(productIdentifier: String) -> Bool? {
         switch productIdentifier {
@@ -113,41 +117,58 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     
     func restoreSubscriptionStatus() -> Bool {
         
-        var subscribed: Bool = false
+        var subscribedReturn: Bool = false
         
         InAppReceipt.refresh { (error) in
             if let err = error {
                 print("LOL ERROR")
-                subscribed = false
+                subscribedReturn = false
+                self.subscribed = false
                 print(err)
             } else {
             // do your stuff with the receipt data here
                 if let receipt = try? InAppReceipt.localReceipt(){
                     if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.annual", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
-                        subscribed = true
+                        subscribedReturn = true
+                        self.subscribed = true
+                        print("============= Annual Subscription Found =============")
                         
                     } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.gold", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
-                        subscribed = true
+                        subscribedReturn = true
+                        self.subscribed = true
+                        print("============= Monthly Subscription Found =============")
                         
                     } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.silver", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
-                        subscribed = false
+                        subscribedReturn = false
+                        self.subscribed = false
                         
                     } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.bronze", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
-                        subscribed = false
+                        subscribedReturn = false
+                        self.subscribed = false
                         
                     } else {
-                        subscribed = false
-                        print("No Sub -----------------")
+                        subscribedReturn = false
+                        self.subscribed = false
+                        print("============= No Subscription Found =============")
                     }
                 }
             }
         }
         
-        return subscribed
+        return subscribedReturn
+    }
+    
+    func getProductByName(productName: String) -> SKProduct {
+        let subscription = self.myProducts.filter { $0.productIdentifier.contains(productName) }.first
+        if subscription != nil {
+            return subscription!
+        } else {
+            return self.myProducts[0]
+        }
     }
 }
 

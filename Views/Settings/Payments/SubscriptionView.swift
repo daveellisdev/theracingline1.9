@@ -10,12 +10,19 @@ import SwiftUI
 struct SubscriptionView: View {
     
     @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var dc: DataController
     @State private var annualSelected: Bool = true
     
     var body: some View {
         ScrollView {
             
             HStack { // cancel button
+                Button {
+                    dc.storeManager.restoreSubscriptionStatus()
+                } label: {
+                    Text("Restore")
+                        .foregroundColor(.blue)
+                }
                 Spacer()
                 Button {
                     presentationMode.wrappedValue.dismiss()
@@ -42,13 +49,13 @@ struct SubscriptionView: View {
                     Button {
                         annualSelected = false
                     } label: {
-                        SubscriptionButtonMonthlyView(selected: !annualSelected).padding(.horizontal, 10)
+                        SubscriptionButtonMonthlyView(dc: dc, selected: !annualSelected).padding(.horizontal, 10)
                     }
                     
                     Button {
                         annualSelected = true
                     } label: {
-                        SubscriptionButtonAnnualView(selected: annualSelected)
+                        SubscriptionButtonAnnualView(dc: dc, selected: annualSelected)
                     }
                 }
                 Text("Auto-renews")
@@ -57,7 +64,8 @@ struct SubscriptionView: View {
             }
             
             Button {
-                
+                let sub = dc.storeManager.getProductByName(productName: annualSelected == true ? "annual" : "gold")
+                dc.storeManager.purchaseProduct(product: sub)
             } label: {
                 Text("Subscribe")
                     .foregroundColor(.white)
@@ -72,6 +80,6 @@ struct SubscriptionView: View {
 
 struct SubscriptionView_Previews: PreviewProvider {
     static var previews: some View {
-        SubscriptionView()
+        SubscriptionView(dc: DataController())
     }
 }

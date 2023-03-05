@@ -12,7 +12,7 @@ import StoreKit
 
 
 class DataController: ObservableObject {
-    
+
     let productIDs = ["dev.daveellis.theracingline.coffee",
                       "dev.daveellis.theracingline.bronze",
                       "dev.daveellis.theracingline.silver",
@@ -22,7 +22,26 @@ class DataController: ObservableObject {
     static var shared = DataController()
     
     @ObservedObject var nc = NotificationController.shared
-//    @Published var storeManager = StoreManager()
+    @Published var storeManager = StoreManager()
+    
+    // MARK: - INIT
+    init() {
+        
+        // load saved settings
+        loadSavedSettings()
+        
+        // load payment information
+        SKPaymentQueue.default().add(storeManager)
+        storeManager.getProducts(productIDs: productIDs)
+        self.applicationSavedSettings.subscribed = storeManager.restoreSubscriptionStatus()
+                
+        // load previously downloaded json
+        loadSeriesAndSessionData()
+        
+        // download new json
+        downloadData()
+        
+    }
     
     // MARK: - SERIES
     @Published var seriesUnfiltered: [Series] = []
@@ -152,21 +171,7 @@ class DataController: ObservableObject {
     @Published var seriesSavedSettings: [SeriesSavedData] = []
     @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "1", subscribed: false)
     
-    init() {
-//        SKPaymentQueue.default().add(storeManager)
-//        storeManager.getProducts(productIDs: productIDs)
-//        self.applicationSavedSettings.subscribed = storeManager.restoreSubscriptionStatus()
-        
-        // load user saved settings
-        
-        // load previously downloaded json
-        loadSeriesAndSessionData()
-        loadSavedSettings()
-        
-        // download new json
-        downloadData()
-        
-    }
+
     
     var timeLineHeight: CGFloat {
         return CGFloat((sessionsWithinNextTwelveHours.count * 50) - 20)
@@ -175,7 +180,7 @@ class DataController: ObservableObject {
     // MARK: - DOWNLOAD DATA
     
     func downloadData() {
-        print("Downloading Data")
+//        print("Downloading Data")
         
         let keys = Keys()
         let key = keys.getKey()
@@ -231,28 +236,28 @@ class DataController: ObservableObject {
 
                 // series
                 self.seriesUnfiltered = json.series
-                print("Series Done")
+//                print("Series Done")
                 
                 // circuits
                 self.circuits = json.circuits
-                print("Circuits Done")
+//                print("Circuits Done")
                 
                 // events
                 var sortedEvents = json.events
                 sortedEvents.sort {$0.firstRaceDate() < $1.firstRaceDate()}
                 self.events = sortedEvents
-                print("Events Done")
+//                print("Events Done")
                 
                 // sessions
                 var sortedSessions = self.createSessions(events: self.events)
                 sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
                 self.unfilteredSessions = sortedSessions
-                print("Sessions Done")
+//                print("Sessions Done")
                 
-                print("Decoding Finished")
+//                print("Decoding Finished")
 
                 self.nc.initiateNotifications()
-                print("Initiating Notifications")
+//                print("Initiating Notifications")
                 
                 self.saveSeriesAndSessionData(data: data)
             } // dispatchqueue
@@ -266,7 +271,7 @@ class DataController: ObservableObject {
     // MARK: - LOAD SERIES DATA
     
     func loadSeriesAndSessionData() {
-        print("Loading previous data")
+//        print("Loading previous data")
         DispatchQueue.global().async {
             
             if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
@@ -275,7 +280,7 @@ class DataController: ObservableObject {
                     DispatchQueue.main.async{
                         self.decodeData(data: data)
                     }
-                    print("Loaded Series Data")
+//                    print("Loaded Series Data")
                 } // if let data
             } // if let defaults
         } // dispatchqueee
@@ -284,7 +289,7 @@ class DataController: ObservableObject {
     // MARK: - SAVE SERIES DATA
     
     func saveSeriesAndSessionData(data: Data) {
-        print("Saving Data")
+//        print("Saving Data")
         DispatchQueue.global().async {
             
             if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
@@ -292,7 +297,7 @@ class DataController: ObservableObject {
                 defaults.set(data, forKey: "seriesAndSessionData")
                 defaults.synchronize() // MAYBE DO NOT NEED
                 
-                print("Saved Series Data")
+//                print("Saved Series Data")
             } // if let defaults
         } // dispatch queue
     }
@@ -381,7 +386,7 @@ class DataController: ObservableObject {
                 }
             }
         }
-        print("Saved Settings Run")
+//        print("Saved Settings Run")
     }
     
     // MARK: - UPDATED SERIES SAVED SETTINGS
@@ -420,7 +425,7 @@ class DataController: ObservableObject {
                     if let seriesSavedSettings = try? decoder.decode([SeriesSavedData].self, from: data){
                         DispatchQueue.main.async{
                             self.seriesSavedSettings = seriesSavedSettings
-                            print("Loaded Saved Series Settings")
+//                            print("Loaded Saved Series Settings")
                         }
                     }
                     
@@ -430,7 +435,7 @@ class DataController: ObservableObject {
                     if let applicationSavedSettings = try? decoder.decode(ApplicationSavedSettings.self, from: data) {
                         DispatchQueue.main.async {
                             self.applicationSavedSettings = applicationSavedSettings
-                            print("Loaded Application Saved Settings")
+//                            print("Loaded Application Saved Settings")
                         }
                     }
                 }

@@ -8,9 +8,15 @@
 import SwiftUI
 
 struct SubscriptionButtonMonthlyView: View {
+    
+    @ObservedObject var dc: DataController
+    
     let selected: Bool
 
     var body: some View {
+        
+        let sub = dc.storeManager.getProductByName(productName: "gold")
+        
         HStack {
             ZStack {
                 VStack {
@@ -20,7 +26,7 @@ struct SubscriptionButtonMonthlyView: View {
                     Text("One month free trial")
                         .font(.caption)
                         .fontWeight(.bold)
-                    Text("£2.99")
+                    Text("\(sub.localizedPrice)")
                         .font(.title)
                         .fontWeight(.bold)
                         .foregroundColor(.blue)
@@ -44,6 +50,6 @@ struct SubscriptionButtonMonthlyView: View {
 
 struct SubscriptionButtonMonthlyView_Previews: PreviewProvider {
     static var previews: some View {
-        SubscriptionButtonMonthlyView(selected: false)
+        SubscriptionButtonMonthlyView(dc: DataController(), selected: false)
     }
 }
