@@ -54,12 +54,14 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     //HANDLE TRANSACTIONS
     @Published var transactionState: SKPaymentTransactionState?
     
-    func purchaseProduct(product: SKProduct) {
+    func purchaseProduct(product: SKProduct) -> Bool {
         if SKPaymentQueue.canMakePayments() {
             let payment = SKPayment(product: product)
             SKPaymentQueue.default().add(payment)
+            return true
         } else {
             print("User can't make payment.")
+            return false
         }
     }
     

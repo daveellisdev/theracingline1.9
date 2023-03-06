@@ -50,19 +50,24 @@ struct SessionRow: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .fontWeight(.bold)
-                    Text(session.raceStartTimeAsString())
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .fontWeight(.bold)
+                    if dc.storeManager.subscribed {
+                        Text(session.raceStartTimeAsString())
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .fontWeight(.bold)
+                    }
+                    
                     Spacer()
-                    Text(session.timeFromNow())
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .fontWeight(.bold)
-                    Image(systemName: "clock")
-                        .font(.caption)
-                        .fontWeight(.bold)
-                        .foregroundColor(.secondary)
+                    if dc.storeManager.subscribed {
+                        Text(session.timeFromNow())
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .fontWeight(.bold)
+                        Image(systemName: "clock")
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
         }

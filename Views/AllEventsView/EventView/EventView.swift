@@ -33,7 +33,7 @@ struct EventView: View {
                 } //hstack
                 
                 ForEach(raceEvent.sessionsSortedByDate()) { session in
-                    if session.isComplete() {
+                    if session.isComplete() || (session.isInProgress() && dc.storeManager.subscribed) {
                         // if session has passed
                         EventViewSessionRowExpired(dc: dc, session: session)
                     } else if session.isInProgress() {

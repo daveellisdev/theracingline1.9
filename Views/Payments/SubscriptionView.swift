@@ -18,7 +18,8 @@ struct SubscriptionView: View {
             
             HStack { // cancel button
                 Button {
-                    dc.storeManager.restoreSubscriptionStatus()
+                    dc.applicationSavedSettings.subscribed = dc.storeManager.restoreSubscriptionStatus()
+                    dc.saveSavedSettings()
                 } label: {
                     Text("Restore")
                         .foregroundColor(.blue)
@@ -33,6 +34,7 @@ struct SubscriptionView: View {
             }.padding(.horizontal, 20)
                 .padding(.top, 20)
             TabView {
+                SubscriptionTabView(imageName: "play.display", title: "Weekend Dashboard", description: "A comprehensive guide to the weekends action.")
                 SubscriptionTabView(imageName: "app.badge", title: "Custom Notifications", description: "Notifications for the events and series you want, when you want them.")
                 SubscriptionTabView(imageName: "stopwatch", title: "Race Times", description: "Event and session green flag times converted to your local time zone.")
                 SubscriptionTabView(imageName: "square.dashed.inset.filled", title: "Widgets", description: "Customisable widgets for your home screen.")
@@ -65,7 +67,8 @@ struct SubscriptionView: View {
             
             Button {
                 let sub = dc.storeManager.getProductByName(productName: annualSelected == true ? "annual" : "gold")
-                dc.storeManager.purchaseProduct(product: sub)
+                dc.applicationSavedSettings.subscribed = dc.storeManager.purchaseProduct(product: sub)
+                dc.saveSavedSettings()
             } label: {
                 Text("Subscribe")
                     .foregroundColor(.white)

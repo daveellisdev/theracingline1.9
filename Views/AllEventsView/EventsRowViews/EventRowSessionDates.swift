@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EventRowSessionDates: View {
     
+    @ObservedObject var dc: DataController
     let raceEvent: RaceEvent
     
     var body: some View {
@@ -56,18 +57,20 @@ struct EventRowSessionDates: View {
         }
         
         Spacer()
-        Text("\(raceEvent.firstSessionTimeFromNow())")
-            .font(.caption)
-            .foregroundColor(.secondary)
-        Image(systemName: "clock")
-            .font(.caption)
-            .fontWeight(.bold)
-            .foregroundColor(.secondary)
+        if dc.storeManager.subscribed {
+            Text("\(raceEvent.firstSessionTimeFromNow())")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            Image(systemName: "clock")
+                .font(.caption)
+                .fontWeight(.bold)
+                .foregroundColor(.secondary)
+        }
     }
 }
 
 struct EventRowSessionDates_Previews: PreviewProvider {
     static var previews: some View {
-        EventRowSessionDates(raceEvent: exampleEvent)
+        EventRowSessionDates(dc: DataController(), raceEvent: exampleEvent)
     }
 }
