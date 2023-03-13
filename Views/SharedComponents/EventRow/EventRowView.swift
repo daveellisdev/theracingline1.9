@@ -32,7 +32,7 @@ struct EventRowView: View {
                         } // if not nil
                     } // hstack
                     .padding(.bottom, -2)
-                    EventRowSeriesRow(dc: dc, raceEvent: raceEvent)
+                    EventRowSeriesList(dc: dc, raceEvent: raceEvent)
                     HStack {
                         EventRowSessionDates(dc: dc, raceEvent: raceEvent)
                     } // hstack

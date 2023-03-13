@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SessionView: View {
+struct SessionView_OLD: View {
     
     @ObservedObject var dc: DataController
     let session: Session
@@ -100,8 +100,8 @@ struct SessionView: View {
     }
 }
 
-struct SessionView_Previews: PreviewProvider {
-    static var previews: some View {
-        SessionView(dc: DataController(), session: exampleSession)
-    }
-}
+//struct SessionView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SessionView(dc: DataController(), session: exampleSession)
+//    }
+//}

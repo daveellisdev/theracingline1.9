@@ -22,11 +22,11 @@ struct ContentView: View {
                 .tabItem {
                     Label("Day", systemImage: "30.square.fill")
                 }
-            AllEventsView(dc: dc)
+            EventListView(dc: dc)
                 .tabItem {
                     Label("Events", systemImage: "flag.fill")
                 }
-            SeriesView(dc: dc)
+            SeriesListView(dc: dc)
                 .tabItem {
                     Label("Series", systemImage: "list.number")
                 }

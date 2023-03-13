@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EventView: View {
+struct EventView_OLD: View {
     
     let dc: DataController
     let raceEvent: RaceEvent
@@ -21,7 +21,7 @@ struct EventView: View {
         ScrollView {
             GroupBox {
                 EventViewCircuitInfo(raceEvent: raceEvent)
-                EventRowSeriesRow(dc: dc, raceEvent: raceEvent)
+                EventRowSeriesList(dc: dc, raceEvent: raceEvent)
             } // groupbox
             
             GroupBox {
@@ -60,7 +60,7 @@ struct EventView: View {
 
 struct EventView_Previews: PreviewProvider {
     static var previews: some View {
-        EventView(dc: DataController(), raceEvent: exampleEvent)
+        EventView_OLD(dc: DataController(), raceEvent: exampleEvent)
     }
 }
 

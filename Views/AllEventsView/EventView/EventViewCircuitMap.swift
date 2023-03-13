@@ -47,7 +47,7 @@ struct EventViewCircuitMap: View {
             } //groupbox
             
             GroupBox {
-                EventViewMapView(region: region)
+                CircuitMapView(region: region)
                 
             }
         } // groupbox

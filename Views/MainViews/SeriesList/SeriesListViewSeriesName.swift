@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SeriesViewSeriesName: View {
+struct SeriesListViewSeriesName: View {
     
     let series: Series
     
@@ -41,6 +41,6 @@ struct SeriesViewSeriesName: View {
 
 struct SeriesViewSeriesName_Previews: PreviewProvider {
     static var previews: some View {
-        SeriesViewSeriesName(series: exampleSeries)
+        SeriesListViewSeriesName(series: exampleSeries)
     }
 }

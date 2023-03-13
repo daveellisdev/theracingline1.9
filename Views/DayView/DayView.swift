@@ -38,7 +38,7 @@ struct DayView: View {
                     }
                 }
             }.navigationDestination(for: Session.self) { session in
-                SessionView(dc: dc, session: session)
+                SessionView_OLD(dc: dc, session: session)
             }
             .navigationTitle("Sessions")
         }
