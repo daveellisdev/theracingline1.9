@@ -17,17 +17,17 @@ struct AllEventsView: View {
         
         let events = dc.eventsInProgressAndUpcoming
         NavigationStack(path: $navStack) {
-            if !dc.storeManager.subscribed {
-                Button {
-                    showingFilterSheet = true
-                } label: {
-                    GroupBox {
-                        PremiumBarSlim().padding(.horizontal)
-                    }
-                }.sheet(isPresented: $showingFilterSheet){
-                    SubscriptionView(dc: dc)
-                }
-            }
+//            if !dc.storeManager.subscribed {
+//                Button {
+//                    showingFilterSheet = true
+//                } label: {
+//                    GroupBox {
+//                        PremiumBarSlim().padding(.horizontal)
+//                    }
+//                }.sheet(isPresented: $showingFilterSheet){
+//                    SubscriptionView(dc: dc)
+//                }
+//            }
             List(events) { event in
                 if event.shouldBeVisible(seriesSettings: dc.seriesSavedSettings) {
                     NavigationLink(value: event){

@@ -18,17 +18,17 @@ struct DayView: View {
         let sessions = dc.sessionsInProgressAndUpcoming
         
         NavigationStack(path: $navStack) {
-            if !dc.storeManager.subscribed {
-                Button {
-                    showingFilterSheet = true
-                } label: {
-                    GroupBox {
-                        PremiumBarSlim().padding(.horizontal)
-                    }
-                }.sheet(isPresented: $showingFilterSheet){
-                    SubscriptionView(dc: dc)
-                }
-            }
+//            if !dc.storeManager.subscribed {
+//                Button {
+//                    showingFilterSheet = true
+//                } label: {
+//                    GroupBox {
+//                        PremiumBarSlim().padding(.horizontal)
+//                    }
+//                }.sheet(isPresented: $showingFilterSheet){
+//                    SubscriptionView(dc: dc)
+//                }
+//            }
             List(sessions) { session in
                 if session.isComplete() {
                     SessionRowExpired(dc: dc, session: session)

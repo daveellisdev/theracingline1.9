@@ -35,7 +35,7 @@ struct SubscriptionView: View {
                 .padding(.top, 20)
             TabView {
                 SubscriptionTabView(imageName: "play.display", title: "Weekend Dashboard", description: "A comprehensive guide to the weekends action.")
-                SubscriptionTabView(imageName: "app.badge", title: "Custom Notifications", description: "Notifications for the events and series you want, when you want them.")
+                SubscriptionTabView(imageName: "app.badge", title: "Custom Notifications", description: "Notifications for the events and series you want, when you want.")
                 SubscriptionTabView(imageName: "stopwatch", title: "Race Times", description: "Event and session green flag times converted to your local time zone.")
                 SubscriptionTabView(imageName: "square.dashed.inset.filled", title: "Widgets", description: "Customisable widgets for your home screen.")
                 SubscriptionTabView(imageName: "flag.checkered", title: "More coming soon...", description: "Weather, live events, WatchOS support")
