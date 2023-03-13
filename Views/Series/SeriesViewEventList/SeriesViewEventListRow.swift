@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SeriesViewEventListRow: View {
     
+    @ObservedObject var dc: DataController
     let series: Series
     let event: RaceEvent
     
@@ -39,7 +40,7 @@ struct SeriesViewEventListRow: View {
                 Spacer()
             }
             HStack {
-                EventRowSessionDates(raceEvent: event)
+                EventRowSessionDates(dc: dc, raceEvent: event)
             }
         }
     }
@@ -47,6 +48,6 @@ struct SeriesViewEventListRow: View {
 
 struct SeriesViewEventListRow_Previews: PreviewProvider {
     static var previews: some View {
-        SeriesViewEventListRow(series: exampleSeries, event: exampleEvent)
+        SeriesViewEventListRow(dc: DataController(), series: exampleSeries, event: exampleEvent)
     }
 }

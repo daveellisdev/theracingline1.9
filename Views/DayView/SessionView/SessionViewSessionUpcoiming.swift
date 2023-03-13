@@ -43,13 +43,18 @@ struct SessionViewSessionUpcoiming: View {
             HStack {
                 Text(session.raceStartDateAsString())
                     .font(.caption)
-                Text(session.raceStartTimeAsString())
-                    .font(.caption)
+                if dc.storeManager.subscribed {
+                    Text(session.raceStartTimeAsString())
+                        .font(.caption)
+                }
+                
                 Spacer()
-                Text(session.timeFromNow())
-                    .font(.caption)
-                Image(systemName: "clock")
-                    .font(.caption2)
+                if dc.storeManager.subscribed {
+                    Text(session.timeFromNow())
+                        .font(.caption)
+                    Image(systemName: "clock")
+                        .font(.caption2)
+                }
             }
             .font(.caption)
         }

@@ -19,12 +19,14 @@ struct SettingsView: View {
             ScrollView {
                 VStack {
                     AboutView()
-                    Button {
-                        showingFilterSheet = true
-                    } label: {
-                        PremiumBar()
-                    }.sheet(isPresented: $showingFilterSheet){
-                        SubscriptionView()
+                    if !dc.storeManager.subscribed {
+                        Button {
+                            showingFilterSheet = true
+                        } label: {
+                            PremiumBar()
+                        }.sheet(isPresented: $showingFilterSheet){
+                            SubscriptionView(dc: dc)
+                        }
                     }
                     SeriesSettings(dc: dc, navStack: navStack)
 //                    LinksView()

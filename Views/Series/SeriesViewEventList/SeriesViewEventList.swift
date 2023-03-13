@@ -14,13 +14,12 @@ struct SeriesViewEventList: View {
     
     let series: Series
 
-    
     var body: some View {
         
         let events: [RaceEvent] = dc.getEventsBySeriesId(seriesId: series.seriesInfo.id)
         List(events) { event in
             NavigationLink(value: event) {
-                SeriesViewEventListRow(series: series, event: event)
+                SeriesViewEventListRow(dc: dc, series: series, event: event)
             }
         }.navigationDestination(for: RaceEvent.self) { event in
             SeriesViewEventView(dc: dc, event: event, seriesId: series.seriesInfo.id)

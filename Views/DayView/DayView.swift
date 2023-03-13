@@ -11,14 +11,26 @@ struct DayView: View {
     
     @ObservedObject var dc: DataController
     @State var navStack = NavigationPath()
+    @State private var showingFilterSheet = false
     
     var body: some View {
         
         let sessions = dc.sessionsInProgressAndUpcoming
         
         NavigationStack(path: $navStack) {
+//            if !dc.storeManager.subscribed {
+//                Button {
+//                    showingFilterSheet = true
+//                } label: {
+//                    GroupBox {
+//                        PremiumBarSlim().padding(.horizontal)
+//                    }
+//                }.sheet(isPresented: $showingFilterSheet){
+//                    SubscriptionView(dc: dc)
+//                }
+//            }
             List(sessions) { session in
-                if  session.isComplete() {
+                if session.isComplete() {
                     SessionRowExpired(dc: dc, session: session)
                 } else {
                     NavigationLink(value: session) {

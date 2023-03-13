@@ -26,7 +26,7 @@ struct EventRowView: View {
                             .fontWeight(.bold)
                         Spacer()
                         if raceEvent.sessionInProgress() != nil {
-                            if raceEvent.sessionInProgress()! {
+                            if raceEvent.sessionInProgress()! && dc.storeManager.subscribed {
                                 LiveCircleView()
                             } // if true
                         } // if not nil
@@ -34,7 +34,7 @@ struct EventRowView: View {
                     .padding(.bottom, -2)
                     EventRowSeriesRow(dc: dc, raceEvent: raceEvent)
                     HStack {
-                        EventRowSessionDates(raceEvent: raceEvent)
+                        EventRowSessionDates(dc: dc, raceEvent: raceEvent)
                     } // hstack
                 } // vstack
             } // hstack

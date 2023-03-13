@@ -10,12 +10,20 @@ import SwiftUI
 struct SubscriptionView: View {
     
     @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var dc: DataController
     @State private var annualSelected: Bool = true
     
     var body: some View {
         ScrollView {
             
             HStack { // cancel button
+                Button {
+                    dc.applicationSavedSettings.subscribed = dc.storeManager.restoreSubscriptionStatus()
+                    dc.saveSavedSettings()
+                } label: {
+                    Text("Restore")
+                        .foregroundColor(.blue)
+                }
                 Spacer()
                 Button {
                     presentationMode.wrappedValue.dismiss()
@@ -26,7 +34,8 @@ struct SubscriptionView: View {
             }.padding(.horizontal, 20)
                 .padding(.top, 20)
             TabView {
-                SubscriptionTabView(imageName: "app.badge", title: "Custom Notifications", description: "Notifications for the events and series you want, when you want them.")
+                SubscriptionTabView(imageName: "play.display", title: "Weekend Dashboard", description: "A comprehensive guide to the weekends action.")
+                SubscriptionTabView(imageName: "app.badge", title: "Custom Notifications", description: "Notifications for the events and series you want, when you want.")
                 SubscriptionTabView(imageName: "stopwatch", title: "Race Times", description: "Event and session green flag times converted to your local time zone.")
                 SubscriptionTabView(imageName: "square.dashed.inset.filled", title: "Widgets", description: "Customisable widgets for your home screen.")
                 SubscriptionTabView(imageName: "flag.checkered", title: "More coming soon...", description: "Weather, live events, WatchOS support")
@@ -42,13 +51,13 @@ struct SubscriptionView: View {
                     Button {
                         annualSelected = false
                     } label: {
-                        SubscriptionButtonMonthlyView(selected: !annualSelected).padding(.horizontal, 10)
+                        SubscriptionButtonMonthlyView(dc: dc, selected: !annualSelected).padding(.horizontal, 10)
                     }
                     
                     Button {
                         annualSelected = true
                     } label: {
-                        SubscriptionButtonAnnualView(selected: annualSelected)
+                        SubscriptionButtonAnnualView(dc: dc, selected: annualSelected)
                     }
                 }
                 Text("Auto-renews")
@@ -57,7 +66,9 @@ struct SubscriptionView: View {
             }
             
             Button {
-                
+                let sub = dc.storeManager.getProductByName(productName: annualSelected == true ? "annual" : "gold")
+                dc.applicationSavedSettings.subscribed = dc.storeManager.purchaseProduct(product: sub)
+                dc.saveSavedSettings()
             } label: {
                 Text("Subscribe")
                     .foregroundColor(.white)
@@ -72,6 +83,6 @@ struct SubscriptionView: View {
 
 struct SubscriptionView_Previews: PreviewProvider {
     static var previews: some View {
-        SubscriptionView()
+        SubscriptionView(dc: DataController())
     }
 }

@@ -23,7 +23,9 @@ struct SessionView: View {
             ScrollView {
                 VStack {
                     if session.isInProgress() {
-                        SessionViewSessionLive(dc: dc, session: session)
+                        if dc.storeManager.subscribed {
+                            SessionViewSessionLive(dc: dc, session: session)
+                        }
                     } else {
                         SessionViewSessionUpcoiming(dc: dc, session: session, series: series!)
                     }

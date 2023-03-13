@@ -20,7 +20,7 @@ class NotificationController: ObservableObject {
         current.getNotificationSettings(completionHandler: { permission in
             switch permission.authorizationStatus  {
             case .authorized:
-                print("User granted permission for notification")
+//                print("User granted permission for notification")
                 self.rebuildNotifications()
             case .denied:
                 print("User denied notification permission")
@@ -54,7 +54,7 @@ class NotificationController: ObservableObject {
     // MARK: - REBUILD NOTIFICATIONS
     
     func rebuildNotifications(){
-        print("Rebuild notifications called")
+//        print("Rebuild notifications called")
         // get all sessions
         let fullSessionList = self.getSessionList()!
 
@@ -225,7 +225,7 @@ class NotificationController: ObservableObject {
         let days = (fullTimeInSeconds / 86400)
         let hours = (fullTimeInSeconds % 86400) / 3600
         let minutes = ((fullTimeInSeconds % 86400) % 3600) / 60
-        print(days, hours, minutes)
+//        print(days, hours, minutes)
         let notificationOffset = NotificationOffset(days: days, hours: hours, minutes: minutes)
         
         return notificationOffset
