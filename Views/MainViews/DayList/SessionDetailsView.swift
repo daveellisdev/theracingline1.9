@@ -1,31 +1,38 @@
 //
-//  SeriesViewEventView.swift
+//  SessionDetailsView.swift
 //  theracingline
 //
-//  Created by Dave on 29/12/2022.
+//  Created by Dave on 13/03/2023.
 //
 
 import SwiftUI
 import MapKit
 
-struct EventView: View {
+struct SessionDetailsView: View {
     
     @ObservedObject var dc: DataController
-
-    let event: RaceEvent
+    
+    let session: Session
     
     var body: some View {
-        
-        let circuitName: String = event.sessions[0].circuit.circuit
-        let circuitLayout: String? = event.sessions[0].circuit.circuitLayout
+        let circuitName: String = session.circuit.circuit
+        let circuitLayout: String? = session.circuit.circuitLayout
         let circuitInfo = dc.getCircuitByName(circuit: circuitName)
+        let series = dc.getSeriesById(seriesId: session.seriesId)
+        let durationText = session.getDurationText()
         
         ScrollView {
             VStack {
-                GroupBox {
-                    VStack(alignment: .leading) {
-                        EventRowSeriesList(dc: dc, raceEvent: event)
-
+                if series != nil {
+                    GroupBox {
+                        HStack {
+                            EventRowSeriesName(series: series!, shortName: true)
+                            Spacer()
+                            if session.isInProgress() && dc.storeManager.subscribed {
+                                LiveCircleView()
+                            }
+                        }
+                        
                         HStack {
                             VStack {
                                 HStack {
@@ -43,23 +50,17 @@ struct EventView: View {
                                 } // if circuitlayout
                             } // vstack
                         } // hstack
-                    } // vstack
-                } // Event and Circuit Group Box
-                
-                Group {
-                    LinkButtons(dc: dc, seriesIds: event.seriesIds)
-                }
-                
-                ForEach(event.sessionsSortedByDate()) { session in
-                    let durationText = session.getDurationText()
-                    let series = dc.getSeriesById(seriesId: session.seriesId)
+                    } // groupbox
                     
-                    if series != nil {
-                        GroupBox {
-                            SessionView(dc: dc, series: series!, session: session, durationText: durationText)
-                        }
-                    } // if series is not nil
-                } // for each
+                    Group {
+                        LinkButtons(dc: dc, seriesIds: [session.seriesId])
+                    } // groupbox
+                    
+                    GroupBox {
+                        SessionView(dc: dc, series: series!, session: session, durationText: durationText)
+                    }
+                            
+                } // if series is not nil
                 
                 if circuitInfo != nil && circuitLayout != nil {
                     let circuit = dc.getCircuitByName(circuit: circuitName)
@@ -68,16 +69,15 @@ struct EventView: View {
                         
                         CircuitMapView(region: region)
                     }
-                }
-            }.padding(.horizontal)
-            
-                        
-        }.navigationTitle(event.eventName)
+                } // if circuit not nil
+            } // vstack
+        }.padding(.horizontal)
+        .navigationTitle(session.session.sessionName) // scrollview
     }
 }
 
-struct SeriesViewEventView_Previews: PreviewProvider {
+struct SessionDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        EventView(dc: DataController(), event: exampleEvent)
+        SessionDetailsView(dc: DataController(), session: exampleSession)
     }
 }

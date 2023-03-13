@@ -38,6 +38,17 @@ struct Session: Codable, Identifiable, Hashable {
     }
     
     func raceStartDateAsString() -> String {
+        
+        let weekDays = [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thur",
+                "Fri",
+                "Sat"
+            ]
+        
         let formatter = DateFormatter()
         if raceStartTime().compare(.isThisYear) {
             formatter.dateFormat = "MMM d"
@@ -45,7 +56,12 @@ struct Session: Codable, Identifiable, Hashable {
             formatter.dateFormat = "MMM d yyyy"
         }
         
-        return formatter.string(from: raceStartTime())
+        let myCalendar = Calendar(identifier: .gregorian)
+        let weekDay = myCalendar.component(.weekday, from: raceStartTime())
+        let weekDayString = weekDays[weekDay-1]
+        let date = formatter.string(from: raceStartTime())
+        
+        return "\(weekDayString) \(date)"
     }
     
     func raceStartTimeInRegion() -> DateInRegion {

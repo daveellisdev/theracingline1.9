@@ -13,11 +13,16 @@ struct SeriesListView: View {
     @State var navStack = NavigationPath()
     
     var body: some View {
-        let series = dc.series
+        let seriesList = dc.series
+        
         NavigationStack(path: $navStack) {
-            List(series) { series in
+            List(seriesList) { series in
+                
+                let events: [RaceEvent] = dc.getEventsBySeriesId(seriesId: series.seriesInfo.id)
+                let liveEvents = events.filter {$0.sessionInProgress() != nil && $0.sessionInProgress()!}
+                                
                 NavigationLink(value: series) {
-                    SeriesListViewSeriesName(series: series)
+                    SeriesListViewSeriesName(dc: dc, series: series, hasLiveSession: liveEvents.count > 0 ? true : false)
                 }
             }.navigationDestination(for: Series.self) { series in
                 SeriesListViewEventList(dc: dc, navStack: $navStack, series: series)

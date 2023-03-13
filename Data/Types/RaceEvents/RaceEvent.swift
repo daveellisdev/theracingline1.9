@@ -127,6 +127,16 @@ struct RaceEvent: Codable, Identifiable, Hashable {
     
     func firstRaceDateAsString() -> String? {
         
+        let weekDays = [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thur",
+                "Fri",
+                "Sat"
+            ]
+        
         // filter out non races
         let races = self.sessions.filter({ $0.session.sessionType == "R" })
         if races.isEmpty {
@@ -134,11 +144,28 @@ struct RaceEvent: Codable, Identifiable, Hashable {
         } else {
             let firstRace = races.min { $0.raceStartTime() < $1.raceStartTime() }
             let firstRaceDate = firstRace!.raceStartTime()
-            return dateAsString(date: firstRaceDate)
+            
+            let myCalendar = Calendar(identifier: .gregorian)
+            let weekDay = myCalendar.component(.weekday, from: firstRaceDate)
+            let weekDayString = weekDays[weekDay-1]
+            let dateAsString = dateAsString(date: firstRaceDate)
+            
+            return "\(weekDayString) \(dateAsString)"
         }
     }
     
     func lastRaceDateAsString() -> String? {
+        
+        let weekDays = [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thur",
+                "Fri",
+                "Sat"
+            ]
+        
         // filter out non races
         let races = self.sessions.filter({ $0.session.sessionType == "R" })
         if races.isEmpty {
@@ -146,23 +173,61 @@ struct RaceEvent: Codable, Identifiable, Hashable {
         } else {
             let lastRace = races.max { $0.raceStartTime() < $1.raceStartTime() }
             let lastRaceDate = lastRace!.raceStartTime()
-            return dateAsString(date: lastRaceDate)
+            
+            let myCalendar = Calendar(identifier: .gregorian)
+            let weekDay = myCalendar.component(.weekday, from: lastRaceDate)
+            let weekDayString = weekDays[weekDay-1]
+            let dateAsString = dateAsString(date: lastRaceDate)
+            
+            return "\(weekDayString) \(dateAsString)"
         }
     }
     
     func firstSessionDateAsString() -> String {
         
+        let weekDays = [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thur",
+                "Fri",
+                "Sat"
+            ]
+        
         let firstSession = self.sessions.first 
-        let firstSessionDate = firstSession!.raceStartTime
-        return dateAsString(date: firstSessionDate())
+        let firstSessionDate = firstSession!.raceStartTime()
+        
+        let myCalendar = Calendar(identifier: .gregorian)
+        let weekDay = myCalendar.component(.weekday, from: firstSessionDate)
+        let weekDayString = weekDays[weekDay-1]
+        let dateAsString = dateAsString(date: firstSessionDate)
+        
+        return "\(weekDayString) \(dateAsString)"
         
     }
     
     func lastSessionDateAsString() -> String {
         
+        let weekDays = [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thur",
+                "Fri",
+                "Sat"
+            ]
+        
         let lastSession = self.sessions.last
-        let lastSessionDate = lastSession!.raceStartTime
-        return dateAsString(date: lastSessionDate())
+        let lastSessionDate = lastSession!.raceStartTime()
+        
+        let myCalendar = Calendar(identifier: .gregorian)
+        let weekDay = myCalendar.component(.weekday, from: lastSessionDate)
+        let weekDayString = weekDays[weekDay-1]
+        let dateAsString = dateAsString(date: lastSessionDate)
+        
+        return "\(weekDayString) \(dateAsString)"
     }
     
 

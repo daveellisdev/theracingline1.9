@@ -18,6 +18,7 @@ struct LiveCircleView: View {
             .frame(width: 10)
             .foregroundColor(.white)
             .colorMultiply(flashColour)
+            .padding(0)
     }
 }
 
