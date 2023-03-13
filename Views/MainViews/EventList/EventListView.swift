@@ -1,13 +1,13 @@
 //
-//  AllEventsView.swift
+//  EventListView.swift
 //  theracingline
 //
-//  Created by Dave on 05/11/2022.
+//  Created by Dave on 13/03/2023.
 //
 
 import SwiftUI
 
-struct AllEventsView: View {
+struct EventListView: View {
     
     @ObservedObject var dc: DataController
     @State var navStack = NavigationPath()
@@ -16,18 +16,8 @@ struct AllEventsView: View {
     var body: some View {
         
         let events = dc.eventsInProgressAndUpcoming
+        
         NavigationStack(path: $navStack) {
-//            if !dc.storeManager.subscribed {
-//                Button {
-//                    showingFilterSheet = true
-//                } label: {
-//                    GroupBox {
-//                        PremiumBarSlim().padding(.horizontal)
-//                    }
-//                }.sheet(isPresented: $showingFilterSheet){
-//                    SubscriptionView(dc: dc)
-//                }
-//            }
             List(events) { event in
                 if event.shouldBeVisible(seriesSettings: dc.seriesSavedSettings) {
                     NavigationLink(value: event){
@@ -35,15 +25,15 @@ struct AllEventsView: View {
                     }
                 }
             }.navigationDestination(for: RaceEvent.self) { event in
-                EventView(dc: dc, raceEvent: event)
+                EventView(dc: dc, event: event)
             }
             .navigationTitle("Events")
         }
     }
 }
 
-struct AllEventsView_Previews: PreviewProvider {
+struct EventListView_Previews: PreviewProvider {
     static var previews: some View {
-        AllEventsView(dc: DataController())
+        EventListView(dc: DataController())
     }
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EventRowSeriesRow: View {
+struct EventRowSeriesList: View {
     
     let dc: DataController
     let raceEvent: RaceEvent
@@ -30,6 +30,6 @@ struct EventRowSeriesRow: View {
 
 struct EventRowSeriesRow_Previews: PreviewProvider {
     static var previews: some View {
-        EventRowSeriesRow(dc: DataController(), raceEvent: exampleEvent)
+        EventRowSeriesList(dc: DataController(), raceEvent: exampleEvent)
     }
 }

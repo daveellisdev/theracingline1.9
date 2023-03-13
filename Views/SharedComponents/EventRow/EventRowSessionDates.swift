@@ -18,54 +18,43 @@ struct EventRowSessionDates: View {
             HStack {
                 if raceEvent.firstRaceDateAsString() != raceEvent.lastRaceDateAsString() {
                     Text("Races:")
-                        .font(.caption)
-                        .fontWeight(.bold)
-                        .foregroundColor(.secondary)
+                    Image(systemName: "calendar").padding(.trailing, -4)
                     Text("\(raceEvent.firstRaceDateAsString()!) - \(raceEvent.lastRaceDateAsString()!)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                 } else {
                     Text("Race:")
-                        .font(.caption)
-                        .fontWeight(.bold)
-                        .foregroundColor(.secondary)
+                    Image(systemName: "calendar").padding(.trailing, -4)
                     Text("\(raceEvent.firstRaceDateAsString()!)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                 }
             }
+            .font(.caption)
+            .foregroundColor(.secondary)
         } else {
             HStack {
                 if raceEvent.firstSessionDateAsString() != raceEvent.lastSessionDateAsString() {
                     Text("Sessions:")
-                        .font(.caption)
-                        .fontWeight(.bold)
-                        .foregroundColor(.secondary)
+                    Image(systemName: "calendar").padding(.trailing, -4)
                     Text("\(raceEvent.firstSessionDateAsString()) - \(raceEvent.lastSessionDateAsString())")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                 } else {
                     Text("Session:")
-                        .font(.caption)
-                        .fontWeight(.bold)
-                        .foregroundColor(.secondary)
+                    Image(systemName: "calendar").padding(.trailing, -4)
                     Text("\(raceEvent.firstSessionDateAsString())")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                 }
             }
+            .font(.caption)
+            .foregroundColor(.secondary)
         }
         
         Spacer()
         if dc.storeManager.subscribed {
-            Text("\(raceEvent.firstSessionTimeFromNow())")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            Image(systemName: "clock")
-                .font(.caption)
-                .fontWeight(.bold)
-                .foregroundColor(.secondary)
+            HStack {
+                Text("\(raceEvent.firstSessionTimeFromNow())")
+                Image(systemName: "clock")
+            }
+            .font(.caption)
+            .foregroundColor(.secondary)
+            
         }
+           
     }
 }
 

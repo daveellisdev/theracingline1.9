@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-struct EventViewMapView: View {
+struct CircuitMapView: View {
     
     @State var region: MKCoordinateRegion
 
@@ -25,6 +25,6 @@ struct EventViewMapView: View {
 
 struct EventViewMapView_Previews: PreviewProvider {
     static var previews: some View {
-      EventViewMapView(region: MKCoordinateRegion())
+      CircuitMapView(region: MKCoordinateRegion())
     }
 }

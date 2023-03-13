@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-struct SeriesViewSeriesName: View {
+struct SeriesListViewSeriesName: View {
     
+    @ObservedObject var dc: DataController
     let series: Series
+    let hasLiveSession: Bool
     
     var body: some View {
         
@@ -24,6 +26,8 @@ struct SeriesViewSeriesName: View {
         let gradientStart = Color(red: darkR / 255, green: darkG / 255, blue: darkB / 255)
         let gradientEnd = Color(red: lightR / 255, green: lightG / 255, blue: lightB / 255)
         
+        
+        
         HStack {
             RoundedRectangle(cornerRadius: 3)
                 .fill(LinearGradient(
@@ -35,12 +39,16 @@ struct SeriesViewSeriesName: View {
             Text(series.seriesInfo.name)
                 .font(.title3)
                 .fontWeight(.bold)
+            Spacer()
+            if hasLiveSession && dc.storeManager.subscribed {
+                LiveCircleView()
+            }
         }
     }
 }
 
 struct SeriesViewSeriesName_Previews: PreviewProvider {
     static var previews: some View {
-        SeriesViewSeriesName(series: exampleSeries)
+        SeriesListViewSeriesName(dc: DataController(), series: exampleSeries, hasLiveSession: true)
     }
 }

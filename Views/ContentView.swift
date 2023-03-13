@@ -18,15 +18,15 @@ struct ContentView: View {
                 .tabItem {
                     Label("Dash", systemImage: "house.fill")
                 }
-            DayView(dc: dc)
+            DayListView(dc: dc)
                 .tabItem {
                     Label("Day", systemImage: "30.square.fill")
                 }
-            AllEventsView(dc: dc)
+            EventListView(dc: dc)
                 .tabItem {
                     Label("Events", systemImage: "flag.fill")
                 }
-            SeriesView(dc: dc)
+            SeriesListView(dc: dc)
                 .tabItem {
                     Label("Series", systemImage: "list.number")
                 }
