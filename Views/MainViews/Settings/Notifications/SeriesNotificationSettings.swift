@@ -10,6 +10,7 @@ import SwiftUI
 struct SeriesNotificationSettings: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
 
     var body: some View {
         
@@ -41,7 +42,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }
                 ForEach(singleSeaters, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
             
@@ -55,7 +56,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }
                 ForEach(sportscars, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
             
@@ -68,7 +69,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }
                 ForEach(touringcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
             
@@ -81,7 +82,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }
                 ForEach(stockcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
             
@@ -94,7 +95,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }
                 ForEach(rally, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
             
@@ -107,7 +108,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }
                 ForEach(bikes, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
             
@@ -120,7 +121,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }
                 ForEach(others, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
             }
         }
@@ -140,6 +141,6 @@ struct SeriesNotificationSettings: View {
 
 struct SeriesNotificationSettings_Previews: PreviewProvider {
     static var previews: some View {
-        SeriesNotificationSettings(dc: DataController())
+        SeriesNotificationSettings(dc: DataController(), sm: StoreManager())
     }
 }

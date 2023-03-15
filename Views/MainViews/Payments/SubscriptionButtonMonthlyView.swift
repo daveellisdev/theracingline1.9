@@ -10,12 +10,13 @@ import SwiftUI
 struct SubscriptionButtonMonthlyView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
     
     let selected: Bool
 
     var body: some View {
         
-        let sub = dc.storeManager.getProductByName(productName: "gold")
+        let sub = sm.getProductByName(productName: "gold")
         
         HStack {
             ZStack {
@@ -50,6 +51,6 @@ struct SubscriptionButtonMonthlyView: View {
 
 struct SubscriptionButtonMonthlyView_Previews: PreviewProvider {
     static var previews: some View {
-        SubscriptionButtonMonthlyView(dc: DataController(), selected: false)
+        SubscriptionButtonMonthlyView(dc: DataController(), sm: StoreManager(), selected: false)
     }
 }

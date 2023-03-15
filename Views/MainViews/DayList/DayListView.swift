@@ -10,6 +10,8 @@ import SwiftUI
 struct DayListView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
+    
     @State var navStack = NavigationPath()
     
     var body: some View {
@@ -18,16 +20,15 @@ struct DayListView: View {
 
         NavigationStack(path: $navStack) {
             List(sessions) { session in
-                let durationText = session.getDurationText()
                 let series = dc.getSeriesById(seriesId: session.seriesId)
                 
                 if series != nil {
                     NavigationLink(value: session) {
-                        SessionView(dc: dc, series: series!, session: session, durationText: durationText)
+                        SessionView(dc: dc, sm: sm, series: series!, session: session)
                     }
                 } // if series is not nil
             }.navigationDestination(for: Session.self) { session in
-                SessionDetailsView(dc: dc, session: session)
+                SessionDetailsView(dc: dc, sm: sm, session: session)
             }
             .navigationTitle("Sessions")
         }
@@ -36,6 +37,6 @@ struct DayListView: View {
 
 struct DayListView_Previews: PreviewProvider {
     static var previews: some View {
-        DayListView(dc: DataController())
+        DayListView(dc: DataController(), sm: StoreManager())
     }
 }

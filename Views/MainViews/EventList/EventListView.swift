@@ -10,6 +10,8 @@ import SwiftUI
 struct EventListView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
+    
     @State var navStack = NavigationPath()
     @State private var showingFilterSheet = false
     
@@ -21,11 +23,11 @@ struct EventListView: View {
             List(events) { event in
                 if event.shouldBeVisible(seriesSettings: dc.seriesSavedSettings) {
                     NavigationLink(value: event){
-                        EventRowView(dc: dc, raceEvent: event)
+                        EventRowView(dc: dc, sm: sm, raceEvent: event)
                     }
                 }
             }.navigationDestination(for: RaceEvent.self) { event in
-                EventView(dc: dc, event: event)
+                EventView(dc: dc, sm: sm, event: event)
             }
             .navigationTitle("Events")
         }
@@ -34,6 +36,6 @@ struct EventListView: View {
 
 struct EventListView_Previews: PreviewProvider {
     static var previews: some View {
-        EventListView(dc: DataController())
+        EventListView(dc: DataController(), sm: StoreManager())
     }
 }

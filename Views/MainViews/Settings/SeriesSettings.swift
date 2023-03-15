@@ -10,13 +10,15 @@ import SwiftUI
 struct SeriesSettings: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
+    
     @State var navStack: NavigationPath
 
     var body: some View {
         GroupBox(label: SettingsLabelView(labelText: "Series", labelImage: "list.number")){
             Divider().padding(.vertical, 4)
             NavigationLink {
-                SeriesSettingsView(dc: dc, navStack: navStack)
+                SeriesSettingsView(dc: dc, sm: sm, navStack: navStack)
             } label: {
                 HStack {
                     Image(systemName: "list.bullet")
@@ -28,12 +30,12 @@ struct SeriesSettings: View {
             } // navlink
             
             
-            if dc.storeManager.subscribed {
+            if sm.subscribed {
                 
                 Divider().padding(.vertical, 4)
                 
                 NavigationLink {
-                    NotificationsSettingsView(dc: dc, navStack: navStack)
+                    NotificationsSettingsView(dc: dc, sm: sm, navStack: navStack)
                 } label: {
                     HStack {
                         Image(systemName: "app.badge")
@@ -67,6 +69,6 @@ struct SeriesSettings: View {
 
 struct SeriesSettings_Previews: PreviewProvider {
     static var previews: some View {
-        SeriesSettings(dc: DataController(), navStack: NavigationPath())
+        SeriesSettings(dc: DataController(), sm: StoreManager(), navStack: NavigationPath())
     }
 }

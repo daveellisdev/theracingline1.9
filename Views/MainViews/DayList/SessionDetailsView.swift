@@ -11,6 +11,7 @@ import MapKit
 struct SessionDetailsView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
     
     let session: Session
     
@@ -19,7 +20,6 @@ struct SessionDetailsView: View {
         let circuitLayout: String? = session.circuit.circuitLayout
         let circuitInfo = dc.getCircuitByName(circuit: circuitName)
         let series = dc.getSeriesById(seriesId: session.seriesId)
-        let durationText = session.getDurationText()
         
         ScrollView {
             VStack {
@@ -28,7 +28,7 @@ struct SessionDetailsView: View {
                         HStack {
                             EventRowSeriesName(series: series!, shortName: true)
                             Spacer()
-                            if session.isInProgress() && dc.storeManager.subscribed {
+                            if session.isInProgress() && sm.subscribed {
                                 LiveCircleView()
                             }
                         }
@@ -57,7 +57,7 @@ struct SessionDetailsView: View {
                     } // groupbox
                     
                     GroupBox {
-                        SessionView(dc: dc, series: series!, session: session, durationText: durationText)
+                        SessionView(dc: dc, sm: sm, series: series!, session: session)
                     }
                             
                 } // if series is not nil
@@ -78,6 +78,6 @@ struct SessionDetailsView: View {
 
 struct SessionDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        SessionDetailsView(dc: DataController(), session: exampleSession)
+        SessionDetailsView(dc: DataController(), sm: StoreManager(), session: exampleSession)
     }
 }

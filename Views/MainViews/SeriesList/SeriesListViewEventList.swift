@@ -10,6 +10,7 @@ import SwiftUI
 struct SeriesListViewEventList: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
     @Binding var navStack: NavigationPath
     
     let series: Series
@@ -19,10 +20,10 @@ struct SeriesListViewEventList: View {
         let events: [RaceEvent] = dc.getEventsBySeriesId(seriesId: series.seriesInfo.id)
         List(events) { event in
             NavigationLink(value: event) {
-                EventRowView(dc: dc, raceEvent: event)
+                EventRowView(dc: dc, sm: sm, raceEvent: event)
             }
         }.navigationDestination(for: RaceEvent.self) { event in
-            EventView(dc: dc, event: event)
+            EventView(dc: dc, sm: sm, event: event)
         }.navigationTitle(series.seriesInfo.name)
     }
 }

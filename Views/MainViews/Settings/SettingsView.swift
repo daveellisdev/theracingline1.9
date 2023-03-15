@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
     
     @State var navStack = NavigationPath()
     @State private var showingFilterSheet = false
@@ -19,16 +20,16 @@ struct SettingsView: View {
             ScrollView {
                 VStack {
                     AboutView()
-                    if !dc.storeManager.subscribed {
+                    if !sm.subscribed {
                         Button {
                             showingFilterSheet = true
                         } label: {
                             PremiumBar()
                         }.sheet(isPresented: $showingFilterSheet){
-                            SubscriptionView(dc: dc)
+                            SubscriptionView(dc: dc, sm: sm)
                         }
                     }
-                    SeriesSettings(dc: dc, navStack: navStack)
+                    SeriesSettings(dc: dc, sm: sm, navStack: navStack)
 //                    LinksView()
                     PrivacyView(navStack: navStack)
                     VersionView()
@@ -43,6 +44,6 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(dc: DataController())
+        SettingsView(dc: DataController(), sm: StoreManager())
     }
 }

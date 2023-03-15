@@ -11,6 +11,7 @@ import MapKit
 struct EventView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
 
     let event: RaceEvent
     
@@ -51,12 +52,11 @@ struct EventView: View {
                 }
                 
                 ForEach(event.sessionsSortedByDate()) { session in
-                    let durationText = session.getDurationText()
                     let series = dc.getSeriesById(seriesId: session.seriesId)
                     
                     if series != nil {
                         GroupBox {
-                            SessionView(dc: dc, series: series!, session: session, durationText: durationText)
+                            SessionView(dc: dc, sm: sm, series: series!, session: session)
                         }
                     } // if series is not nil
                 } // for each
@@ -78,6 +78,6 @@ struct EventView: View {
 
 struct SeriesViewEventView_Previews: PreviewProvider {
     static var previews: some View {
-        EventView(dc: DataController(), event: exampleEvent)
+        EventView(dc: DataController(), sm: StoreManager(), event: exampleEvent)
     }
 }

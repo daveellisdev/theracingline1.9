@@ -10,6 +10,8 @@ import SwiftUI
 struct SeriesListViewSeriesName: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
+    
     let series: Series
     let hasLiveSession: Bool
     
@@ -40,7 +42,7 @@ struct SeriesListViewSeriesName: View {
                 .font(.title3)
                 .fontWeight(.bold)
             Spacer()
-            if hasLiveSession && dc.storeManager.subscribed {
+            if hasLiveSession && sm.subscribed {
                 LiveCircleView()
             }
         }
@@ -49,6 +51,6 @@ struct SeriesListViewSeriesName: View {
 
 struct SeriesViewSeriesName_Previews: PreviewProvider {
     static var previews: some View {
-        SeriesListViewSeriesName(dc: DataController(), series: exampleSeries, hasLiveSession: true)
+        SeriesListViewSeriesName(dc: DataController(), sm: StoreManager(), series: exampleSeries, hasLiveSession: true)
     }
 }

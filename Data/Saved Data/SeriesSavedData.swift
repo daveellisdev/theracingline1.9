@@ -7,9 +7,12 @@
 
 import Foundation
 
-struct SeriesSavedData: Decodable, Encodable {
+struct SeriesSavedData: Decodable, Encodable, Equatable {
+    static func == (lhs: SeriesSavedData, rhs: SeriesSavedData) -> Bool {
+        lhs.id == rhs.id
+    }
     
-    let id = UUID()
+    var id = UUID()
     let seriesInfo: SeriesInfo
     var visible: Bool
     var favourite: Bool

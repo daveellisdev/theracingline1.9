@@ -12,36 +12,8 @@ import StoreKit
 
 
 class DataController: ObservableObject {
-
-    let productIDs = ["dev.daveellis.theracingline.coffee",
-                      "dev.daveellis.theracingline.bronze",
-                      "dev.daveellis.theracingline.silver",
-                      "dev.daveellis.theracingline.gold",
-                      "dev.daveellis.theracingline.annual"]
         
     static var shared = DataController()
-    
-    @ObservedObject var nc = NotificationController.shared
-    @Published var storeManager = StoreManager()
-    
-    // MARK: - INIT
-    init() {
-        
-        // load saved settings
-        loadSavedSettings()
-        
-        // load payment information
-        SKPaymentQueue.default().add(storeManager)
-        storeManager.getProducts(productIDs: productIDs)
-        self.applicationSavedSettings.subscribed = storeManager.restoreSubscriptionStatus()
-                
-        // load previously downloaded json
-        loadSeriesAndSessionData()
-        
-        // download new json
-        downloadData()
-        
-    }
     
     // MARK: - SERIES
     @Published var seriesUnfiltered: [Series] = []
@@ -76,15 +48,17 @@ class DataController: ObservableObject {
     
     // MARK: - EVENTS
     @Published var events: [RaceEvent] = []
-    var eventsInProgress: [RaceEvent] {
-        return self.events.filter {
-            if $0.eventInProgress() != nil && $0.eventInProgress()! {
-                return true
-            } else {
-                return false
-            }
-        ;}
-    }
+    
+//    var eventsInProgress: [RaceEvent] {
+//        return self.events.filter {
+//            if $0.eventInProgress() != nil && $0.eventInProgress()! {
+//                return true
+//            } else {
+//                return false
+//            }
+//        ;}
+//    }
+    
     var eventsInProgressAndUpcoming: [RaceEvent] {
         return self.events.filter { !$0.eventComplete() }
     }
@@ -100,37 +74,10 @@ class DataController: ObservableObject {
     var sessionsInProgressAndUpcoming: [Session] {
         return self.sessions.filter { !$0.isComplete() }
     }
-    var sessionsUpcomingButNotInProgress: [Session] {
-        return self.sessions.filter { !$0.isComplete() && !$0.isInProgress() }
-    }
-    var sessionsUpcomingButNotInTheNextTwelveHours: [Session] {
-        let twelveHoursAway = Date() + 12.hours
-        
-        return self.sessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway }
-    }
-    var sessionsNextTenUpcomingButNotInProgress: [Session] {
-        return Array(self.sessionsUpcomingButNotInProgress.prefix(10))
-    }
-    var sessionsNextTenUpcomingButNotInTheNextTwelveHours: [Session] {
-        return Array(self.sessionsUpcomingButNotInTheNextTwelveHours.prefix(10))
-    }
-    
     var liveSessions: [Session] {
         return self.sessions.filter { $0.isInProgress() }
     }
-    var sessionsWithinNextTwelveHours: [Session] {
-        let now = Date()
-        let twelveHoursAway = Date() + 12.hours
-        
-        return self.sessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) }
-    }
-    var sessionsWithinNextTwelveHoursButNotLive: [Session] {
-        let now = Date()
-        let twelveHoursAway = Date() + 12.hours
-        
-        return self.sessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now }
-    }
-    
+
     // favourite filtered
     var favouriteSessions: [Session] {
         return self.sessions.filter { self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
@@ -138,49 +85,179 @@ class DataController: ObservableObject {
     var favouriteSessionsInProgressAndUpcoming: [Session] {
         return self.favouriteSessions.filter { !$0.isComplete() }
     }
-    var favouriteSessionsUpcomingButNotInProgress: [Session] {
-        return self.favouriteSessions.filter { !$0.isComplete() && !$0.isInProgress() }
-    }
-    var favouriteSessionsUpcomingButNotInTheNextTwelveHours: [Session] {
-        let twelveHoursAway = Date() + 12.hours
-        
-        return self.favouriteSessions.filter { !$0.isComplete() && !$0.isInProgress() && $0.raceStartTime() > twelveHoursAway }
-    }
-    var favouriteSessionsNextTenUpcomingButNotInProgress: [Session] {
-        return Array(self.favouriteSessionsUpcomingButNotInProgress.prefix(10))
-    }
-    var favouriteSessionsNextTenUpcomingButNotInTheNextTwelveHours: [Session] {
-        return Array(self.favouriteSessionsUpcomingButNotInTheNextTwelveHours.prefix(10))
-    }
     var favouriteLiveSessions: [Session] {
         return self.favouriteSessions.filter { $0.isInProgress() }
     }
-    var favouriteSessionsWithinNextTwelveHours: [Session] {
-        let now = Date()
-        let twelveHoursAway = Date() + 12.hours
-        
-        return self.favouriteSessions.filter { $0.isInProgress() || ($0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now) } .reversed()
+    
+    // notification sessions
+    var notificationSessions: [Session] {
+        unfilteredSessions.filter {
+            let twoWeeks = Date()+2.weeks
+            return $0.raceStartTime() < twoWeeks
+        }
     }
-    var favouriteSessionsWithinNextTwelveHoursButNotLive: [Session] {
-        let now = Date()
-        let twelveHoursAway = Date() + 12.hours
+    
+    // weekly sessions for dashboard
+    var mondayFavouriteSessions: [Session] {
         
-        return self.favouriteSessions.filter { $0.raceStartTime() < twelveHoursAway && $0.raceStartTime() > now }
+        let seconds = TimeZone.current.secondsFromGMT()
+        let minutesToGMT = (seconds / 60) + (seconds % 60)
+        
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        
+        let mondayDateObject: Date
+        
+        if weekday == 2 {
+            mondayDateObject = Date()
+        } else {
+            mondayDateObject = Date().dateAt(.nextWeekday(.monday))
+        }
+                
+        let mondayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: mondayDateObject)! + minutesToGMT.minutes
+        let mondayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: mondayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
+        
+        return self.favouriteSessions.filter { $0.raceStartTime() > mondayStart && $0.raceStartTime() < mondayEnd }
+    }
+    
+    var tuesdayFavouriteSessions: [Session] {
+        
+        let seconds = TimeZone.current.secondsFromGMT()
+        let minutesToGMT = (seconds / 60) + (seconds % 60)
+        
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        
+        let tuesdayDateObject: Date
+        
+        if weekday == 3 {
+            tuesdayDateObject = Date()
+        } else {
+            tuesdayDateObject = Date().dateAt(.nextWeekday(.tuesday))
+        }
+                
+        let tuesdayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: tuesdayDateObject)! + minutesToGMT.minutes
+        let tuesdayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: tuesdayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
+        
+        return self.favouriteSessions.filter { $0.raceStartTime() > tuesdayStart && $0.raceStartTime() < tuesdayEnd }
+    }
+    
+    var wednesdayFavouriteSessions: [Session] {
+        
+        let seconds = TimeZone.current.secondsFromGMT()
+        let minutesToGMT = (seconds / 60) + (seconds % 60)
+        
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        
+        let wednesdayDateObject: Date
+        
+        if weekday == 4 {
+            wednesdayDateObject = Date()
+        } else {
+            wednesdayDateObject = Date().dateAt(.nextWeekday(.wednesday))
+        }
+                
+        let wednesdayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: wednesdayDateObject)! + minutesToGMT.minutes
+        let wednesdayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: wednesdayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
+        
+        return self.favouriteSessions.filter { $0.raceStartTime() > wednesdayStart && $0.raceStartTime() < wednesdayEnd }
+    }
+    
+    var thursdayFavouriteSessions: [Session] {
+        
+        let seconds = TimeZone.current.secondsFromGMT()
+        let minutesToGMT = (seconds / 60) + (seconds % 60)
+        
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        
+        let thursdayDateObject: Date
+        
+        if weekday == 4 {
+            thursdayDateObject = Date()
+        } else {
+            thursdayDateObject = Date().dateAt(.nextWeekday(.thursday))
+        }
+                
+        let thursdayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: thursdayDateObject)! + minutesToGMT.minutes
+        let thursdayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: thursdayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
+        
+        return self.favouriteSessions.filter { $0.raceStartTime() > thursdayStart && $0.raceStartTime() < thursdayEnd }
+    }
+    
+    var fridayFavouriteSessions: [Session] {
+        
+        let seconds = TimeZone.current.secondsFromGMT()
+        let minutesToGMT = (seconds / 60) + (seconds % 60)
+        
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        
+        let fridayDateObject: Date
+        
+        if weekday == 5 {
+            fridayDateObject = Date()
+        } else {
+            fridayDateObject = Date().dateAt(.nextWeekday(.friday))
+        }
+                
+        let fridayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: fridayDateObject)! + minutesToGMT.minutes
+        let fridayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: fridayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
+        
+        return self.favouriteSessions.filter { $0.raceStartTime() > fridayStart && $0.raceStartTime() < fridayEnd }
+    }
+    
+    var saturdayFavouriteSessions: [Session] {
+        
+        let seconds = TimeZone.current.secondsFromGMT()
+        let minutesToGMT = (seconds / 60) + (seconds % 60)
+        
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        
+        let saturdayDateObject: Date
+        
+        if weekday == 6 {
+            saturdayDateObject = Date()
+        } else {
+            saturdayDateObject = Date().dateAt(.nextWeekday(.saturday))
+        }
+                
+        let saturdayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: saturdayDateObject)! + minutesToGMT.minutes
+        let saturdayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: saturdayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
+        
+        return self.favouriteSessions.filter { $0.raceStartTime() > saturdayStart && $0.raceStartTime() < saturdayEnd }
+    }
+    
+    var sundayFavouriteSessions: [Session] {
+        
+        let seconds = TimeZone.current.secondsFromGMT()
+        let minutesToGMT = (seconds / 60) + (seconds % 60)
+        
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        
+        let sundayDateObject: Date
+        
+        if weekday == 0 {
+            sundayDateObject = Date()
+        } else {
+            sundayDateObject = Date().dateAt(.nextWeekday(.sunday))
+        }
+                
+        let sundayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: sundayDateObject)! + minutesToGMT.minutes
+        let sundayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: sundayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
+        
+        return self.favouriteSessions.filter { $0.raceStartTime() > sundayStart && $0.raceStartTime() < sundayEnd }
     }
     
     @Published var seriesSavedSettings: [SeriesSavedData] = []
-    @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "1", subscribed: false)
+    @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "1")
     
 
     
-    var timeLineHeight: CGFloat {
-        return CGFloat((sessionsWithinNextTwelveHours.count * 50) - 20)
-    }
+//    var timeLineHeight: CGFloat {
+//        return CGFloat((sessionsWithinNextTwelveHours.count * 50) - 20)
+//    }
     
     // MARK: - DOWNLOAD DATA
     
     func downloadData() {
-//        print("Downloading Data")
+        print("Downloading Data \(Date())")
         
         let keys = Keys()
         let key = keys.getKey()
@@ -210,7 +287,7 @@ class DataController: ObservableObject {
             
             // initiate settings check
             self.initSavedSettings(data: data)
-            
+            print("Data Downloaded Data \(Date())")
         }.resume()
         
     } // DOWNLOADDATA
@@ -229,6 +306,8 @@ class DataController: ObservableObject {
     // MARK: - DECODE DATA
     
     func decodeData(data: Data) {
+        print("Decoding Data \(Date())")
+
         do {
             let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
 
@@ -253,11 +332,7 @@ class DataController: ObservableObject {
                 sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
                 self.unfilteredSessions = sortedSessions
 //                print("Sessions Done")
-                
-//                print("Decoding Finished")
-
-                self.nc.initiateNotifications()
-//                print("Initiating Notifications")
+                print("Data Decoded \(Date())")
                 
                 self.saveSeriesAndSessionData(data: data)
             } // dispatchqueue
@@ -271,7 +346,7 @@ class DataController: ObservableObject {
     // MARK: - LOAD SERIES DATA
     
     func loadSeriesAndSessionData() {
-//        print("Loading previous data")
+        print("Loading previous data \(Date())")
         DispatchQueue.global().async {
             
             if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
@@ -280,7 +355,7 @@ class DataController: ObservableObject {
                     DispatchQueue.main.async{
                         self.decodeData(data: data)
                     }
-//                    print("Loaded Series Data")
+                    print("Loaded Series Data \(Date())")
                 } // if let data
             } // if let defaults
         } // dispatchqueee
@@ -360,7 +435,7 @@ class DataController: ObservableObject {
             // Notifications - Offset, Sessions, Sound
             if defaults.data(forKey: "applicationSavedSettings") == nil {
                 // if no saved settings, create defaults
-                let defaultSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "flyby_notification_no_bell.aiff", subscribed: false)
+                let defaultSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "flyby_notification_no_bell.aiff")
                 DispatchQueue.main.async {
                     self.applicationSavedSettings = defaultSettings
                 }
@@ -386,31 +461,25 @@ class DataController: ObservableObject {
                 }
             }
         }
-//        print("Saved Settings Run")
     }
     
     // MARK: - UPDATED SERIES SAVED SETTINGS
     
     func updatedSeriesSavedSettings(type: ToggleType, series: Series, newValue: Bool) {
-        if var savedSeries = self.seriesSavedSettings.first(where: {$0.seriesInfo.id == series.seriesInfo.id}) {
-            
+        if let index = self.seriesSavedSettings.firstIndex(where: {$0.seriesInfo.id == series.seriesInfo.id}) {
             switch type {
             case .visible:
-                savedSeries.visible = newValue
+                self.seriesSavedSettings[index].visible = newValue
                 if !newValue {
-                    savedSeries.favourite = newValue
+                    self.seriesSavedSettings[index].favourite = newValue
                 }
             case .favourite:
-                savedSeries.favourite = newValue
+                self.seriesSavedSettings[index].favourite = newValue
                 if newValue {
-                    savedSeries.visible = newValue
+                    self.seriesSavedSettings[index].visible = newValue
                 }
             case .notification:
-                savedSeries.notifications = newValue
-            }
-            
-            if let index = self.seriesSavedSettings.firstIndex(where: {$0.seriesInfo.id == series.seriesInfo.id}) {
-                self.seriesSavedSettings[index] = savedSeries
+                self.seriesSavedSettings[index].notifications = newValue
             }
         }
     }
@@ -462,7 +531,6 @@ class DataController: ObservableObject {
     // MARK: - CHECK VISFAVNOT SETTINGS
     
     func checkSessionSetting(type: ToggleType, seriesId: String) -> Bool {
-        
         if let savedSeries = seriesSavedSettings.first(where: {$0.seriesInfo.id == seriesId}) {
             switch type {
             case .visible:
@@ -473,7 +541,6 @@ class DataController: ObservableObject {
                 return savedSeries.notifications
             }
         }
-
         return true
     }
     

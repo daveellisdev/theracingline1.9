@@ -10,33 +10,31 @@ import SwiftUI
 struct ContentView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
     
     var body: some View {
         
         TabView {
-            DashboardView(dc: dc)
+            DashboardView(dc: dc, sm: sm)
                 .tabItem {
                     Label("Dash", systemImage: "house.fill")
                 }
-            DayListView(dc: dc)
+            DayListView(dc: dc, sm: sm)
                 .tabItem {
                     Label("Day", systemImage: "30.square.fill")
                 }
-            EventListView(dc: dc)
+            EventListView(dc: dc, sm: sm)
                 .tabItem {
                     Label("Events", systemImage: "flag.fill")
                 }
-            SeriesListView(dc: dc)
+            SeriesListView(dc: dc, sm: sm)
                 .tabItem {
                     Label("Series", systemImage: "list.number")
                 }
-            SettingsView(dc: dc)
+            SettingsView(dc: dc, sm: sm)
                 .tabItem {
                     Label("Settings", systemImage: "slider.horizontal.3")
                 }
-        }.onAppear() {
-            dc.storeManager.restoreSubscriptionStatus()
-            dc.downloadData()
         }
         
     }
@@ -44,6 +42,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(dc: DataController())
+        ContentView(dc: DataController(), sm: StoreManager())
     }
 }
