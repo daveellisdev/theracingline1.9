@@ -12,25 +12,17 @@ import SwiftDate
 struct RaceChart: View {
     
     @ObservedObject var dc: DataController
+    let sessions: [Session]
+    let chartStartTime: Date
     
     var body: some View {
         
         GroupBox {
             VStack {
                 HStack {
-                    Text("Timelime")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    Spacer()
-                    Text("next 12 hours")
-                        .font(.caption)
-                }
-                HStack {
                     ScrollView(.horizontal) {
                         Chart {
-//                            exampleSessions
-// dc.sessionsWithinNextTwelveHours
-                            ForEach(Array(dc.sessionsWithinNextTwelveHours.enumerated()), id: \.offset) { index, session in
+                            ForEach(Array(sessions.enumerated()), id: \.offset) { index, session in
 
                                 let seriesInfo = dc.getSeriesById(seriesId: session.seriesId)
 
@@ -58,9 +50,9 @@ struct RaceChart: View {
                         } // chart
                         .chartYAxis(.hidden)
                         .chartLegend(.hidden)
-                        .chartXScale(domain: Date()...Date()+24.hours)
-                        .chartYScale(domain: 0...dc.sessionsWithinNextTwelveHours.count)
-                        .frame(width: 2000, height: dc.timeLineHeight)
+                        .chartXScale(domain: chartStartTime...chartStartTime+24.hours)
+                        .chartYScale(domain: 0...sessions.count)
+                        .frame(width: 2000, height: CGFloat((sessions.count * 50) - 20))
                         .padding()
                     }
                 }
@@ -82,6 +74,6 @@ func calculateChartRaceStartTime(startDate: Date) -> Date {
 
 struct RaceChart_Previews: PreviewProvider {
     static var previews: some View {
-        RaceChart(dc: DataController())
+        RaceChart(dc: DataController(), sessions: [exampleSession, exampleSession2, exampleSession3], chartStartTime: Date())
     }
 }

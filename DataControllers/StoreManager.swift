@@ -12,8 +12,10 @@ import TPInAppReceipt
 
 class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
     
-//    @ObservedObject var data = DataController.shared
-//    @ObservedObject var notificatons = NotificationController.shared
+    static var shared = StoreManager()
+
+    @ObservedObject var dc = DataController.shared
+    @ObservedObject var nc = NotificationController.shared
     @Published var subscribed = false
 
     //FETCH PRODUCTS
@@ -54,14 +56,12 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     //HANDLE TRANSACTIONS
     @Published var transactionState: SKPaymentTransactionState?
     
-    func purchaseProduct(product: SKProduct) -> Bool {
+    func purchaseProduct(product: SKProduct) {
         if SKPaymentQueue.canMakePayments() {
             let payment = SKPayment(product: product)
             SKPaymentQueue.default().add(payment)
-            return true
         } else {
             print("User can't make payment.")
-            return false
         }
     }
     
@@ -92,39 +92,27 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
         }
     }
     
-//    func restoreProducts() {
-////        print("Restoring products ...")
-//        SKPaymentQueue.default().restoreCompletedTransactions()
-//    }
-    
-    func updateUserAccess(productIdentifier: String) -> Bool? {
+    func updateUserAccess(productIdentifier: String) {
         switch productIdentifier {
         case "dev.daveellis.theracingline.bronze":
-            return false
+            self.subscribed = false
         case "dev.daveellis.theracingline.silver":
-            return false
+            self.subscribed = false
         case "dev.daveellis.theracingline.gold":
-//            self.notificatons.requestPermission()
-            return true
+            self.nc.requestPermission()
+            self.subscribed = true
         case "dev.daveellis.theracingline.annual":
-//            self.notificatons.requestPermission()
-            return true
+            self.subscribed = true
         case "dev.daveellis.theracingline.coffee":
             print("Coffee purchased")
-            return nil
         default:
-            return false
+            self.subscribed = false
         }
     }
     
-    func restoreSubscriptionStatus() -> Bool {
-        
-        var subscribedReturn: Bool = false
-        
+    func restoreSubscriptionStatus() {
         InAppReceipt.refresh { (error) in
             if let err = error {
-                print("LOL ERROR")
-                subscribedReturn = false
                 self.subscribed = false
                 print(err)
             } else {
@@ -132,36 +120,29 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
                 if let receipt = try? InAppReceipt.localReceipt(){
                     if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.annual", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
-                        subscribedReturn = true
                         self.subscribed = true
                         print("============= Annual Subscription Found =============")
                         
                     } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.gold", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
-                        subscribedReturn = true
                         self.subscribed = true
                         print("============= Monthly Subscription Found =============")
                         
                     } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.silver", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
-                        subscribedReturn = false
                         self.subscribed = false
                         
                     } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.bronze", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
-                        subscribedReturn = false
                         self.subscribed = false
                         
                     } else {
-                        subscribedReturn = false
                         self.subscribed = false
                         print("============= No Subscription Found =============")
                     }
                 }
             }
         }
-        
-        return subscribedReturn
     }
     
     func getProductByName(productName: String) -> SKProduct {

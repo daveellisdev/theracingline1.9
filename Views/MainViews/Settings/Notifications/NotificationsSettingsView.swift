@@ -10,6 +10,7 @@ import SwiftUI
 struct NotificationsSettingsView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
     @State var navStack: NavigationPath
     @State var selected = 0
     
@@ -30,9 +31,9 @@ struct NotificationsSettingsView: View {
                 })
                 
                 if selected == 0 {
-                    SeriesNotificationSettings(dc: dc)
+                    SeriesNotificationSettings(dc: dc, sm: sm)
                 } else if selected == 1 {
-                    NotificationSessionsSettings(dc: dc)
+                    NotificationSessionsSettings(dc: dc, sm: sm)
                 } else if selected == 2 {
                     NotificationOffsetPicker(dc: dc, selectedDays: notficationOffset.days, selectedHours: notficationOffset.hours, selectedMinutes: notficationOffset.minutes)
                 }
@@ -44,6 +45,6 @@ struct NotificationsSettingsView: View {
 
 struct NotificationsSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        NotificationsSettingsView(dc: DataController(), navStack: NavigationPath())
+        NotificationsSettingsView(dc: DataController(), sm: StoreManager(), navStack: NavigationPath())
     }
 }

@@ -10,6 +10,8 @@ import SwiftUI
 struct EventRowSessionDates: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
+    
     let raceEvent: RaceEvent
     
     var body: some View {
@@ -45,7 +47,7 @@ struct EventRowSessionDates: View {
         }
         
         Spacer()
-        if dc.storeManager.subscribed {
+        if sm.subscribed {
             HStack {
                 Text("\(raceEvent.firstSessionTimeFromNow())")
                 Image(systemName: "clock")
@@ -60,6 +62,7 @@ struct EventRowSessionDates: View {
 
 struct EventRowSessionDates_Previews: PreviewProvider {
     static var previews: some View {
-        EventRowSessionDates(dc: DataController(), raceEvent: exampleEvent)
+        EventRowSessionDates(dc: DataController(), sm: StoreManager(), raceEvent: exampleEvent)
     }
+    
 }

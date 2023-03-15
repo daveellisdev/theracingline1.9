@@ -10,6 +10,7 @@ import SwiftUI
 struct SessionToggles: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
     @State var isOn: Bool
     var sessionTypeEnum: SessionType
     var sessionType: String

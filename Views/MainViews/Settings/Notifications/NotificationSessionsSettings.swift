@@ -10,6 +10,7 @@ import SwiftUI
 struct NotificationSessionsSettings: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
 
     var body: some View {
         VStack {
@@ -20,10 +21,10 @@ struct NotificationSessionsSettings: View {
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 10)
             Group {
-                SessionToggles(dc: dc, isOn: dc.applicationSavedSettings.raceNotifications, sessionTypeEnum: .race, sessionType: "Race")
-                SessionToggles(dc: dc, isOn: dc.applicationSavedSettings.qualifyingNotifications, sessionTypeEnum: .qualifying, sessionType: "Qualifying")
-                SessionToggles(dc: dc, isOn: dc.applicationSavedSettings.practiceNotifications, sessionTypeEnum: .practice, sessionType: "Practice")
-                SessionToggles(dc: dc, isOn: dc.applicationSavedSettings.testingNotifications, sessionTypeEnum: .testing, sessionType: "Testing")
+                SessionToggles(dc: dc, sm: sm, isOn: dc.applicationSavedSettings.raceNotifications, sessionTypeEnum: .race, sessionType: "Race")
+                SessionToggles(dc: dc, sm: sm, isOn: dc.applicationSavedSettings.qualifyingNotifications, sessionTypeEnum: .qualifying, sessionType: "Qualifying")
+                SessionToggles(dc: dc, sm: sm, isOn: dc.applicationSavedSettings.practiceNotifications, sessionTypeEnum: .practice, sessionType: "Practice")
+                SessionToggles(dc: dc, sm: sm, isOn: dc.applicationSavedSettings.testingNotifications, sessionTypeEnum: .testing, sessionType: "Testing")
             }
             Spacer()
         }
@@ -34,6 +35,6 @@ struct NotificationSessionsSettings: View {
 
 struct NotificationSessionsSettings_Previews: PreviewProvider {
     static var previews: some View {
-        NotificationSessionsSettings(dc: DataController())
+        NotificationSessionsSettings(dc: DataController(), sm: StoreManager())
     }
 }

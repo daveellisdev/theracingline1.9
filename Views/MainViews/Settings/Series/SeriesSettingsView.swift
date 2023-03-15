@@ -10,6 +10,7 @@ import SwiftUI
 struct SeriesSettingsView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
     @State var navStack: NavigationPath
     @State var selected = 0
     
@@ -26,9 +27,9 @@ struct SeriesSettingsView: View {
                 })
                 
                 if selected == 0 {
-                    VisibleSeriesView(dc: dc)
+                    VisibleSeriesView(dc: dc, sm: sm)
                 } else if selected == 1 {
-                    FavouriteSeriesView(dc: dc)
+                    FavouriteSeriesView(dc: dc, sm: sm)
                 }
             } // vstack
             .navigationTitle("Series Selection")
@@ -38,6 +39,6 @@ struct SeriesSettingsView: View {
 
 struct SeriesSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SeriesSettingsView(dc: DataController(), navStack: NavigationPath())
+        SeriesSettingsView(dc: DataController(), sm: StoreManager(), navStack: NavigationPath())
     }
 }

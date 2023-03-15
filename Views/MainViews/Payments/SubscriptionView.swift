@@ -11,6 +11,8 @@ struct SubscriptionView: View {
     
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
+    
     @State private var annualSelected: Bool = true
     
     var body: some View {
@@ -18,8 +20,7 @@ struct SubscriptionView: View {
             
             HStack { // cancel button
                 Button {
-                    dc.applicationSavedSettings.subscribed = dc.storeManager.restoreSubscriptionStatus()
-                    dc.saveSavedSettings()
+                    sm.restoreSubscriptionStatus()
                 } label: {
                     Text("Restore")
                         .foregroundColor(.blue)
@@ -51,13 +52,13 @@ struct SubscriptionView: View {
                     Button {
                         annualSelected = false
                     } label: {
-                        SubscriptionButtonMonthlyView(dc: dc, selected: !annualSelected).padding(.horizontal, 10)
+                        SubscriptionButtonMonthlyView(dc: dc, sm: sm, selected: !annualSelected).padding(.horizontal, 10)
                     }
                     
                     Button {
                         annualSelected = true
                     } label: {
-                        SubscriptionButtonAnnualView(dc: dc, selected: annualSelected)
+                        SubscriptionButtonAnnualView(dc: dc, sm: sm, selected: annualSelected)
                     }
                 }
                 Text("Auto-renews")
@@ -66,9 +67,8 @@ struct SubscriptionView: View {
             }
             
             Button {
-                let sub = dc.storeManager.getProductByName(productName: annualSelected == true ? "annual" : "gold")
-                dc.applicationSavedSettings.subscribed = dc.storeManager.purchaseProduct(product: sub)
-                dc.saveSavedSettings()
+                let sub = sm.getProductByName(productName: annualSelected == true ? "annual" : "gold")
+                sm.purchaseProduct(product: sub)
             } label: {
                 Text("Subscribe")
                     .foregroundColor(.white)
@@ -77,12 +77,14 @@ struct SubscriptionView: View {
                     .background(.green)
                     .cornerRadius(20)
             }
-        }
+        }.onChange(of: sm.subscribed, perform: { value in
+            presentationMode.wrappedValue.dismiss()
+        })
     }
 }
 
 struct SubscriptionView_Previews: PreviewProvider {
     static var previews: some View {
-        SubscriptionView(dc: DataController())
+        SubscriptionView(dc: DataController(), sm: StoreManager())
     }
 }

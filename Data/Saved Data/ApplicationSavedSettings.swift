@@ -7,12 +7,11 @@
 
 import Foundation
 
-struct ApplicationSavedSettings: Decodable, Encodable {
+struct ApplicationSavedSettings: Decodable, Encodable, Equatable {
     var raceNotifications: Bool
     var qualifyingNotifications: Bool
     var practiceNotifications: Bool
     var testingNotifications: Bool
     var notificationOffset: Int
     var notificationSound: String
-    var subscribed: Bool
 }

@@ -13,6 +13,8 @@ import SwiftUI
 class NotificationController: ObservableObject {
     
     static var shared = NotificationController()
+    
+    @ObservedObject var dc = DataController.shared
 
     // MARK: - NOTIFICATION INIT
     func initiateNotifications() {
@@ -54,23 +56,27 @@ class NotificationController: ObservableObject {
     // MARK: - REBUILD NOTIFICATIONS
     
     func rebuildNotifications(){
-//        print("Rebuild notifications called")
+        
+        print("Rebuild notifications called")
         // get all sessions
-        let fullSessionList = self.getSessionList()!
+        let fullSessionList = self.dc.notificationSessions
+        let applicationSavedSettings = self.dc.applicationSavedSettings
+        
+        print(fullSessionList.count)
+//        let sessionListFilteredBySeries = fullSessionList.filter { self.dc.checkSessionSetting(type: .notification, seriesId: $0.seriesId) }
 
         // clear notifications
-        clearNotifications()
+        self.clearNotifications()
         
         // Weekly Notification
-        setReminderNotificaton()
+        self.setReminderNotificaton()
         
         //filter sessions based on preferences
-        let sessionsFilteredByNotifications = filterSeriesByPreferences(unfilteredSessions: fullSessionList)
         //loop through remaining sessions and set notifications
-        for (index, session) in sessionsFilteredByNotifications.enumerated() {
+        for (index, session) in fullSessionList.enumerated() {
 
             if index < 40 && (session.date.tba == nil || !session.date.tba!) {
-                setNotifictions(session: session)
+                self.setNotifictions(session: session)
             }
         }
     }
@@ -78,7 +84,7 @@ class NotificationController: ObservableObject {
     // MARK: - SET SESSION NOTIFICATION
     
     func setNotifictions(session: Session) {
-        print("Notification setup for \(session.seriesId) - \(session.session.sessionName)")
+        print("Notification setup for \(session.seriesId) - \(session.circuit.circuit) - \(session.session.sessionName)")
         let notificationSavedSettings = self.getSavedSettings()!
         let timeOffset = notificationSavedSettings.notificationOffset
         let currentDate = Date()

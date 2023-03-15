@@ -10,6 +10,7 @@ import SwiftUI
 struct VisibleSeriesView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
     
     var body: some View {
         
@@ -35,9 +36,9 @@ struct VisibleSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(singleSeaters, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
             
@@ -49,9 +50,9 @@ struct VisibleSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(sportscars, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
             
@@ -62,9 +63,9 @@ struct VisibleSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(touringcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
             
@@ -75,9 +76,9 @@ struct VisibleSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(stockcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
             
@@ -88,9 +89,9 @@ struct VisibleSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(rally, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
             
@@ -101,9 +102,9 @@ struct VisibleSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(bikes, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
             
@@ -114,9 +115,9 @@ struct VisibleSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(others, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
                 }
             }
         }
@@ -138,7 +139,7 @@ struct VisibleSeriesView: View {
 
 struct VisibleSeriesView_Previews: PreviewProvider {
     static var previews: some View {
-        VisibleSeriesView(dc: DataController())
+        VisibleSeriesView(dc: DataController(), sm: StoreManager())
     }
 }
 

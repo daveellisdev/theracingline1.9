@@ -10,11 +10,12 @@ import SwiftUI
 struct SubscriptionButtonAnnualView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
 
     let selected: Bool
     
     var body: some View {
-        let sub = dc.storeManager.getProductByName(productName: "annaul")
+        let sub = sm.getProductByName(productName: "annaul")
         ZStack {
             VStack {
                 HStack {
@@ -48,7 +49,7 @@ struct SubscriptionButtonAnnualView: View {
                 Text("billed annually")
                     .font(.caption)
                     .foregroundColor(.gray)
-                Text("£2.49 / month")
+                Text("Two months free!")
                     .font(.caption)
                     .foregroundColor(.gray)
                 Spacer()
@@ -67,6 +68,6 @@ struct SubscriptionButtonAnnualView: View {
 
 struct SubscriptionButtonAnnualView_Previews: PreviewProvider {
     static var previews: some View {
-        SubscriptionButtonAnnualView(dc: DataController(),selected: true)
+        SubscriptionButtonAnnualView(dc: DataController(), sm: StoreManager(), selected: true)
     }
 }

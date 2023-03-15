@@ -10,6 +10,7 @@ import SwiftUI
 struct FavouriteSeriesView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
     
     var body: some View {
         
@@ -25,8 +26,6 @@ struct FavouriteSeriesView: View {
             GroupBox {
                 Text("This tab defines which series apprear in the Dashboard. This allows you to keep your dashboard clean for the series you value the most. If you mark a series as a favourite, it will also mark is as visible.")
                     .font(.caption)
-                    
-                    
             }
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 10)
@@ -37,9 +36,9 @@ struct FavouriteSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(singleSeaters, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm: sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
             
@@ -51,9 +50,9 @@ struct FavouriteSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(sportscars, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm: sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
             
@@ -64,9 +63,9 @@ struct FavouriteSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(touringcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm: sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
             
@@ -77,9 +76,9 @@ struct FavouriteSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(stockcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm: sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
             
@@ -90,9 +89,9 @@ struct FavouriteSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(rally, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm:sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
             
@@ -103,9 +102,9 @@ struct FavouriteSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(bikes, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm:sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
             
@@ -116,9 +115,9 @@ struct FavouriteSeriesView: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(others, id: \.self) { series in
-                    SeriesToggle(dc: dc, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm:sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
                 }
             }
         }
@@ -138,6 +137,6 @@ struct FavouriteSeriesView: View {
 
 struct FavouriteSeriesView_Previews: PreviewProvider {
     static var previews: some View {
-        FavouriteSeriesView(dc: DataController())
+        FavouriteSeriesView(dc: DataController(), sm: StoreManager())
     }
 }

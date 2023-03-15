@@ -10,37 +10,39 @@ import SwiftUI
 struct SessionView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
 
     let series: Series
     let session: Session
-    let durationText: String?
     
     var body: some View {
+        
+        let duration = session.getDurationText()
         VStack {
             HStack {
                 EventRowSeriesName(series: series, shortName: false)
                 Spacer()
                 Text(session.session.sessionName)
                     .fontWeight(.bold)
-                if session.isInProgress() && dc.storeManager.subscribed {
+                if session.isInProgress() && sm.subscribed {
                     LiveCircleView()
                 }
             }.padding(.bottom, -2)
             HStack {
                 Spacer()
-                if durationText != nil && dc.storeManager.subscribed {
-                    Text(durationText!)
+                if duration != nil && sm.subscribed {
+                    Text(duration!)
                 }
             }.padding(.bottom, 1)
             HStack {
                 Image(systemName: "calendar").padding(.trailing, -4)
                 Text(session.raceStartDateAsString())
-                if dc.storeManager.subscribed {
+                if sm.subscribed {
                     Image(systemName: "clock").padding(.trailing, -4)
                     Text(session.raceStartTimeAsString())
                 }
                 Spacer()
-                if dc.storeManager.subscribed {
+                if sm.subscribed {
                     Text(session.timeFromNow())
                     Image(systemName: "clock").padding(.leading, -4)
                 }
@@ -52,6 +54,6 @@ struct SessionView: View {
 
 struct SessionView_Previews: PreviewProvider {
     static var previews: some View {
-        SessionView(dc: DataController(), series: exampleSeries, session: exampleSession, durationText: nil)
+        SessionView(dc: DataController(), sm: StoreManager(), series: exampleSeries, session: exampleSession)
     }
 }

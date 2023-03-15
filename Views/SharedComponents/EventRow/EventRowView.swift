@@ -10,6 +10,7 @@ import SwiftUI
 struct EventRowView: View {
     
     @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
     @State private var liveColour: Color = Color(red: 0, green: 0.5, blue: 0)
     @State private var flashColour: Color = Color(red: 0, green: 1, blue: 0)
 
@@ -26,7 +27,7 @@ struct EventRowView: View {
                             .fontWeight(.bold)
                         Spacer()
                         if raceEvent.sessionInProgress() != nil {
-                            if raceEvent.sessionInProgress()! && dc.storeManager.subscribed {
+                            if raceEvent.sessionInProgress()! && sm.subscribed {
                                 LiveCircleView()
                             } // if true
                         } // if not nil
@@ -34,7 +35,7 @@ struct EventRowView: View {
                     .padding(.bottom, -2)
                     EventRowSeriesList(dc: dc, raceEvent: raceEvent)
                     HStack {
-                        EventRowSessionDates(dc: dc, raceEvent: raceEvent)
+                        EventRowSessionDates(dc: dc, sm: sm, raceEvent: raceEvent)
                     } // hstack
                 } // vstack
             } // hstack
@@ -44,6 +45,6 @@ struct EventRowView: View {
 
 struct EventRowView_Previews: PreviewProvider {
     static var previews: some View {
-        EventRowView(dc: DataController(), raceEvent: exampleEvent)
+        EventRowView(dc: DataController(), sm: StoreManager(), raceEvent: exampleEvent)
     }
 }
