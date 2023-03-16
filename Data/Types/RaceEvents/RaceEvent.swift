@@ -264,17 +264,15 @@ struct RaceEvent: Codable, Identifiable, Hashable {
         return firstSessionDate.toRelative(since: Date().convertTo(region: Region.UTC))
     }
     
-    func shouldBeVisible(seriesSettings: [SeriesSavedData]) -> Bool {
+    func shouldBeVisible(visibleSeries: [String:Bool]) -> Bool {
         
         let seriesIds = self.seriesIds
         
         var visible = false
         
         seriesIds.forEach { seriesId in
-            if let seriesSetting = seriesSettings.first(where: {$0.seriesInfo.id == seriesId}) {
-                if seriesSetting.visible {
-                    visible = true
-                }
+            if visibleSeries[seriesId] == true {
+                visible = true
             }
         }
         

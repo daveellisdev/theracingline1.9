@@ -22,9 +22,11 @@ struct SeriesListView: View {
                 
                 let events: [RaceEvent] = dc.getEventsBySeriesId(seriesId: series.seriesInfo.id)
                 let liveEvents = events.filter {$0.sessionInProgress() != nil && $0.sessionInProgress()!}
-                                
-                NavigationLink(value: series) {
-                    SeriesListViewSeriesName(dc: dc, sm: sm, series: series, hasLiveSession: liveEvents.count > 0 ? true : false)
+                
+                if dc.visibleSeries[series.seriesInfo.id] == true {
+                    NavigationLink(value: series) {
+                        SeriesListViewSeriesName(dc: dc, sm: sm, series: series, hasLiveSession: liveEvents.count > 0 ? true : false)
+                    }
                 }
             }.navigationDestination(for: Series.self) { series in
                 SeriesListViewEventList(dc: dc, sm: sm, navStack: $navStack, series: series)

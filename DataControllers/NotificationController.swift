@@ -62,7 +62,6 @@ class NotificationController: ObservableObject {
         let fullSessionList = self.dc.notificationSessions
         let applicationSavedSettings = self.dc.applicationSavedSettings
         
-        print(fullSessionList.count)
 //        let sessionListFilteredBySeries = fullSessionList.filter { self.dc.checkSessionSetting(type: .notification, seriesId: $0.seriesId) }
 
         // clear notifications
