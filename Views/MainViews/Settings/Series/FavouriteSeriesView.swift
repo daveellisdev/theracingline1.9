@@ -124,13 +124,12 @@ struct FavouriteSeriesView: View {
     }
     
     func getFavouriteFromSeries(series: Series) -> Bool {
-        let seriesInfo = series.seriesInfo
-        let seriesSavedSettings = dc.seriesSavedSettings.filter { $0.seriesInfo.id == seriesInfo.id }
+        let seriesId = series.seriesInfo.id
         
-        if seriesSavedSettings.isEmpty {
-            return true
+        if let favourite = dc.favouriteSeries[seriesId] {
+            return favourite
         } else {
-            return seriesSavedSettings[0].favourite
+            return true
         }
     }
 }

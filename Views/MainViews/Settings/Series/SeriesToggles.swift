@@ -28,14 +28,11 @@ struct SeriesToggle: View {
     }
     
     func updateSavedSettings(type: ToggleType, series: Series, newValue: Bool) {
-        print("updateSavedSettings Started")
         // update previously saved setting
         dc.updatedSeriesSavedSettings(type: type, series: series, newValue: newValue)
         
         // save settings
         dc.saveSavedSettings()
-        print("updateSavedSettings ended")
-
     }
 }
 

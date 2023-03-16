@@ -50,9 +50,7 @@ struct theracinglineApp: App {
 //                    rebuildNotifications()
 //                })
                 .onChange(of: sm.subscribed, perform: { value in
-                    print("onChangeHit")
                     rebuildNotifications()
-                    print("onChangeFinished")
                 })
         }
     }

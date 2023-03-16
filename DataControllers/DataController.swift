@@ -18,6 +18,10 @@ class DataController: ObservableObject {
     // MARK: - SERIES
     @Published var seriesUnfiltered: [Series] = []
     
+    @Published var visibleSeries: [String:Bool] = [:]
+    @Published var favouriteSeries: [String:Bool] = [:]
+    @Published var notificationSeries: [String:Bool] = [:]
+    
     var series: [Series] {
         return self.seriesUnfiltered.filter { self.checkSessionSetting(type: .visible, seriesId: $0.seriesInfo.id) }
     }
@@ -49,16 +53,6 @@ class DataController: ObservableObject {
     // MARK: - EVENTS
     @Published var events: [RaceEvent] = []
     
-//    var eventsInProgress: [RaceEvent] {
-//        return self.events.filter {
-//            if $0.eventInProgress() != nil && $0.eventInProgress()! {
-//                return true
-//            } else {
-//                return false
-//            }
-//        ;}
-//    }
-    
     var eventsInProgressAndUpcoming: [RaceEvent] {
         return self.events.filter { !$0.eventComplete() }
     }
@@ -69,7 +63,7 @@ class DataController: ObservableObject {
     
     // SESSIONS VISIBLE
     var sessions: [Session] {
-        return self.unfilteredSessions.filter { self.checkSessionSetting(type: .visible, seriesId: $0.seriesId) }
+        return self.unfilteredSessions.filter { self.visibleSeries[$0.seriesId] ?? true }
     }
     var sessionsInProgressAndUpcoming: [Session] {
         return self.sessions.filter { !$0.isComplete() }
@@ -92,8 +86,9 @@ class DataController: ObservableObject {
     // notification sessions
     var notificationSessions: [Session] {
         unfilteredSessions.filter {
-            let twoWeeks = Date()+2.weeks
-            return $0.raceStartTime() < twoWeeks
+            let now = Date()
+            let twoWeeks = Date()+4.weeks
+            return $0.raceStartTime() < twoWeeks && $0.raceStartTime() > now
         }
     }
     
@@ -169,8 +164,8 @@ class DataController: ObservableObject {
         let weekday = Calendar.current.component(.weekday, from: Date())
         
         let thursdayDateObject: Date
-        
-        if weekday == 4 {
+        print(weekday)
+        if weekday == 5 {
             thursdayDateObject = Date()
         } else {
             thursdayDateObject = Date().dateAt(.nextWeekday(.thursday))
@@ -191,7 +186,7 @@ class DataController: ObservableObject {
         
         let fridayDateObject: Date
         
-        if weekday == 5 {
+        if weekday == 6 {
             fridayDateObject = Date()
         } else {
             fridayDateObject = Date().dateAt(.nextWeekday(.friday))
@@ -212,7 +207,7 @@ class DataController: ObservableObject {
         
         let saturdayDateObject: Date
         
-        if weekday == 6 {
+        if weekday == 7 {
             saturdayDateObject = Date()
         } else {
             saturdayDateObject = Date().dateAt(.nextWeekday(.saturday))
@@ -233,7 +228,7 @@ class DataController: ObservableObject {
         
         let sundayDateObject: Date
         
-        if weekday == 0 {
+        if weekday == 1 {
             sundayDateObject = Date()
         } else {
             sundayDateObject = Date().dateAt(.nextWeekday(.sunday))
@@ -257,7 +252,7 @@ class DataController: ObservableObject {
     // MARK: - DOWNLOAD DATA
     
     func downloadData() {
-        print("Downloading Data \(Date())")
+//        print("Downloading Data \(Date())")
         
         let keys = Keys()
         let key = keys.getKey()
@@ -287,7 +282,7 @@ class DataController: ObservableObject {
             
             // initiate settings check
             self.initSavedSettings(data: data)
-            print("Data Downloaded Data \(Date())")
+//            print("Data Downloaded Data \(Date())")
         }.resume()
         
     } // DOWNLOADDATA
@@ -306,12 +301,29 @@ class DataController: ObservableObject {
     // MARK: - DECODE DATA
     
     func decodeData(data: Data) {
-        print("Decoding Data \(Date())")
+//        print("Decoding Data \(Date())")
 
         do {
             let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
-
+            
+            
             DispatchQueue.main.async {
+                
+                for series in json.series {
+                    let seriesId = series.seriesInfo.id
+
+                    if self.visibleSeries[seriesId] == nil {
+                        self.visibleSeries[seriesId] = false
+                    }
+                    
+                    if self.favouriteSeries[seriesId] == nil {
+                        self.favouriteSeries[seriesId] = true
+                    }
+                    
+                    if self.notificationSeries[seriesId] == nil {
+                        self.notificationSeries[seriesId] = true
+                    }
+                }
 
                 // series
                 self.seriesUnfiltered = json.series
@@ -332,7 +344,7 @@ class DataController: ObservableObject {
                 sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
                 self.unfilteredSessions = sortedSessions
 //                print("Sessions Done")
-                print("Data Decoded \(Date())")
+//                print("Data Decoded \(Date())")
                 
                 self.saveSeriesAndSessionData(data: data)
             } // dispatchqueue
@@ -346,7 +358,7 @@ class DataController: ObservableObject {
     // MARK: - LOAD SERIES DATA
     
     func loadSeriesAndSessionData() {
-        print("Loading previous data \(Date())")
+//        print("Loading previous sessions \(Date())")
         DispatchQueue.global().async {
             
             if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
@@ -355,7 +367,7 @@ class DataController: ObservableObject {
                     DispatchQueue.main.async{
                         self.decodeData(data: data)
                     }
-                    print("Loaded Series Data \(Date())")
+//                    print("Loaded previous session Data \(Date())")
                 } // if let data
             } // if let defaults
         } // dispatchqueee
@@ -448,12 +460,24 @@ class DataController: ObservableObject {
     
     // MARK: - SAVING SAVED SETTINGS
     func saveSavedSettings() {
+//        print("Saving Settings")
         DispatchQueue.global().async {
             if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
                 
+                // visible
                 let encoder = JSONEncoder()
-                if let encoded = try? encoder.encode(self.seriesSavedSettings) {
-                    defaults.set(encoded, forKey: "savedSeriesSettings")
+                if let encoded = try? encoder.encode(self.visibleSeries) {
+                    defaults.set(encoded, forKey: "visibilitySettings")
+                }
+                
+                // fav
+                if let encoded = try? encoder.encode(self.favouriteSeries) {
+                    defaults.set(encoded, forKey: "favouriteSettings")
+                }
+                
+                // notifications
+                if let encoded = try? encoder.encode(self.notificationSeries) {
+                    defaults.set(encoded, forKey: "notificationSettings")
                 }
                 
                 if let encoded = try? encoder.encode(self.applicationSavedSettings) {
@@ -466,21 +490,24 @@ class DataController: ObservableObject {
     // MARK: - UPDATED SERIES SAVED SETTINGS
     
     func updatedSeriesSavedSettings(type: ToggleType, series: Series, newValue: Bool) {
-        if let index = self.seriesSavedSettings.firstIndex(where: {$0.seriesInfo.id == series.seriesInfo.id}) {
-            switch type {
-            case .visible:
-                self.seriesSavedSettings[index].visible = newValue
-                if !newValue {
-                    self.seriesSavedSettings[index].favourite = newValue
-                }
-            case .favourite:
-                self.seriesSavedSettings[index].favourite = newValue
-                if newValue {
-                    self.seriesSavedSettings[index].visible = newValue
-                }
-            case .notification:
-                self.seriesSavedSettings[index].notifications = newValue
+        let seriesId = series.seriesInfo.id
+        switch type {
+        case .visible:
+            self.visibleSeries[seriesId] = newValue
+
+            if !newValue {
+                self.favouriteSeries[seriesId] = newValue
             }
+            
+        case .favourite:
+            self.favouriteSeries[seriesId] = newValue
+            
+            if newValue {
+                self.favouriteSeries[seriesId] = newValue
+            }
+            
+        case .notification:
+            self.notificationSeries[seriesId] = newValue
         }
     }
     
@@ -490,11 +517,31 @@ class DataController: ObservableObject {
             if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
                 let decoder = JSONDecoder()
 
-                if let data = defaults.data(forKey: "savedSeriesSettings") {
-                    if let seriesSavedSettings = try? decoder.decode([SeriesSavedData].self, from: data){
+                if let data = defaults.data(forKey: "visibilitySettings") {
+                    if let visibilitySettings = try? decoder.decode([String:Bool].self, from: data){
                         DispatchQueue.main.async{
-                            self.seriesSavedSettings = seriesSavedSettings
-//                            print("Loaded Saved Series Settings")
+                            self.visibleSeries = visibilitySettings
+//                            print("Loaded Visibility Settings \(visibilitySettings)")
+                        }
+                    }
+
+                } // if let data
+                
+                if let data = defaults.data(forKey: "favouriteSettings") {
+                    if let favouriteSettings = try? decoder.decode([String:Bool].self, from: data){
+                        DispatchQueue.main.async{
+                            self.favouriteSeries = favouriteSettings
+//                            print("Loaded Favourite Settings \(favouriteSettings)")
+                        }
+                    }
+                    
+                } // if let data
+                
+                if let data = defaults.data(forKey: "notificationSettings") {
+                    if let notificationSettings = try? decoder.decode([String:Bool].self, from: data){
+                        DispatchQueue.main.async{
+                            self.notificationSeries = notificationSettings
+//                            print("Loaded Notification Settings \(notificationSettings)")
                         }
                     }
                     
