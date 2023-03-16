@@ -24,6 +24,12 @@ struct RaceEvent: Codable, Identifiable, Hashable {
         return !liveSessions.isEmpty
     }
     
+    func seriesHasSessionInProgress(seriesId: String) -> Bool? {
+        let liveSessions = self.sessions.filter{ $0.isInProgress() != false && $0.seriesId == seriesId}
+        
+        return !liveSessions.isEmpty
+    }
+    
     func eventInProgress() -> Bool? {
         // get first & last sessions
         let firstSession = self.sessions.first
