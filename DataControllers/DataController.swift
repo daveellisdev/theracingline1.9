@@ -54,7 +54,7 @@ class DataController: ObservableObject {
     @Published var events: [RaceEvent] = []
     
     var eventsInProgressAndUpcoming: [RaceEvent] {
-        return self.events.filter { !$0.eventComplete() }
+        return self.events.filter { !$0.eventComplete() && $0.shouldBeVisible(visibleSeries: self.visibleSeries) }
     }
     
     // MARK: - SESSIONS
