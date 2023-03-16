@@ -23,12 +23,6 @@ struct SeriesNotificationSettings: View {
         let others = dc.seriesOther
         
         ScrollView {
-//            GroupBox {
-//                Text("This tab defines which series apprear in the Day, Event and Series tabs.")
-//                    .font(.caption)
-//            }
-//            .frame(maxWidth: .infinity)
-//            .padding(.horizontal, 10)
             GroupBox {
                 Text("Select which series you'd like to receive notifications for.")
                     .font(.caption)
@@ -40,7 +34,7 @@ struct SeriesNotificationSettings: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(singleSeaters, id: \.self) { series in
                     SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
@@ -54,7 +48,7 @@ struct SeriesNotificationSettings: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(sportscars, id: \.self) { series in
                     SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
@@ -67,7 +61,7 @@ struct SeriesNotificationSettings: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(touringcars, id: \.self) { series in
                     SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
@@ -80,7 +74,7 @@ struct SeriesNotificationSettings: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(stockcars, id: \.self) { series in
                     SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
@@ -93,7 +87,7 @@ struct SeriesNotificationSettings: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(rally, id: \.self) { series in
                     SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
@@ -106,7 +100,7 @@ struct SeriesNotificationSettings: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(bikes, id: \.self) { series in
                     SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
@@ -119,7 +113,7 @@ struct SeriesNotificationSettings: View {
                         .fontWeight(.bold)
                         .padding(.bottom, 0)
                     Spacer()
-                }
+                }.padding(.horizontal)
                 ForEach(others, id: \.self) { series in
                     SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
                 }
@@ -128,13 +122,12 @@ struct SeriesNotificationSettings: View {
     }
     
     func getNotificationFromSeries(series: Series) -> Bool {
-        let seriesInfo = series.seriesInfo
-        let seriesSavedSettings = dc.seriesSavedSettings.filter { $0.seriesInfo.id == seriesInfo.id }
+        let seriesId = series.seriesInfo.id
         
-        if seriesSavedSettings.isEmpty {
-            return true
+        if let notifications = dc.notificationSeries[seriesId] {
+            return notifications
         } else {
-            return seriesSavedSettings[0].notifications
+            return true
         }
     }
 }
