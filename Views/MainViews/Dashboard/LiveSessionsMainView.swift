@@ -27,7 +27,7 @@ struct LiveSessionsMainView: View {
                         GroupBox {
                             SessionView(dc: dc, sm: sm, series: series!, session: session)
                         }
-                    } // navlink
+                    }.buttonStyle(PlainButtonStyle()) // navlink
                 } // if series not nil
             }.navigationDestination(for: Session.self) { session in
                 SessionDetailsView(dc: dc, sm: sm, session: session)

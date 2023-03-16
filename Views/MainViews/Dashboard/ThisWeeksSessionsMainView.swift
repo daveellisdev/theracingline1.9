@@ -34,10 +34,14 @@ struct ThisWeeksSessionsMainView: View {
                 ForEach(mondaySessions) { session in
                     let series = dc.getSeriesById(seriesId: session.seriesId)
                     if series != nil {
-                        GroupBox {
-                            SessionView(dc: dc, sm: sm, series: series!, session: session)
-                        }
+                        NavigationLink(value: session) {
+                            GroupBox {
+                                SessionView(dc: dc, sm: sm, series: series!, session: session)
+                            }
+                        }.buttonStyle(PlainButtonStyle()) // navlink
                     }
+                }.navigationDestination(for: Session.self) { session in
+                    SessionDetailsView(dc: dc, sm: sm, session: session)
                 }
             }
         }
@@ -53,10 +57,14 @@ struct ThisWeeksSessionsMainView: View {
                 ForEach(tuesdaySessions) { session in
                     let series = dc.getSeriesById(seriesId: session.seriesId)
                     if series != nil {
-                        GroupBox {
-                            SessionView(dc: dc, sm: sm, series: series!, session: session)
-                        }
+                        NavigationLink(value: session) {
+                            GroupBox {
+                                SessionView(dc: dc, sm: sm, series: series!, session: session)
+                            }
+                        }.buttonStyle(PlainButtonStyle()) // navlink
                     }
+                }.navigationDestination(for: Session.self) { session in
+                    SessionDetailsView(dc: dc, sm: sm, session: session)
                 }
             }
         }
@@ -72,10 +80,14 @@ struct ThisWeeksSessionsMainView: View {
                 ForEach(wednesdsySessions) { session in
                     let series = dc.getSeriesById(seriesId: session.seriesId)
                     if series != nil {
-                        GroupBox {
-                            SessionView(dc: dc, sm: sm, series: series!, session: session)
-                        }
+                        NavigationLink(value: session) {
+                            GroupBox {
+                                SessionView(dc: dc, sm: sm, series: series!, session: session)
+                            }
+                        }.buttonStyle(PlainButtonStyle()) // navlink
                     }
+                }.navigationDestination(for: Session.self) { session in
+                    SessionDetailsView(dc: dc, sm: sm, session: session)
                 }
             }
         }
@@ -90,10 +102,14 @@ struct ThisWeeksSessionsMainView: View {
                 ForEach(thursdaySessions) { session in
                     let series = dc.getSeriesById(seriesId: session.seriesId)
                     if series != nil {
-                        GroupBox {
-                            SessionView(dc: dc, sm: sm, series: series!, session: session)
-                        }
+                        NavigationLink(value: session) {
+                            GroupBox {
+                                SessionView(dc: dc, sm: sm, series: series!, session: session)
+                            }
+                        }.buttonStyle(PlainButtonStyle()) // navlink
                     }
+                }.navigationDestination(for: Session.self) { session in
+                    SessionDetailsView(dc: dc, sm: sm, session: session)
                 }
             }
         }
@@ -109,10 +125,14 @@ struct ThisWeeksSessionsMainView: View {
                 ForEach(fridaySessions) { session in
                     let series = dc.getSeriesById(seriesId: session.seriesId)
                     if series != nil {
-                        GroupBox {
-                            SessionView(dc: dc, sm: sm, series: series!, session: session)
-                        }
+                        NavigationLink(value: session) {
+                            GroupBox {
+                                SessionView(dc: dc, sm: sm, series: series!, session: session)
+                            }
+                        }.buttonStyle(PlainButtonStyle()) // navlink
                     }
+                }.navigationDestination(for: Session.self) { session in
+                    SessionDetailsView(dc: dc, sm: sm, session: session)
                 }
             }
         }
@@ -128,10 +148,14 @@ struct ThisWeeksSessionsMainView: View {
                 ForEach(saturdaySessions) { session in
                     let series = dc.getSeriesById(seriesId: session.seriesId)
                     if series != nil {
-                        GroupBox {
-                            SessionView(dc: dc, sm: sm, series: series!, session: session)
-                        }
+                        NavigationLink(value: session) {
+                            GroupBox {
+                                SessionView(dc: dc, sm: sm, series: series!, session: session)
+                            }
+                        }.buttonStyle(PlainButtonStyle()) // navlink
                     }
+                }.navigationDestination(for: Session.self) { session in
+                    SessionDetailsView(dc: dc, sm: sm, session: session)
                 }
             }
         }
@@ -146,10 +170,14 @@ struct ThisWeeksSessionsMainView: View {
                 ForEach(sundaySessions) { session in
                     let series = dc.getSeriesById(seriesId: session.seriesId)
                     if series != nil {
-                        GroupBox {
-                            SessionView(dc: dc, sm: sm, series: series!, session: session)
-                        }
+                        NavigationLink(value: session) {
+                            GroupBox {
+                                SessionView(dc: dc, sm: sm, series: series!, session: session)
+                            }
+                        }.buttonStyle(PlainButtonStyle()) // navlink
                     }
+                }.navigationDestination(for: Session.self) { session in
+                    SessionDetailsView(dc: dc, sm: sm, session: session)
                 }
             }
         }
