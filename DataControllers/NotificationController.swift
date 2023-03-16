@@ -61,8 +61,6 @@ class NotificationController: ObservableObject {
         // get all sessions
         let fullSessionList = self.dc.notificationSessions
         let applicationSavedSettings = self.dc.applicationSavedSettings
-        
-//        let sessionListFilteredBySeries = fullSessionList.filter { self.dc.checkSessionSetting(type: .notification, seriesId: $0.seriesId) }
 
         // clear notifications
         self.clearNotifications()

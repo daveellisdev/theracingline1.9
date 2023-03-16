@@ -14,7 +14,13 @@ struct LiveSessionsMainView: View {
     
     var body: some View {
         if dc.favouriteLiveSessions.count > 0 {
-            List(dc.favouriteLiveSessions) { session in
+            HStack {
+                Text("Live Sessions")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                Spacer()
+            }
+            ForEach(dc.favouriteLiveSessions) { session in
                 let series = dc.getSeriesById(seriesId: session.seriesId)
                 if series != nil {
                     NavigationLink(value: session) {

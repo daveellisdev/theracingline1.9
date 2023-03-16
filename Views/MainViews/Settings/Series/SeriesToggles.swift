@@ -19,10 +19,7 @@ struct SeriesToggle: View {
         HStack {
             Toggle(series.seriesInfo.name, isOn: $isOn)
                 .onChange(of: isOn) { value in
-                    
-                    print("onChange Toggle hit")
                     updateSavedSettings(type: type, series: series, newValue: isOn)
-                    
                 }
         }.padding(.horizontal)
     }
