@@ -74,7 +74,7 @@ class DataController: ObservableObject {
 
     // favourite filtered
     var favouriteSessions: [Session] {
-        return self.sessions.filter { self.checkSessionSetting(type: .favourite, seriesId: $0.seriesId) }
+        return self.sessions.filter { self.favouriteSeries[$0.seriesId] ?? true }
     }
     var favouriteSessionsInProgressAndUpcoming: [Session] {
         return self.favouriteSessions.filter { !$0.isComplete() }
@@ -164,7 +164,7 @@ class DataController: ObservableObject {
         let weekday = Calendar.current.component(.weekday, from: Date())
         
         let thursdayDateObject: Date
-        print(weekday)
+
         if weekday == 5 {
             thursdayDateObject = Date()
         } else {
