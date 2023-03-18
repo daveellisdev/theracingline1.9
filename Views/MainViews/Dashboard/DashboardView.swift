@@ -17,56 +17,67 @@ struct DashboardView: View {
     @State private var showingFilterSheet = false
     
     var body: some View {
-        NavigationStack(path: $navStack) {
-            ScrollView {
-                if !sm.subscribed {
-                    Button {
-                        showingFilterSheet = true
-                    } label: {
-                        PremiumBar()
-                    }.sheet(isPresented: $showingFilterSheet){
-                        SubscriptionView(dc: dc, sm: sm)
-                    }
-                }
-                
+            NavigationStack(path: $navStack) {
                 ZStack {
-                    
-                    VStack {
-                        let dailyArrays = [
-                            dc.mondayFavouriteSessions,
-                            dc.tuesdayFavouriteSessions,
-                            dc.wednesdayFavouriteSessions,
-                            dc.thursdayFavouriteSessions,
-                            dc.fridayFavouriteSessions,
-                            dc.saturdayFavouriteSessions,
-                            dc.sundayFavouriteSessions]
-                        
-                        let sortedDailyArray = dailyArrays.sorted { $0.count > $1.count }
-                        if let index = dailyArrays.firstIndex{$0.count > 0} {
-                            let defaultSelectionDay = dailyArrays[index].count
-                            if sortedDailyArray[0].count > 0 {
-//                                ChartMainView(dc: dc, selected: defaultSelectionDay, dailyArrays: dailyArrays)
+                    ScrollView {
+                        if !sm.subscribed {
+                            Button {
+                                showingFilterSheet = true
+                            } label: {
+                                PremiumBar()
+                                    .padding(.horizontal)
+                            }.sheet(isPresented: $showingFilterSheet){
+                                SubscriptionView(dc: dc, sm: sm)
                             }
-                        }
+                        } // if subscribed
+                        ZStack {
+                            VStack {
+                                
+                                LiveSessionsMainView(dc: dc, sm: sm)
+                                
+                                let dailyArrays = [
+                                    dc.mondayFavouriteSessions,
+                                    dc.tuesdayFavouriteSessions,
+                                    dc.wednesdayFavouriteSessions,
+                                    dc.thursdayFavouriteSessions,
+                                    dc.fridayFavouriteSessions,
+                                    dc.saturdayFavouriteSessions,
+                                    dc.sundayFavouriteSessions]
+                                
+                                let sortedDailyArray = dailyArrays.sorted { $0.count > $1.count }
+                                if let index = dailyArrays.firstIndex{$0.count > 0} {
+                                    let defaultSelectionDay = dailyArrays[index].count
+                                    if sortedDailyArray[0].count > 0 {
+                                        ChartMainView(dc: dc, selected: defaultSelectionDay, dailyArrays: dailyArrays)
+                                    }
+                                }
 
-                        LiveSessionsMainView(dc: dc, sm: sm)
+                                ThisWeeksSessionsMainView(dc: dc, sm: sm)
+                            }.padding(.horizontal)
+                                .blur(radius: sm.subscribed ? 0 : 10) // vstack
+                            if !sm.subscribed {
+                                VStack {
+                                    Text("Get a personalised dashboard with TRL Pro")
+                                        .font(.title)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.primary)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.horizontal)
+                                        .padding(.top, 40)
+                                    Spacer()
+                                } // vstack
+                            }
+                            
+                        } // zstack
                         
-                        ThisWeeksSessionsMainView(dc: dc, sm: sm)
-                    } // .blur(radius: 10)
-//                    VStack {
-//                        Text("Get a personalised dashboard with TRL Pro")
-//                            .font(.title3)
-//                            .fontWeight(.bold)
-//                            .multilineTextAlignment(.center)
-//                            .padding(.horizontal)
-//                            .padding(.top, 40)
-//                        Spacer()
-//                    }
-                }
-            }.navigationTitle("Dashboard")
-            .padding(.horizontal)
-        }
-    }
+                    }.navigationTitle("Dashboard")
+                        
+//                    Color.blue
+//                        .edgesIgnoringSafeArea(.top)
+//
+                } // zstack
+            } // navstack
+    } // body
 }
 
 struct DashboardView_Previews: PreviewProvider {
