@@ -27,10 +27,14 @@ struct EventRowView: View {
                             .fontWeight(.bold)
                         Spacer()
                         if raceEvent.sessionInProgress() != nil {
-                            if raceEvent.sessionInProgress()! && sm.subscribed {
+                            if raceEvent.sessionInProgress()! && (sm.monthlySub || sm.annualSub) {
                                 LiveCircleView()
                             } // if true
                         } // if not nil
+                        
+                        if raceEvent.eventComplete() {
+                            Image(systemName: "checkmark.circle.fill")
+                        }
                     } // hstack
                     .padding(.bottom, -2)
                     EventRowSeriesList(dc: dc, raceEvent: raceEvent)

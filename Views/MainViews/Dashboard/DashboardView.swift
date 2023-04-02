@@ -20,7 +20,7 @@ struct DashboardView: View {
             NavigationStack(path: $navStack) {
                 ZStack {
                     ScrollView {
-                        if !sm.subscribed {
+                        if !sm.monthlySub && !sm.annualSub {
                             Button {
                                 showingFilterSheet = true
                             } label: {
@@ -45,7 +45,7 @@ struct DashboardView: View {
                                     dc.sundayFavouriteSessions]
                                 
                                 let sortedDailyArray = dailyArrays.sorted { $0.count > $1.count }
-                                if let index = dailyArrays.firstIndex{$0.count > 0} {
+                                if let index = dailyArrays.firstIndex(where: {$0.count > 0}) {
                                     let defaultSelectionDay = dailyArrays[index].count
                                     if sortedDailyArray[0].count > 0 {
                                         ChartMainView(dc: dc, selected: defaultSelectionDay, dailyArrays: dailyArrays)
@@ -54,8 +54,8 @@ struct DashboardView: View {
 
                                 ThisWeeksSessionsMainView(dc: dc, sm: sm)
                             }.padding(.horizontal)
-                                .blur(radius: sm.subscribed ? 0 : 10) // vstack
-                            if !sm.subscribed {
+                                .blur(radius: sm.monthlySub || sm.annualSub ? 0 : 10) // vstack
+                            if !sm.monthlySub && !sm.annualSub {
                                 VStack {
                                     Text("Get a personalised dashboard with TRL Pro")
                                         .font(.title)
@@ -71,10 +71,6 @@ struct DashboardView: View {
                         } // zstack
                         
                     }.navigationTitle("Dashboard")
-                        
-//                    Color.blue
-//                        .edgesIgnoringSafeArea(.top)
-//
                 } // zstack
             } // navstack
     } // body

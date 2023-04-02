@@ -77,7 +77,10 @@ struct SubscriptionView: View {
                     .background(.green)
                     .cornerRadius(20)
             }
-        }.onChange(of: sm.subscribed, perform: { value in
+        }.onChange(of: sm.monthlySub, perform: { value in
+            presentationMode.wrappedValue.dismiss()
+        })
+        .onChange(of: sm.annualSub, perform: { value in
             presentationMode.wrappedValue.dismiss()
         })
     }

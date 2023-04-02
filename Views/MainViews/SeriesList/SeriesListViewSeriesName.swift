@@ -42,9 +42,9 @@ struct SeriesListViewSeriesName: View {
                 .font(.title3)
                 .fontWeight(.bold)
             Spacer()
-            if hasLiveSession && sm.subscribed {
+            if hasLiveSession && (sm.monthlySub || sm.annualSub) {
                 LiveCircleView()
-            }
+            } 
         }
     }
 }

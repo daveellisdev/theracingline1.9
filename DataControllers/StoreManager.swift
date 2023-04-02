@@ -2,21 +2,27 @@
 //  StoreManager.swift
 //  theracingline
 //
-//  Created by Dave on 03/03/2023.
+//  Created by Dave on 01/04/2023.
 //
 
 import Foundation
 import StoreKit
 import SwiftUI
 import TPInAppReceipt
+import SwiftDate
+
 
 class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
     
-    static var shared = StoreManager()
-
     @ObservedObject var dc = DataController.shared
     @ObservedObject var nc = NotificationController.shared
-    @Published var subscribed = false
+    @Published var monthlySub = false
+    @Published var annualSub = false
+    @Published var message = "message"
+    @Published var message2 = "message2"
+    @Published var message3 = "message3"
+    @Published var iaps: [String] = []
+    @Published var bunduleId = "bundleId"
 
     //FETCH PRODUCTS
     var request: SKProductsRequest!
@@ -24,26 +30,29 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     @Published var myProducts = [SKProduct]()
     
     func getProducts(productIDs: [String]) {
-//        print("Start requesting IAP products...")
+        print("Start requesting IAP products...")
+        self.message2 = "Start requesting IAP products..."
         let request = SKProductsRequest(productIdentifiers: Set(productIDs))
         request.delegate = self
         request.start()
     }
     
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-//        print("Did receive list of IAPs")
+        print("Did receive list of IAPs")
+        self.message2 = "Did receive list of IAPs"
         
         if !response.products.isEmpty {
-//            print("\(response.products.count) IAP Found")
+            print("\(response.products.count) IAP Found")
+            message3 = "\(response.products.count) IAP Found"
             for fetchedProduct in response.products {
-//                print("IAP Found")
-//                print(fetchedProduct.localizedTitle)
+                print("IAP Found")
+                print(fetchedProduct.localizedTitle)
+                iaps.append(fetchedProduct.localizedTitle)
                 DispatchQueue.main.async {
                     self.myProducts.append(fetchedProduct)
                 }
             }
         }
-//        print("\(response.invalidProductIdentifiers.count) invalid IAP Found")
         for invalidIdentifier in response.invalidProductIdentifiers {
             print("Invalid identifiers found: \(invalidIdentifier)")
         }
@@ -74,14 +83,18 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
                 UserDefaults.standard.setValue(true, forKey: transaction.payment.productIdentifier)
                 queue.finishTransaction(transaction)
                 transactionState = .purchased
-                self.subscribed = true
-                NotificationController().initiateNotifications()
+                updateUserAccess(productIdentifier: transaction.payment.productIdentifier)
+                
+                /// DO STUFF AFTER PAYMENT
+                
             case .restored:
                 UserDefaults.standard.setValue(true, forKey: transaction.payment.productIdentifier)
                 queue.finishTransaction(transaction)
                 transactionState = .restored
-                self.subscribed = true
-                NotificationController().initiateNotifications()
+                updateUserAccess(productIdentifier: transaction.payment.productIdentifier)
+                
+                /// DO STUFF AFTER RESTORE
+                ///
             case .failed, .deferred:
                 print("Payment Queue Error: \(String(describing: transaction.error))")
                 queue.finishTransaction(transaction)
@@ -92,67 +105,94 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
         }
     }
     
-    func updateUserAccess(productIdentifier: String) {
+    func restoreProducts() {
+        print("Restoring products ...")
+        SKPaymentQueue.default().restoreCompletedTransactions()
+    }
+    
+    func updateUserAccess(productIdentifier: String){
         switch productIdentifier {
         case "dev.daveellis.theracingline.bronze":
-            self.subscribed = false
+            /// DO NOTHING. BRONZE IS DEPRECATED
+            self.annualSub = false
+            self.monthlySub = false
         case "dev.daveellis.theracingline.silver":
-            self.subscribed = false
+            /// DO NOTHING. SILVER IS DEPRECATED
+            self.annualSub = false
+            self.monthlySub = false
         case "dev.daveellis.theracingline.gold":
+            /// UPDATE USER ACCESS - MONTHLY SUB
+            self.annualSub = false
+            self.monthlySub = true
             self.nc.requestPermission()
-            self.subscribed = true
         case "dev.daveellis.theracingline.annual":
-            self.subscribed = true
+            /// UPDATE USER ACCESS - ANNUAL SUB
+            self.annualSub = true
+            self.monthlySub = false
+            self.nc.requestPermission()
         case "dev.daveellis.theracingline.coffee":
-            print("Coffee purchased")
+                print("Coffee purchased")
         default:
-            self.subscribed = false
+            /// DO NOTHING. NO SUB
+            self.annualSub = false
+            self.monthlySub = false
         }
     }
     
     func restoreSubscriptionStatus() {
         InAppReceipt.refresh { (error) in
             if let err = error {
-                self.subscribed = false
                 print(err)
             } else {
             // do your stuff with the receipt data here
                 if let receipt = try? InAppReceipt.localReceipt(){
-                    if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.annual", forDate: Date()) {
+                    if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.annual", forDate: Date()-10.days) {
                         // user has subscription of the product, which is still active at the specified date
-                        self.subscribed = true
-                        print("============= Annual Subscription Found =============")
+                        /// UPDATE USER ACCESS - ANNUAL SUB
+                        self.message = "Annual found"
+                        self.annualSub = true
+                        self.monthlySub = false
                         
-                    } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.gold", forDate: Date()) {
+                    } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.gold", forDate: Date()-10.days) {
                         // user has subscription of the product, which is still active at the specified date
-                        self.subscribed = true
-                        print("============= Monthly Subscription Found =============")
+                        /// UPDATE USER ACCESS - MONTHLY SUB
+                        self.message = "Monthly found"
+                        self.monthlySub = true
+                        self.annualSub = false
                         
                     } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.silver", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
-                        self.subscribed = false
+                        /// DO NOTHING. SILVER IS DEPRECATED
+                        self.message = "Silver found"
+                        self.annualSub = false
+                        self.monthlySub = false
                         
                     } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.bronze", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
-                        self.subscribed = false
+                        /// DO NOTHING. BRONZE IS DEPRECATED
+                        self.message = "Bronze found"
+                        self.annualSub = false
+                        self.monthlySub = false
                         
                     } else {
-                        self.subscribed = false
-                        print("============= No Subscription Found =============")
+                        /// DO NOTHING. NO SUB
+                        self.message = "No Sub found"
+                        self.annualSub = false
+                        self.monthlySub = false
                     }
                 }
             }
         }
     }
     
-    func getProductByName(productName: String) -> SKProduct {
-        let subscription = self.myProducts.filter { $0.productIdentifier.contains(productName) }.first
-        if subscription != nil {
-            return subscription!
-        } else {
-            return self.myProducts[0]
+        func getProductByName(productName: String) -> SKProduct {
+            let subscription = self.myProducts.filter { $0.productIdentifier.contains(productName) }.first
+            if subscription != nil {
+                return subscription!
+            } else {
+                return self.myProducts[0]
+            }
         }
-    }
 }
 
 extension SKProduct {
@@ -163,3 +203,4 @@ extension SKProduct {
         return formatter.string(from: price)!
     }
 }
+

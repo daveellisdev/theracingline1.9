@@ -15,7 +15,7 @@ struct SubscriptionButtonAnnualView: View {
     let selected: Bool
     
     var body: some View {
-        let sub = sm.getProductByName(productName: "annaul")
+        let sub = sm.getProductByName(productName: "annual")
         ZStack {
             VStack {
                 HStack {

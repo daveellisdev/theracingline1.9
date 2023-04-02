@@ -49,14 +49,17 @@ struct theracinglineApp: App {
 //                .onChange(of: dc.applicationSavedSettings, perform: { value in
 //                    rebuildNotifications()
 //                })
-                .onChange(of: sm.subscribed, perform: { value in
-                    rebuildNotifications()
-                })
+//                .onChange(of: sm.monthlySub, perform: { value in
+//                    rebuildNotifications()
+//                })
+//                .onChange(of: sm.annualSub, perform: { value in
+//                    rebuildNotifications()
+//                })
         }
     }
     
     func rebuildNotifications() {
-        if sm.subscribed {
+        if sm.monthlySub || sm.annualSub {
             nc.rebuildNotifications()
         }
     }
