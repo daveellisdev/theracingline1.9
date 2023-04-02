@@ -30,7 +30,7 @@ struct SeriesSettings: View {
             } // navlink
             
             
-            if sm.subscribed {
+            if sm.monthlySub || sm.annualSub {
                 
                 Divider().padding(.vertical, 4)
                 

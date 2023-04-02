@@ -47,15 +47,15 @@ struct EventRowSessionDates: View {
         }
         
         Spacer()
-        if sm.subscribed {
-            HStack {
-                Text("\(raceEvent.firstSessionTimeFromNow())")
-                Image(systemName: "clock")
-            }
-            .font(.caption)
-            .foregroundColor(.secondary)
-            
-        }
+//        if sm.subscribed {
+//            HStack {
+//                Text("\(raceEvent.firstSessionTimeFromNow())")
+//                Image(systemName: "clock")
+//            }
+//            .font(.caption)
+//            .foregroundColor(.secondary)
+//            
+//        }
            
     }
 }

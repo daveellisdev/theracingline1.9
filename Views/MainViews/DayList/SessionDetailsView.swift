@@ -28,7 +28,7 @@ struct SessionDetailsView: View {
                         HStack {
                             EventRowSeriesName(series: series!, shortName: true)
                             Spacer()
-                            if session.isInProgress() && sm.subscribed {
+                            if session.isInProgress() && (sm.monthlySub || sm.annualSub) {
                                 LiveCircleView()
                             }
                         }

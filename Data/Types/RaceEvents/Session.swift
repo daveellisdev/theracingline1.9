@@ -31,6 +31,13 @@ struct Session: Codable, Identifiable, Hashable {
     }
     
     func raceStartTimeAsString() -> String {
+        
+        if self.date.tba != nil {
+            if self.date.tba! {
+                return "TBA"
+            }
+        }
+        
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         
@@ -38,6 +45,12 @@ struct Session: Codable, Identifiable, Hashable {
     }
     
     func raceStartDateAsString() -> String {
+        
+//        if self.date.tba != nil {
+//            if self.date.tba! {
+//                return "TBA"
+//            }
+//        }
         
         let weekDays = [
                 "Sun",
@@ -115,7 +128,11 @@ struct Session: Codable, Identifiable, Hashable {
     func getDurationText() -> String? {
      
         if duration.tba != nil {
-            return nil
+            if duration.tba! {
+                return "Duration TBA"
+            } else {
+                return nil
+            }
         }
         
         let durationType = duration.durationType
@@ -126,7 +143,7 @@ struct Session: Codable, Identifiable, Hashable {
         switch durationType {
         case "T":
             if durationValue < 60 {
-                durationTypeString = " Minutes"
+                durationTypeString = "Minutes"
             } else {
                 if durationValue % 60 == 0{
                     if durationValue / 60 == 1 {

@@ -21,7 +21,7 @@ struct ContentView: View {
                 }
             DayListView(dc: dc, sm: sm)
                 .tabItem {
-                    Label("Day", systemImage: "30.square.fill")
+                    Label("Sessions", systemImage: "30.square.fill")
                 }
             EventListView(dc: dc, sm: sm)
                 .tabItem {

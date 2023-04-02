@@ -20,7 +20,8 @@ struct SettingsView: View {
             ScrollView {
                 VStack {
                     AboutView()
-                    if !sm.subscribed {
+                    ConsoleLogView(sm: sm)
+                    if !sm.monthlySub && !sm.annualSub {
                         Button {
                             showingFilterSheet = true
                         } label: {
@@ -34,8 +35,9 @@ struct SettingsView: View {
                     PrivacyView(navStack: navStack)
                     VersionView()
                 } // vstack
-            }.navigationTitle("Settings")
                 .padding(.horizontal)
+            }.navigationTitle("Settings")
+                
         } // navstack
     } // body
     

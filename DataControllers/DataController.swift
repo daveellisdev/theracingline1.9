@@ -288,24 +288,27 @@ class DataController: ObservableObject {
     } // DOWNLOADDATA
     
     func createSessions(events: [RaceEvent]) -> [Session] {
-
         var sessions: [Session] = []
         for event in events {
             sessions.append(contentsOf: event.sessions)
         }
         sessions.sort { $0.raceStartTime() < $1.raceStartTime() }
-        
         return sessions
     }
     
     // MARK: - DECODE DATA
     
     func decodeData(data: Data) {
-//        print("Decoding Data \(Date())")
+        print("Decoding Data \(Date())")
 
         do {
             let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
             
+            var sortedEvents = json.events
+            sortedEvents.sort {$0.firstRaceDate() < $1.firstRaceDate()}
+            
+            var sortedSessions = self.createSessions(events: self.events)
+            sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
             
             DispatchQueue.main.async {
                 
@@ -334,14 +337,12 @@ class DataController: ObservableObject {
 //                print("Circuits Done")
                 
                 // events
-                var sortedEvents = json.events
-                sortedEvents.sort {$0.firstRaceDate() < $1.firstRaceDate()}
+                
                 self.events = sortedEvents
 //                print("Events Done")
                 
                 // sessions
-                var sortedSessions = self.createSessions(events: self.events)
-                sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
+                
                 self.unfilteredSessions = sortedSessions
 //                print("Sessions Done")
 //                print("Data Decoded \(Date())")
@@ -353,24 +354,25 @@ class DataController: ObservableObject {
             print(jsonError.underlyingErrors)
             print(jsonError.localizedDescription)
         } // do catch
+        print("Decoding Data Completed \(Date())")
     }
     
     // MARK: - LOAD SERIES DATA
     
     func loadSeriesAndSessionData() {
 //        print("Loading previous sessions \(Date())")
-        DispatchQueue.global().async {
-            
-            if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
-                
-                if let data = defaults.data(forKey: "seriesAndSessionData") {
-                    DispatchQueue.main.async{
-                        self.decodeData(data: data)
-                    }
+//        DispatchQueue.global().async {
+//
+//            if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
+//
+//                if let data = defaults.data(forKey: "seriesAndSessionData") {
+//                    DispatchQueue.main.async{
+//                        self.decodeData(data: data)
+//                    }
 //                    print("Loaded previous session Data \(Date())")
-                } // if let data
-            } // if let defaults
-        } // dispatchqueee
+//                } // if let data
+//            } // if let defaults
+//        } // dispatchqueee
     }
     
     // MARK: - SAVE SERIES DATA
