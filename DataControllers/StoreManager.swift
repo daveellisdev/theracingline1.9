@@ -30,7 +30,7 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     @Published var myProducts = [SKProduct]()
     
     func getProducts(productIDs: [String]) {
-        print("Start requesting IAP products...")
+//        print("Start requesting IAP products...")
         self.message2 = "Start requesting IAP products..."
         let request = SKProductsRequest(productIdentifiers: Set(productIDs))
         request.delegate = self
@@ -38,16 +38,22 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     }
     
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        print("Did receive list of IAPs")
-        self.message2 = "Did receive list of IAPs"
+//        print("Did receive list of IAPs")
+        DispatchQueue.main.async {
+            self.message2 = "Did receive list of IAPs"
+        }
         
         if !response.products.isEmpty {
             print("\(response.products.count) IAP Found")
-            message3 = "\(response.products.count) IAP Found"
+            DispatchQueue.main.async {
+                self.message3 = "\(response.products.count) IAP Found"
+            }
             for fetchedProduct in response.products {
-                print("IAP Found")
-                print(fetchedProduct.localizedTitle)
-                iaps.append(fetchedProduct.localizedTitle)
+//                print("IAP Found")
+//                print(fetchedProduct.localizedTitle)
+                DispatchQueue.main.async {
+                    self.iaps.append(fetchedProduct.localizedTitle)
+                }
                 DispatchQueue.main.async {
                     self.myProducts.append(fetchedProduct)
                 }

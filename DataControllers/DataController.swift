@@ -288,6 +288,7 @@ class DataController: ObservableObject {
     } // DOWNLOADDATA
     
     func createSessions(events: [RaceEvent]) -> [Session] {
+        print("createSessionsHit")
         var sessions: [Session] = []
         for event in events {
             sessions.append(contentsOf: event.sessions)
@@ -302,59 +303,56 @@ class DataController: ObservableObject {
         print("Decoding Data \(Date())")
 
         do {
-            let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
-            
-            var sortedEvents = json.events
-            sortedEvents.sort {$0.firstRaceDate() < $1.firstRaceDate()}
-            
-            var sortedSessions = self.createSessions(events: self.events)
-            sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
-            
-            DispatchQueue.main.async {
+                let json = try JSONDecoder().decode(FullDataDownload.self, from: data)
                 
-                for series in json.series {
-                    let seriesId = series.seriesInfo.id
-
-                    if self.visibleSeries[seriesId] == nil {
-                        self.visibleSeries[seriesId] = false
+                var sortedEvents = json.events
+                sortedEvents.sort {$0.firstRaceDate() < $1.firstRaceDate()}
+                
+                var sortedSessions = self.createSessions(events: sortedEvents)
+                sortedSessions.sort{ $0.raceStartTime() < $1.raceStartTime()}
+                
+                DispatchQueue.main.async {
+                    
+                    for series in json.series {
+                        let seriesId = series.seriesInfo.id
+                        
+                        if self.visibleSeries[seriesId] == nil {
+                            self.visibleSeries[seriesId] = false
+                        }
+                        
+                        if self.favouriteSeries[seriesId] == nil {
+                            self.favouriteSeries[seriesId] = true
+                        }
+                        
+                        if self.notificationSeries[seriesId] == nil {
+                            self.notificationSeries[seriesId] = true
+                        }
                     }
                     
-                    if self.favouriteSeries[seriesId] == nil {
-                        self.favouriteSeries[seriesId] = true
-                    }
+                    // series
+                    self.seriesUnfiltered = json.series
+                    //                print("Series Done")
                     
-                    if self.notificationSeries[seriesId] == nil {
-                        self.notificationSeries[seriesId] = true
-                    }
-                }
-
-                // series
-                self.seriesUnfiltered = json.series
-//                print("Series Done")
-                
-                // circuits
-                self.circuits = json.circuits
-//                print("Circuits Done")
-                
-                // events
-                
-                self.events = sortedEvents
-//                print("Events Done")
-                
-                // sessions
-                
-                self.unfilteredSessions = sortedSessions
-//                print("Sessions Done")
-//                print("Data Decoded \(Date())")
-                
-                self.saveSeriesAndSessionData(data: data)
-            } // dispatchqueue
+                    // circuits
+                    self.circuits = json.circuits
+                    //                print("Circuits Done")
+                    
+                    // events
+                    self.events = sortedEvents
+                    //                print("Events Done")
+                    
+                    // sessions
+                    self.unfilteredSessions = sortedSessions
+                    //                print("Sessions Done")
+                    print("Data Decoded \(Date())")
+                    
+                    self.saveSeriesAndSessionData(data: data)
+                } // dispatchqueue main
         } catch let jsonError as NSError {
             print(jsonError)
             print(jsonError.underlyingErrors)
             print(jsonError.localizedDescription)
         } // do catch
-        print("Decoding Data Completed \(Date())")
     }
     
     // MARK: - LOAD SERIES DATA
