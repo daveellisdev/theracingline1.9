@@ -15,10 +15,10 @@ struct ContentView: View {
     var body: some View {
         
         TabView {
-            DashboardView(dc: dc, sm: sm)
-                .tabItem {
-                    Label("Dash", systemImage: "house.fill")
-                }
+//            DashboardView(dc: dc, sm: sm)
+//                .tabItem {
+//                    Label("Dash", systemImage: "house.fill")
+//                }
             DayListView(dc: dc, sm: sm)
                 .tabItem {
                     Label("Sessions", systemImage: "30.square.fill")
