@@ -295,6 +295,7 @@ class DataController: ObservableObject {
         }
         sessions.sort { $0.raceStartTime() < $1.raceStartTime() }
         return sessions
+        
     }
     
     // MARK: - DECODE DATA
