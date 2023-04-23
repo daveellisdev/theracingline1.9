@@ -28,7 +28,8 @@ struct SeriesListViewSeriesName: View {
         let gradientStart = Color(red: darkR / 255, green: darkG / 255, blue: darkB / 255)
         let gradientEnd = Color(red: lightR / 255, green: lightG / 255, blue: lightB / 255)
         
-        
+        let events: [RaceEvent] = dc.getEventsBySeriesId(seriesId: series.seriesInfo.id)
+        let seriesLiveEvents = events.filter { $0.seriesHasSessionInProgress(seriesId: series.seriesInfo.id) != nil && $0.seriesHasSessionInProgress(seriesId: series.seriesInfo.id)! }
         
         HStack {
             RoundedRectangle(cornerRadius: 3)
@@ -42,7 +43,7 @@ struct SeriesListViewSeriesName: View {
                 .font(.title3)
                 .fontWeight(.bold)
             Spacer()
-            if hasLiveSession && (sm.monthlySub || sm.annualSub) {
+            if seriesLiveEvents.count > 0 ? true : false && (sm.monthlySub || sm.annualSub) {
                 LiveCircleView()
             } 
         }
