@@ -21,7 +21,7 @@ struct DayListView: View {
         NavigationStack(path: $navStack) {
             List(sessions) { session in
                 let series = dc.getSeriesById(seriesId: session.seriesId)
-                
+                                            
                 if series != nil {
                     NavigationLink(value: session) {
                         SessionView(dc: dc, sm: sm, series: series!, session: session)

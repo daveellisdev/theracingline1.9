@@ -16,35 +16,36 @@ class DataController: ObservableObject {
     static var shared = DataController()
     
     // MARK: - SERIES
-    @Published var seriesUnfiltered: [Series] = []
+    @Published var series: [Series] = []
     
     @Published var visibleSeries: [String:Bool] = [:]
     @Published var favouriteSeries: [String:Bool] = [:]
     @Published var notificationSeries: [String:Bool] = [:]
     
-    var series: [Series] {
-        return self.seriesUnfiltered.filter { self.checkSessionSetting(type: .visible, seriesId: $0.seriesInfo.id) }
+    var seriesFiltered: [Series] {
+        return self.series.filter { visibleSeries[$0.seriesInfo.id] ?? true }
     }
+    
     var seriesSingleSeater: [Series] {
-        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Single Seater"}
+        return self.series.filter { $0.seriesInfo.type == "Single Seater"}
     }
     var seriesSportscars: [Series] {
-        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Sportscars"}
+        return self.series.filter { $0.seriesInfo.type == "Sportscars"}
     }
     var seriesTouringcars: [Series] {
-        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Touring Cars"}
+        return self.series.filter { $0.seriesInfo.type == "Touring Cars"}
     }
     var seriesStockcars: [Series] {
-        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Stock Cars"}
+        return self.series.filter { $0.seriesInfo.type == "Stock Cars"}
     }
     var seriesRally: [Series] {
-        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Rally"}
+        return self.series.filter { $0.seriesInfo.type == "Rally"}
     }
     var seriesBikes: [Series] {
-        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Bikes"}
+        return self.series.filter { $0.seriesInfo.type == "Bikes"}
     }
     var seriesOther: [Series] {
-        return self.seriesUnfiltered.filter { $0.seriesInfo.type == "Other"}
+        return self.series.filter { $0.seriesInfo.type == "Other"}
     }
     
     // MARK: - CIRCUITS
@@ -66,10 +67,10 @@ class DataController: ObservableObject {
         return self.unfilteredSessions.filter { self.visibleSeries[$0.seriesId] ?? true }
     }
     var sessionsInProgressAndUpcoming: [Session] {
-        return self.sessions.filter { !$0.isComplete() }
+        return self.unfilteredSessions.filter { self.visibleSeries[$0.seriesId] ?? true  && !$0.isComplete() }
     }
     var liveSessions: [Session] {
-        return self.sessions.filter { $0.isInProgress() }
+        return self.unfilteredSessions.filter { self.visibleSeries[$0.seriesId] ?? true  && $0.isInProgress() }
     }
 
     // favourite filtered
@@ -240,7 +241,7 @@ class DataController: ObservableObject {
         return self.favouriteSessions.filter { $0.raceStartTime() > sundayStart && $0.raceStartTime() < sundayEnd }
     }
     
-    @Published var seriesSavedSettings: [SeriesSavedData] = []
+//    @Published var seriesSavedSettings: [SeriesSavedData] = []
     @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "1")
     
 
@@ -331,7 +332,7 @@ class DataController: ObservableObject {
                     }
                     
                     // series
-                    self.seriesUnfiltered = json.series
+                    self.series = json.series
                     //                print("Series Done")
                     
                     // circuits
@@ -424,7 +425,7 @@ class DataController: ObservableObject {
                                                 
                         // publish updated settings
                         DispatchQueue.main.async {
-                            self.seriesSavedSettings = seriesSavedSettings
+//                            self.seriesSavedSettings = seriesSavedSettings
                         }
                         
                     } // if var seriesSavedSettings
@@ -440,7 +441,7 @@ class DataController: ObservableObject {
                     
                     // publish updated settings
                     DispatchQueue.main.async {
-                        self.seriesSavedSettings = seriesSavedSettings
+//                        self.seriesSavedSettings = seriesSavedSettings
                     }
                 } // else create settings
             } // try decoding full data
@@ -579,17 +580,14 @@ class DataController: ObservableObject {
     // MARK: - CHECK VISFAVNOT SETTINGS
     
     func checkSessionSetting(type: ToggleType, seriesId: String) -> Bool {
-        if let savedSeries = seriesSavedSettings.first(where: {$0.seriesInfo.id == seriesId}) {
-            switch type {
-            case .visible:
-                return savedSeries.visible
-            case .favourite:
-                return savedSeries.favourite
-            case .notification:
-                return savedSeries.notifications
-            }
+        switch type {
+        case .visible:
+            return visibleSeries[seriesId] ?? true
+        case .favourite:
+            return favouriteSeries[seriesId] ?? true
+        case .notification:
+            return notificationSeries[seriesId] ?? true
         }
-        return true
     }
     
     // MARK: - LOAD NOTIFICATION OFFSET
@@ -613,6 +611,14 @@ class DataController: ObservableObject {
     }
     
     // MARK: - UTILITIES
+    
+    func getSeriesMap() -> [String: Series] {
+        var map: [String: Series] = [:]
+        for s in series {
+            map[s.seriesInfo.id] = s
+        }
+        return map
+    }
     
     func getSeriesById(seriesId: String) -> Series? {
         if let index = self.series.firstIndex(where: {$0.seriesInfo.id == seriesId}) {
