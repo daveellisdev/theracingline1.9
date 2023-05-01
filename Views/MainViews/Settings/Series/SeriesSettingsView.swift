@@ -17,20 +17,21 @@ struct SeriesSettingsView: View {
     var body: some View {
         NavigationStack(path: $navStack) {
             VStack {
-                Picker(selection: $selected, label: Text("Picker"), content: {
-                    Text("Visible").tag(0)
-                    Text("Favourites").tag(1)
-                }).pickerStyle(SegmentedPickerStyle())
-                .padding()
-                .onChange(of: selected, perform: { value in
-    //                data.simpleMenuHaptics()
-                })
+                VisibleSeriesView(dc: dc, sm: sm)
+//                Picker(selection: $selected, label: Text("Picker"), content: {
+//                    Text("Visible").tag(0)
+//                    Text("Favourites").tag(1)
+//                }).pickerStyle(SegmentedPickerStyle())
+//                .padding()
+//                .onChange(of: selected, perform: { value in
+//    //                data.simpleMenuHaptics()
+//                })
                 
-                if selected == 0 {
-                    VisibleSeriesView(dc: dc, sm: sm)
-                } else if selected == 1 {
-                    FavouriteSeriesView(dc: dc, sm: sm)
-                }
+//                if selected == 0 {
+//                    VisibleSeriesView(dc: dc, sm: sm)
+//                } else if selected == 1 {
+//                    FavouriteSeriesView(dc: dc, sm: sm)
+//                }
             } // vstack
             .navigationTitle("Series Selection")
         } // navstack
