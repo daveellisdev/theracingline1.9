@@ -343,7 +343,7 @@ class DataController: ObservableObject {
                     //                print("Sessions Done")
                     print("Data Decoded \(Date())")
                     
-                    self.saveSeriesAndSessionData(data: data)
+                    self.saveSeriesAndSessionData()
                 } // dispatchqueue main
         } catch let jsonError as NSError {
             print(jsonError)
@@ -355,7 +355,47 @@ class DataController: ObservableObject {
     // MARK: - LOAD SERIES DATA
     
     func loadSeriesAndSessionData() {
-//        print("Loading previous sessions \(Date())")
+
+        DispatchQueue.global().async {
+            
+            let decoder = JSONDecoder()
+            
+            if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
+                
+                if let data = defaults.data(forKey: "series"){
+                    if let jsonSeries = try? decoder.decode([Series].self, from: data){
+                        DispatchQueue.main.async {
+                            self.series = jsonSeries
+                        }
+                    }
+                }
+                
+                if let data = defaults.data(forKey: "circuits"){
+                    if let jsonCircuits = try? decoder.decode([Circuit].self, from: data){
+                        DispatchQueue.main.async {
+                            self.circuits = jsonCircuits
+                        }
+                    }
+                }
+                
+                if let data = defaults.data(forKey: "events"){
+                    if let jsonEvents = try? decoder.decode([RaceEvent].self, from: data){
+                        DispatchQueue.main.async {
+                            self.events = jsonEvents
+                        }
+                    }
+                }
+                
+                if let data = defaults.data(forKey: "sessions"){
+                    if let jsonSessions = try? decoder.decode([Session].self, from: data){
+                        DispatchQueue.main.async {
+                            self.unfilteredSessions = jsonSessions
+                        }
+                    }
+                }
+            }
+            
+        }
 //        DispatchQueue.global().async {
 //
 //            if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
@@ -367,21 +407,40 @@ class DataController: ObservableObject {
 //                    print("Loaded previous session Data \(Date())")
 //                } // if let data
 //            } // if let defaults
-//        } // dispatchqueee
     }
     
     // MARK: - SAVE SERIES DATA
     
-    func saveSeriesAndSessionData(data: Data) {
-//        print("Saving Data")
+    func saveSeriesAndSessionData() {
+        print("Saving Data")
         DispatchQueue.global().async {
             
             if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
+                let encoder = JSONEncoder()
+                
+                // series
+                if let encoded = try? encoder.encode(self.series) {
+                    defaults.set(encoded, forKey: "series")
+                }
+                
+                // circuits
+                if let encoded = try? encoder.encode(self.circuits) {
+                    defaults.set(encoded, forKey: "circuits")
+                }
+                
+                // events
+                if let encoded = try? encoder.encode(self.events) {
+                    defaults.set(encoded, forKey: "events")
+                }
 
-                defaults.set(data, forKey: "seriesAndSessionData")
+                // sessions
+                if let encoded = try? encoder.encode(self.sessions) {
+                    defaults.set(encoded, forKey: "sessions")
+                }
+
                 defaults.synchronize() // MAYBE DO NOT NEED
                 
-//                print("Saved Series Data")
+                print("Saved Series Data")
             } // if let defaults
         } // dispatch queue
     }
