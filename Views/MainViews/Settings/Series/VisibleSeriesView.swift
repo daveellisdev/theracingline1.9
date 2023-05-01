@@ -23,12 +23,12 @@ struct VisibleSeriesView: View {
         let others = dc.seriesOther
         
         ScrollView {
-            GroupBox {
-                Text("This tab defines which series apprear in the Day, Event and Series tabs.")
-                    .font(.caption)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal, 10)
+//            GroupBox {
+//                Text("This tab defines which series apprear in the Day, Event and Series tabs.")
+//                    .font(.caption)
+//            }
+//            .frame(maxWidth: .infinity)
+//            .padding(.horizontal, 10)
             Group {
                 HStack {
                     Text("Single Seaters")
