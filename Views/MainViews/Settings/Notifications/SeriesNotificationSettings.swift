@@ -27,6 +27,8 @@ struct SeriesNotificationSettings: View {
                 Text("Select which series you'd like to receive notifications for.")
                     .font(.caption)
             }
+            SeriesSettingsButtons(dc: dc, type: .notification)
+
             Group {
                 HStack {
                     Text("Single Seaters")
@@ -36,7 +38,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(singleSeaters, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, type: .notification, series: series)
                 }
             }
             
@@ -50,7 +52,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(sportscars, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, type: .notification, series: series)
                 }
             }
             
@@ -63,7 +65,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(touringcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, type: .notification, series: series)
                 }
             }
             
@@ -76,7 +78,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(stockcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, type: .notification, series: series)
                 }
             }
             
@@ -89,7 +91,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(rally, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, type: .notification, series: series)
                 }
             }
             
@@ -102,7 +104,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(bikes, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, type: .notification, series: series)
                 }
             }
             
@@ -115,7 +117,7 @@ struct SeriesNotificationSettings: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(others, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm: sm, isOn: getNotificationFromSeries(series: series), type: .notification, series: series)
+                    SeriesToggle(dc: dc, sm: sm, type: .notification, series: series)
                 }
             }
         }

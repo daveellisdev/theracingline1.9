@@ -29,6 +29,8 @@ struct FavouriteSeriesView: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 10)
+            SeriesSettingsButtons(dc: dc, type: .favourite)
+
             Group {
                 HStack {
                     Text("Single Seaters")
@@ -38,7 +40,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(singleSeaters, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm: sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm: sm, type: .favourite, series: series)
                 }
             }
             
@@ -52,7 +54,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(sportscars, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm: sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm: sm, type: .favourite, series: series)
                 }
             }
             
@@ -65,7 +67,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(touringcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm: sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm: sm, type: .favourite, series: series)
                 }
             }
             
@@ -78,7 +80,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(stockcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm: sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm: sm, type: .favourite, series: series)
                 }
             }
             
@@ -91,7 +93,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(rally, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm:sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm:sm, type: .favourite, series: series)
                 }
             }
             
@@ -104,7 +106,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(bikes, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm:sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm:sm, type: .favourite, series: series)
                 }
             }
             
@@ -117,7 +119,7 @@ struct FavouriteSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(others, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm:sm, isOn: getFavouriteFromSeries(series: series), type: .favourite, series: series)
+                    SeriesToggle(dc: dc, sm:sm, type: .favourite, series: series)
                 }
             }
         }

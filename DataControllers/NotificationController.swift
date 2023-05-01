@@ -248,21 +248,7 @@ class NotificationController: ObservableObject {
         
         return nil
     }
-    
-    func getSeriesSavedSettings() -> [SeriesSavedData]? {
-        
-        if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
-            let decoder = JSONDecoder()
 
-            if let data = defaults.data(forKey: "savedSeriesSettings") {
-                if let seriesSavedSettings = try? decoder.decode([SeriesSavedData].self, from: data){
-                    return seriesSavedSettings
-                }
-            }
-        }
-        
-        return nil
-    }
     
     // MARK: - GET SESSION LIST
     func getSessionList() -> [Session]? {
@@ -289,38 +275,7 @@ class NotificationController: ObservableObject {
     // MARK: - FILTER SERIES BY PREFERENCES
     func filterSeriesByPreferences(unfilteredSessions: [Session]) -> [Session] {
         
-        let seriesSavedSettings = self.getSeriesSavedSettings()!
-        let applicationSavedSettings = self.getSavedSettings()!
-        
-         
-        let filteredBySessionType = unfilteredSessions.filter {
-            // filter by session types
-            if ($0.session.sessionTypeEnum == .testing && !applicationSavedSettings.testingNotifications) || ($0.session.sessionTypeEnum == .practice && !applicationSavedSettings.practiceNotifications) || ($0.session.sessionTypeEnum == .qualifying && !applicationSavedSettings.qualifyingNotifications) || ($0.session.sessionTypeEnum == .race && !applicationSavedSettings.raceNotifications) {
-                return false
-            } else {
-                return true
-            }
-        }
-        
-        var filteredBySeries: [Session] = []
-        
-        for session in filteredBySessionType {
-            
-            // find series saved settings
-            if let seriesSavedSetting = seriesSavedSettings.first(where: {$0.seriesInfo.id == session.seriesId}) {
-                if seriesSavedSetting.notifications {
-                    filteredBySeries.append(session)
-                }
-            } else {
-                filteredBySeries.append(session)
-            }
-            
-        }
-        
-        let now = Date()
-        let filteredByDate: [Session] = filteredBySeries.filter { $0.raceStartTime() > now }
-    
-        return filteredByDate
+        return [exampleSession]
     }
     
     func createSessions(events: [RaceEvent]) -> [Session] {
