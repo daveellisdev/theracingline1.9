@@ -22,6 +22,8 @@ class DataController: ObservableObject {
     @Published var favouriteSeries: [String:Bool] = [:]
     @Published var notificationSeries: [String:Bool] = [:]
     
+    @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: false, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "flyby_notification_bell.tiff")
+    
     var seriesFiltered: [Series] {
         return self.series.filter { visibleSeries[$0.seriesInfo.id] ?? true }
     }
@@ -240,12 +242,7 @@ class DataController: ObservableObject {
         
         return self.favouriteSessions.filter { $0.raceStartTime() > sundayStart && $0.raceStartTime() < sundayEnd }
     }
-    
-//    @Published var seriesSavedSettings: [SeriesSavedData] = []
-    @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "1")
-    
-
-    
+        
 //    var timeLineHeight: CGFloat {
 //        return CGFloat((sessionsWithinNextTwelveHours.count * 50) - 20)
 //    }
@@ -281,15 +278,13 @@ class DataController: ObservableObject {
             // decode and dispatch data
             self.decodeData(data: data)
             
-            // initiate settings check
-            self.initSavedSettings(data: data)
 //            print("Data Downloaded Data \(Date())")
         }.resume()
         
     } // DOWNLOADDATA
     
     func createSessions(events: [RaceEvent]) -> [Session] {
-        print("createSessionsHit")
+//        print("createSessionsHit")
         var sessions: [Session] = []
         for event in events {
             sessions.append(contentsOf: event.sessions)
@@ -391,75 +386,6 @@ class DataController: ObservableObject {
         } // dispatch queue
     }
 
-    // MARK: - INITIALISE SAVED SETTINGS
-    
-    func initSavedSettings(data: Data) {
-        
-        // if no saved settings exist, then create it
-        let decoder = JSONDecoder()
-
-        if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
-            
-            // decode the downloaded data
-            if let fullDataDownload = try? decoder.decode(FullDataDownload.self.self, from: data) {
-                let seriesList = fullDataDownload.series
-            
-                // if exists, then fetch it
-                if let settings = defaults.data(forKey: "savedSeriesSettings") {
-                    
-                    // decode the savedData
-                    if var seriesSavedSettings = try? decoder.decode([SeriesSavedData].self, from: settings) {
-                        
-                        // check if saved data contains all series
-                        for series in seriesList {
-                            let seriesId = series.seriesInfo.id
-                            
-                            let savedSeriesMatch = seriesSavedSettings.filter {$0.seriesInfo.id == seriesId}
-                            
-                            // none found, add series
-                            if savedSeriesMatch.count == 0 {
-                                let newSavedSeries: SeriesSavedData = SeriesSavedData(seriesInfo: series.seriesInfo, visible: true, favourite: true, notifications: true)
-                                seriesSavedSettings.append(newSavedSeries)
-                            } // if
-                        } // for loop
-                                                
-                        // publish updated settings
-                        DispatchQueue.main.async {
-//                            self.seriesSavedSettings = seriesSavedSettings
-                        }
-                        
-                    } // if var seriesSavedSettings
-                } else { // try decoding settings
-                    // if settings does not exist
-
-                    var seriesSavedSettings: [SeriesSavedData] = []
-                    
-                    for series in seriesList {
-                        let newSavedSeries: SeriesSavedData = SeriesSavedData(seriesInfo: series.seriesInfo, visible: true, favourite: true, notifications: true)
-                        seriesSavedSettings.append(newSavedSeries)
-                    }
-                    
-                    // publish updated settings
-                    DispatchQueue.main.async {
-//                        self.seriesSavedSettings = seriesSavedSettings
-                    }
-                } // else create settings
-            } // try decoding full data
-            
-            // Notifications - Offset, Sessions, Sound
-            if defaults.data(forKey: "applicationSavedSettings") == nil {
-                // if no saved settings, create defaults
-                let defaultSettings = ApplicationSavedSettings(raceNotifications: true, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "flyby_notification_no_bell.aiff")
-                DispatchQueue.main.async {
-                    self.applicationSavedSettings = defaultSettings
-                }
-            } // check for saved settings
-            
-            self.saveSavedSettings()
-
-        } // if defaults exist
-    } // init saved settings
-    
     // MARK: - SAVING SAVED SETTINGS
     func saveSavedSettings() {
 //        print("Saving Settings")
@@ -515,50 +441,48 @@ class DataController: ObservableObject {
     
     // MARK: - LOADING SAVED SETTINGS
     func loadSavedSettings() {
+        
         DispatchQueue.global().async {
             if let defaults = UserDefaults(suiteName: "group.dev.daveellis.theracingline") {
                 let decoder = JSONDecoder()
-
+                
                 if let data = defaults.data(forKey: "visibilitySettings") {
                     if let visibilitySettings = try? decoder.decode([String:Bool].self, from: data){
                         DispatchQueue.main.async{
                             self.visibleSeries = visibilitySettings
-//                            print("Loaded Visibility Settings \(visibilitySettings)")
+                            //                            print("Loaded Visibility Settings \(visibilitySettings)")
                         }
                     }
-
                 } // if let data
                 
                 if let data = defaults.data(forKey: "favouriteSettings") {
                     if let favouriteSettings = try? decoder.decode([String:Bool].self, from: data){
                         DispatchQueue.main.async{
                             self.favouriteSeries = favouriteSettings
-//                            print("Loaded Favourite Settings \(favouriteSettings)")
+                            //                            print("Loaded Favourite Settings \(favouriteSettings)")
                         }
                     }
-                    
                 } // if let data
                 
                 if let data = defaults.data(forKey: "notificationSettings") {
                     if let notificationSettings = try? decoder.decode([String:Bool].self, from: data){
                         DispatchQueue.main.async{
                             self.notificationSeries = notificationSettings
-//                            print("Loaded Notification Settings \(notificationSettings)")
+                            //                            print("Loaded Notification Settings \(notificationSettings)")
                         }
                     }
-                    
                 } // if let data
                 
                 if let data = defaults.data(forKey: "applicationSavedSettings") {
                     if let applicationSavedSettings = try? decoder.decode(ApplicationSavedSettings.self, from: data) {
                         DispatchQueue.main.async {
                             self.applicationSavedSettings = applicationSavedSettings
-//                            print("Loaded Application Saved Settings")
+                            //                            print("Loaded Application Saved Settings")
                         }
                     }
-                }
-            } // if let defaults
-        } // dispatchqueee
+                } // if let data
+            }
+        } // dispatchque
     }
     
     // MARK: - UPDATE NOTIFICATION SAVED SETTINGS
@@ -639,6 +563,36 @@ class DataController: ObservableObject {
     func getEventsBySeriesId(seriesId: String) -> [RaceEvent] {
         let events = self.events.filter { $0.seriesIds.contains(seriesId) }
         return events
+    }
+    
+    func setAllSeriesAsVisible() {
+        let allSeriesVisible = Dictionary(uniqueKeysWithValues: self.visibleSeries.map { key, value in (key, true) })
+        self.visibleSeries = allSeriesVisible
+    }
+    
+    func setAllAsFavourites() {
+        let allSeriesFavourites = Dictionary(uniqueKeysWithValues: self.visibleSeries.map { key, value in (key, true) })
+        self.favouriteSeries = allSeriesFavourites
+    }
+    
+    func setAllAsNotified() {
+        let allSeriesNotifications = Dictionary(uniqueKeysWithValues: self.visibleSeries.map { key, value in (key, true) })
+        self.notificationSeries = allSeriesNotifications
+    }
+    
+    func setAllSeriesAsInvisible() {
+        let allSeriesInvisible = Dictionary(uniqueKeysWithValues: self.visibleSeries.map { key, value in (key, false) })
+        self.visibleSeries = allSeriesInvisible
+    }
+    
+    func setAllAsNotFavourites() {
+        let allSeriesNotFavourites = Dictionary(uniqueKeysWithValues: self.visibleSeries.map { key, value in (key, false) })
+        self.favouriteSeries = allSeriesNotFavourites
+    }
+    
+    func setNoNotified() {
+        let allSeriesNoNotifications = Dictionary(uniqueKeysWithValues: self.visibleSeries.map { key, value in (key, false) })
+        self.notificationSeries = allSeriesNoNotifications
     }
     
 } // CONTROLER
