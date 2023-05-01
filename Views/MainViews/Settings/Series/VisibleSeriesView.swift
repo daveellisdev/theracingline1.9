@@ -29,6 +29,7 @@ struct VisibleSeriesView: View {
 //            }
 //            .frame(maxWidth: .infinity)
 //            .padding(.horizontal, 10)
+            SeriesSettingsButtons(dc: dc, type: .visible)
             Group {
                 HStack {
                     Text("Single Seaters")
@@ -38,7 +39,7 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(singleSeaters, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, type: .visible, series: series)
                 }
             }
             
@@ -52,7 +53,7 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(sportscars, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, type: .visible, series: series)
                 }
             }
             
@@ -65,7 +66,7 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(touringcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, type: .visible, series: series)
                 }
             }
             
@@ -78,7 +79,7 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(stockcars, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, type: .visible, series: series)
                 }
             }
             
@@ -91,7 +92,7 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(rally, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, type: .visible, series: series)
                 }
             }
             
@@ -104,7 +105,7 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(bikes, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, type: .visible, series: series)
                 }
             }
             
@@ -117,19 +118,9 @@ struct VisibleSeriesView: View {
                     Spacer()
                 }.padding(.horizontal)
                 ForEach(others, id: \.self) { series in
-                    SeriesToggle(dc: dc, sm:sm, isOn: getVisibilityFromSeries(series: series), type: .visible, series: series)
+                    SeriesToggle(dc: dc, sm:sm, type: .visible, series: series)
                 }
             }
-        }
-    }
-    
-    func getVisibilityFromSeries(series: Series) -> Bool {
-        let seriesId = series.seriesInfo.id
-        
-        if let visiblity = dc.visibleSeries[seriesId] {
-            return visiblity
-        } else {
-            return true
         }
     }
 }

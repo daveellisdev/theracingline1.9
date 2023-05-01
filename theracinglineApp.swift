@@ -37,7 +37,7 @@ struct theracinglineApp: App {
                     // load saved settings
                     dc.loadSavedSettings()
                     
-                    // load saved series
+                    // load race data
                     dc.loadSeriesAndSessionData()
                     
                     // download new races
