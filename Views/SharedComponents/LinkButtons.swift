@@ -25,7 +25,7 @@ struct LinkButtons: View {
             }
             .padding()
             .background(.blue)
-            .foregroundColor(.primary)
+            .foregroundColor(.white)
             .fontWeight(.bold)
             .cornerRadius(10)
             .sheet(isPresented: $showingOfficialLinks){
@@ -40,7 +40,7 @@ struct LinkButtons: View {
             }
             .padding()
             .background(.blue)
-            .foregroundColor(.primary)
+            .foregroundColor(.white)
             .fontWeight(.bold)
             .cornerRadius(10)
             .sheet(isPresented: $showingStreamingLinks){

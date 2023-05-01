@@ -33,7 +33,7 @@ struct SeriesSettingsButtons: View {
             }
             .padding()
             .background(.blue)
-            .foregroundColor(.primary)
+            .foregroundColor(.white)
             .fontWeight(.bold)
             .cornerRadius(10)
             
@@ -52,10 +52,10 @@ struct SeriesSettingsButtons: View {
             }
             .padding()
             .background(.blue)
-            .foregroundColor(.primary)
+            .foregroundColor(.white)
             .fontWeight(.bold)
             .cornerRadius(10)
-        }
+        }.padding(.horizontal)
     }
 }
 
