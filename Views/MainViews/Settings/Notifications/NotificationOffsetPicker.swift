@@ -25,7 +25,8 @@ struct NotificationOffsetPicker: View {
             GroupBox {
                 Text("The amount of time before the green flag that you want to receive a notifications")
                     .font(.caption)
-            }
+                    .frame(maxWidth: .infinity)
+            }.padding(.horizontal)
             HStack {
                 Spacer()
                 Text("Days")
