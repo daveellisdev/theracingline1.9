@@ -15,9 +15,10 @@ struct NotificationSessionsSettings: View {
     var body: some View {
         VStack {
             GroupBox {
-                Text("Defines which sessions you receive notifications for.")
+                Text("Defines which sessions you receive notifications for")
                     .font(.caption)
-            }
+                    .frame(maxWidth: .infinity)
+            }.padding(.horizontal)
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 10)
             Group {

@@ -15,7 +15,31 @@ struct SeriesSettings: View {
     @State var navStack: NavigationPath
 
     var body: some View {
-        GroupBox(label: SettingsLabelView(labelText: "Series", labelImage: "list.number")){
+        GroupBox(label: SettingsLabelView(labelText: "Settings", labelImage: "slider.horizontal.3")){
+            Divider().padding(.vertical, 4)
+            NavigationLink {
+                GeneralSettingsView(dc: dc, sm: sm, navStack: navStack)
+            } label: {
+                HStack {
+                    Image(systemName: "gear")
+                    Text("General")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+
+                }
+            } // navlink
+            Divider().padding(.vertical, 4)
+            NavigationLink {
+                DashboardSettingsView(dc: dc, sm: sm, navStack: navStack)
+            } label: {
+                HStack {
+                    Image(systemName: "play.tv")
+                    Text("Dashboard")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+
+                }
+            } // navlink
             Divider().padding(.vertical, 4)
             NavigationLink {
                 SeriesSettingsView(dc: dc, sm: sm, navStack: navStack)
