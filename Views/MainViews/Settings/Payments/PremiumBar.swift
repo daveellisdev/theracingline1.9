@@ -12,7 +12,7 @@ struct PremiumBar: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 10)
-                .foregroundColor(.blue)
+                .fill(LinearGradient(colors: [Color(red: 80 / 255, green: 177 / 255, blue: 217 / 255), Color(red: 77 / 255, green: 169 / 255, blue: 210 / 255)],startPoint: .top, endPoint: .bottom))
                 .frame(height: 180)
             VStack {
                 HStack {
@@ -27,8 +27,8 @@ struct PremiumBar: View {
                 HStack {
                     Group {
                         Spacer()
-                        Image(systemName: "play.display")
-                        Spacer()
+//                        Image(systemName: "play.display")
+//                        Spacer()
                         Image(systemName: "app.badge")
                         Spacer()
                     }
@@ -45,7 +45,7 @@ struct PremiumBar: View {
                 .fontWeight(.bold)
                 Spacer()
                 HStack {
-                    Text("A weekend dashboard, customisable notifications for your selected series, race times in your time zone, widgets and more.")
+                    Text("Customisable notifications for your selected series, race times in your time zone, widgets and more.")
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundColor(.white)

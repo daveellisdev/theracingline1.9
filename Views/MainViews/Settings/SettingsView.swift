@@ -21,7 +21,7 @@ struct SettingsView: View {
                 VStack {
                     AboutView()
                     ConsoleLogView(sm: sm)
-                    if !sm.monthlySub && !sm.annualSub {
+                    if !sm.subscribed {
                         Button {
                             showingFilterSheet = true
                         } label: {

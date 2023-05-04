@@ -108,7 +108,7 @@ struct SubscriptionView: View {
                         VStack(alignment: .leading) {
                             Text("Support a solo developer")
                                 .fontWeight(.bold)
-                            Text("This app is all made by a single independent developer. Your dedication to the app is what makes this possible.")
+                            Text("This app is run by a single independent developer. Your dedication to the app is what makes this possible.")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
