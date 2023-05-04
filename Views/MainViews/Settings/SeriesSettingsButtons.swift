@@ -41,10 +41,13 @@ struct SeriesSettingsButtons: View {
                 switch type {
                 case .visible:
                     dc.setAllSeriesAsInvisible()
+                    dc.saveSavedSettings()
                 case .favourite:
                     dc.setAllAsNotFavourites()
+                    dc.saveSavedSettings()
                 case .notification:
                     dc.setNoNotified()
+                    dc.saveSavedSettings()
                 }
             }) {
                 Text("None")

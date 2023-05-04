@@ -19,10 +19,6 @@ struct ContentView: View {
 //                .tabItem {
 //                    Label("Dash", systemImage: "house.fill")
 //                }
-//            DayListView(dc: dc, sm: sm)
-//                .tabItem {
-//                    Label("Sessions", systemImage: "30.square.fill")
-//                }
             EventListView(dc: dc, sm: sm)
                 .tabItem {
                     Label("Events", systemImage: "flag.fill")

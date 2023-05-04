@@ -71,6 +71,9 @@ class DataController: ObservableObject {
     var sessionsInProgressAndUpcoming: [Session] {
         return self.unfilteredSessions.filter { self.visibleSeries[$0.seriesId] ?? true  && !$0.isComplete() }
     }
+//    var sessionsUpcoming: [Session] {
+//        return self.unfilteredSessions.filter { self.visibleSeries[$0.seriesId] ?? true  && !$0.isComplete() && !$0.isInProgress() }
+//    }
     var liveSessions: [Session] {
         return self.unfilteredSessions.filter { self.visibleSeries[$0.seriesId] ?? true  && $0.isInProgress() }
     }
@@ -87,161 +90,7 @@ class DataController: ObservableObject {
     }
     
     // notification sessions
-    var notificationSessions: [Session] {
-        unfilteredSessions.filter {
-            let now = Date()
-            let twoWeeks = Date()+4.weeks
-            return $0.raceStartTime() < twoWeeks && $0.raceStartTime() > now
-        }
-    }
     
-    // weekly sessions for dashboard
-    var mondayFavouriteSessions: [Session] {
-        
-        let seconds = TimeZone.current.secondsFromGMT()
-        let minutesToGMT = (seconds / 60) + (seconds % 60)
-        
-        let weekday = Calendar.current.component(.weekday, from: Date())
-        
-        let mondayDateObject: Date
-        
-        if weekday == 2 {
-            mondayDateObject = Date()
-        } else {
-            mondayDateObject = Date().dateAt(.nextWeekday(.monday))
-        }
-                
-        let mondayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: mondayDateObject)! + minutesToGMT.minutes
-        let mondayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: mondayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
-        
-        return self.favouriteSessions.filter { $0.raceStartTime() > mondayStart && $0.raceStartTime() < mondayEnd }
-    }
-    
-    var tuesdayFavouriteSessions: [Session] {
-        
-        let seconds = TimeZone.current.secondsFromGMT()
-        let minutesToGMT = (seconds / 60) + (seconds % 60)
-        
-        let weekday = Calendar.current.component(.weekday, from: Date())
-        
-        let tuesdayDateObject: Date
-        
-        if weekday == 3 {
-            tuesdayDateObject = Date()
-        } else {
-            tuesdayDateObject = Date().dateAt(.nextWeekday(.tuesday))
-        }
-                
-        let tuesdayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: tuesdayDateObject)! + minutesToGMT.minutes
-        let tuesdayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: tuesdayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
-        
-        return self.favouriteSessions.filter { $0.raceStartTime() > tuesdayStart && $0.raceStartTime() < tuesdayEnd }
-    }
-    
-    var wednesdayFavouriteSessions: [Session] {
-        
-        let seconds = TimeZone.current.secondsFromGMT()
-        let minutesToGMT = (seconds / 60) + (seconds % 60)
-        
-        let weekday = Calendar.current.component(.weekday, from: Date())
-        
-        let wednesdayDateObject: Date
-        
-        if weekday == 4 {
-            wednesdayDateObject = Date()
-        } else {
-            wednesdayDateObject = Date().dateAt(.nextWeekday(.wednesday))
-        }
-                
-        let wednesdayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: wednesdayDateObject)! + minutesToGMT.minutes
-        let wednesdayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: wednesdayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
-        
-        return self.favouriteSessions.filter { $0.raceStartTime() > wednesdayStart && $0.raceStartTime() < wednesdayEnd }
-    }
-    
-    var thursdayFavouriteSessions: [Session] {
-        
-        let seconds = TimeZone.current.secondsFromGMT()
-        let minutesToGMT = (seconds / 60) + (seconds % 60)
-        
-        let weekday = Calendar.current.component(.weekday, from: Date())
-        
-        let thursdayDateObject: Date
-
-        if weekday == 5 {
-            thursdayDateObject = Date()
-        } else {
-            thursdayDateObject = Date().dateAt(.nextWeekday(.thursday))
-        }
-                
-        let thursdayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: thursdayDateObject)! + minutesToGMT.minutes
-        let thursdayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: thursdayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
-        
-        return self.favouriteSessions.filter { $0.raceStartTime() > thursdayStart && $0.raceStartTime() < thursdayEnd }
-    }
-    
-    var fridayFavouriteSessions: [Session] {
-        
-        let seconds = TimeZone.current.secondsFromGMT()
-        let minutesToGMT = (seconds / 60) + (seconds % 60)
-        
-        let weekday = Calendar.current.component(.weekday, from: Date())
-        
-        let fridayDateObject: Date
-        
-        if weekday == 6 {
-            fridayDateObject = Date()
-        } else {
-            fridayDateObject = Date().dateAt(.nextWeekday(.friday))
-        }
-                
-        let fridayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: fridayDateObject)! + minutesToGMT.minutes
-        let fridayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: fridayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
-        
-        return self.favouriteSessions.filter { $0.raceStartTime() > fridayStart && $0.raceStartTime() < fridayEnd }
-    }
-    
-    var saturdayFavouriteSessions: [Session] {
-        
-        let seconds = TimeZone.current.secondsFromGMT()
-        let minutesToGMT = (seconds / 60) + (seconds % 60)
-        
-        let weekday = Calendar.current.component(.weekday, from: Date())
-        
-        let saturdayDateObject: Date
-        
-        if weekday == 7 {
-            saturdayDateObject = Date()
-        } else {
-            saturdayDateObject = Date().dateAt(.nextWeekday(.saturday))
-        }
-                
-        let saturdayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: saturdayDateObject)! + minutesToGMT.minutes
-        let saturdayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: saturdayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
-        
-        return self.favouriteSessions.filter { $0.raceStartTime() > saturdayStart && $0.raceStartTime() < saturdayEnd }
-    }
-    
-    var sundayFavouriteSessions: [Session] {
-        
-        let seconds = TimeZone.current.secondsFromGMT()
-        let minutesToGMT = (seconds / 60) + (seconds % 60)
-        
-        let weekday = Calendar.current.component(.weekday, from: Date())
-        
-        let sundayDateObject: Date
-        
-        if weekday == 1 {
-            sundayDateObject = Date()
-        } else {
-            sundayDateObject = Date().dateAt(.nextWeekday(.sunday))
-        }
-                
-        let sundayStart = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: sundayDateObject)! + minutesToGMT.minutes
-        let sundayEnd = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: sundayDateObject)! + minutesToGMT.minutes  + 4.hours + 30.minutes
-        
-        return self.favouriteSessions.filter { $0.raceStartTime() > sundayStart && $0.raceStartTime() < sundayEnd }
-    }
         
 //    var timeLineHeight: CGFloat {
 //        return CGFloat((sessionsWithinNextTwelveHours.count * 50) - 20)
@@ -630,12 +479,12 @@ class DataController: ObservableObject {
     }
     
     func setAllAsFavourites() {
-        let allSeriesFavourites = Dictionary(uniqueKeysWithValues: self.visibleSeries.map { key, value in (key, true) })
+        let allSeriesFavourites = Dictionary(uniqueKeysWithValues: self.favouriteSeries.map { key, value in (key, true) })
         self.favouriteSeries = allSeriesFavourites
     }
     
     func setAllAsNotified() {
-        let allSeriesNotifications = Dictionary(uniqueKeysWithValues: self.visibleSeries.map { key, value in (key, true) })
+        let allSeriesNotifications = Dictionary(uniqueKeysWithValues: self.notificationSeries.map { key, value in (key, true) })
         self.notificationSeries = allSeriesNotifications
     }
     
@@ -645,12 +494,12 @@ class DataController: ObservableObject {
     }
     
     func setAllAsNotFavourites() {
-        let allSeriesNotFavourites = Dictionary(uniqueKeysWithValues: self.visibleSeries.map { key, value in (key, false) })
+        let allSeriesNotFavourites = Dictionary(uniqueKeysWithValues: self.favouriteSeries.map { key, value in (key, false) })
         self.favouriteSeries = allSeriesNotFavourites
     }
     
     func setNoNotified() {
-        let allSeriesNoNotifications = Dictionary(uniqueKeysWithValues: self.visibleSeries.map { key, value in (key, false) })
+        let allSeriesNoNotifications = Dictionary(uniqueKeysWithValues: self.notificationSeries.map { key, value in (key, false) })
         self.notificationSeries = allSeriesNoNotifications
     }
     

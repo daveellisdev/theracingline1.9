@@ -27,7 +27,7 @@ struct theracinglineApp: App {
             ContentView(dc: dc, sm: sm)
                 .onAppear() {
                     
-                    // on app loading
+                    // on app loading. This is not when the app comes to the foreground
                     
                     // restore payment status
                     sm.restoreSubscriptionStatus()
@@ -42,24 +42,27 @@ struct theracinglineApp: App {
                     
                     // download new races
                     dc.downloadData()
+                    
+                    // rebuild notifications
+                    rebuildNotifications()
                 }
-//                .onChange(of: dc.seriesSavedSettings, perform: { value in
-//                    rebuildNotifications()
-//                })
-//                .onChange(of: dc.applicationSavedSettings, perform: { value in
-//                    rebuildNotifications()
-//                })
-//                .onChange(of: sm.monthlySub, perform: { value in
-//                    rebuildNotifications()
-//                })
-//                .onChange(of: sm.annualSub, perform: { value in
-//                    rebuildNotifications()
-//                })
+                .onChange(of: dc.unfilteredSessions, perform: { value in
+                    rebuildNotifications()
+                })
+                .onChange(of: dc.notificationSeries, perform: { value in
+                    rebuildNotifications()
+                })
+                .onChange(of: dc.applicationSavedSettings, perform: { value in
+                    rebuildNotifications()
+                })
+                .onChange(of: sm.subscribed, perform: { value in
+                    rebuildNotifications()
+                })
         }
     }
     
     func rebuildNotifications() {
-        if sm.monthlySub || sm.annualSub {
+        if sm.subscribed {
             nc.rebuildNotifications()
         }
     }

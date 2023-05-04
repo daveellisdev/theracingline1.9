@@ -22,14 +22,20 @@ struct SeriesToggle: View {
         HStack {
             Toggle(series.seriesInfo.name, isOn: $isOn)
                 .onChange(of: dc.visibleSeries, perform: { value in
-                    checkIfSeriesVisible()
+                    checkToggleStatus()
+                })
+                .onChange(of: dc.favouriteSeries, perform: { value in
+                    checkToggleStatus()
+                })
+                .onChange(of: dc.notificationSeries, perform: { value in
+                    checkToggleStatus()
                 })
                 .onChange(of: isOn) { value in
                     updateSavedSettings(type: type, series: series, newValue: isOn)
                 }
         }.padding(.horizontal)
             .onAppear {
-                checkIfSeriesVisible()
+                checkToggleStatus()
             }
     }
     
@@ -41,7 +47,7 @@ struct SeriesToggle: View {
         dc.saveSavedSettings()
     }
     
-    func checkIfSeriesVisible(){
+    func checkToggleStatus(){
         switch type {
         case .visible:
             isOn = dc.visibleSeries[series.seriesInfo.id]!

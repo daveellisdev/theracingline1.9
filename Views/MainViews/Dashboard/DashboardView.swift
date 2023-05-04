@@ -31,30 +31,6 @@ struct DashboardView: View {
                             }
                         } // if subscribed
                         ZStack {
-                            VStack {
-                                
-                                LiveSessionsMainView(dc: dc, sm: sm)
-                                
-                                let dailyArrays = [
-                                    dc.mondayFavouriteSessions,
-                                    dc.tuesdayFavouriteSessions,
-                                    dc.wednesdayFavouriteSessions,
-                                    dc.thursdayFavouriteSessions,
-                                    dc.fridayFavouriteSessions,
-                                    dc.saturdayFavouriteSessions,
-                                    dc.sundayFavouriteSessions]
-                                
-                                let sortedDailyArray = dailyArrays.sorted { $0.count > $1.count }
-                                if let index = dailyArrays.firstIndex(where: {$0.count > 0}) {
-                                    let defaultSelectionDay = dailyArrays[index].count
-                                    if sortedDailyArray[0].count > 0 {
-                                        ChartMainView(dc: dc, selected: defaultSelectionDay, dailyArrays: dailyArrays)
-                                    }
-                                }
-
-                                ThisWeeksSessionsMainView(dc: dc, sm: sm)
-                            }.padding(.horizontal)
-                                .blur(radius: sm.monthlySub || sm.annualSub ? 0 : 10) // vstack
                             if !sm.monthlySub && !sm.annualSub {
                                 VStack {
                                     Text("Get a personalised dashboard with TRL Pro")
