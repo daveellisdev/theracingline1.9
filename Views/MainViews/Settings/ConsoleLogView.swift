@@ -9,59 +9,88 @@ import SwiftUI
 
 struct ConsoleLogView: View {
     
+    @Environment(\.presentationMode) var presentationMode
+
+    @ObservedObject var dc: DataController
     @ObservedObject var sm: StoreManager
     
     var body: some View {
         VStack {
             ZStack {
-                RoundedRectangle(cornerRadius: 12)
+                Rectangle()
+                    .ignoresSafeArea()
                     .foregroundColor(.black)
-                VStack(alignment: .leading) {
-                    Group {
-                        HStack {
-                            Text("The Nick Log")
-                                .fontWeight(.bold)
-                                .foregroundColor(.teal)
-                        }
-                        HStack {
-                            Text("Message: \(sm.message)")
-                            Spacer()
-                        }
-                        HStack {
-                            Text("monthySub: \(String(sm.monthlySub))")
-                            Spacer()
-                        }
-                        HStack {
-                            Text("annualSub: \(String(sm.annualSub))")
-                            Spacer()
-                        }
-                        HStack {
-                            Text("anySub: \(String(sm.subscribed))")
-                            Spacer()
-                        }
-                    }
-                    Text("---------------------")
-                    Group {
-                        HStack {
-                            Text("Message: \(sm.message2)")
-                            Spacer()
-                        }
-                        HStack {
-                            Text("Message: \(sm.message3)")
-                            Spacer()
-                        }
-                        ForEach(sm.iaps, id: \.self) { item in
+                ScrollView {
+                    VStack(alignment: .leading) {
+                        Group {
                             HStack {
-                                Text("IAP Name: \(item)")
+                                Text("Developer Log")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.teal)
                                 Spacer()
+                                
+                                Button {
+                                    presentationMode.wrappedValue.dismiss()
+                                } label: {
+                                    Image(systemName: "x.circle")
+                                }
+                            }
+                            HStack {
+                                Text("You found the secret page!")
+                            }
+                            Divider()
+                                .overlay(.teal)
+                            HStack {
+                                Text("IAP Information")
+                                    .fontWeight(.bold)
+                            }
+                            HStack {
+                                Text("Message: \(sm.message)")
+                            }
+                            HStack {
+                                Text("monthySub: \(String(sm.monthlySub))")
+                            }
+                            HStack {
+                                Text("annualSub: \(String(sm.annualSub))")
+                            }
+                            HStack {
+                                Text("anySub: \(String(sm.subscribed))")
                             }
                         }
-                    }
-                    
-                }.padding()
-                    .foregroundColor(.white)
-                    .multilineTextAlignment(.leading)
-                
+                        Group {
+                            HStack {
+                                Text("Message: \(sm.message2)")
+                            }
+                            HStack {
+                                Text("Message: \(sm.message3)")
+                            }
+                            ForEach(sm.iaps, id: \.self) { item in
+                                HStack {
+                                    Text("IAP Name: \(item)")
+                                }
+                            }
+                        }
+                        Divider()
+                            .overlay(.teal)
+                        Group {
+                            HStack {
+                                Text("Stats")
+                                    .fontWeight(.bold)
+                            }
+                            HStack {
+                                Text("Number of series: \(dc.series.count)")
+                            }
+                            HStack {
+                                Text("Number of events: \(dc.events.count)")
+                            }
+                            HStack {
+                                Text("Number of sessions: \(dc.unfilteredSessions.count)")
+                            }
+                        }
+                    }.padding()
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(.leading)
+                }
             }.frame(maxHeight: .infinity)
         }
         
@@ -70,6 +99,6 @@ struct ConsoleLogView: View {
 
 struct ConsoleLogView_Previews: PreviewProvider {
     static var previews: some View {
-        ConsoleLogView(sm: StoreManager())
+        ConsoleLogView(dc: DataController(), sm: StoreManager())
     }
 }

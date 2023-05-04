@@ -13,27 +13,26 @@ struct SettingsView: View {
     @ObservedObject var sm: StoreManager
     
     @State var navStack = NavigationPath()
-    @State private var showingFilterSheet = false
+    @State private var showingPaymentSheet = false
 
     var body: some View {
         NavigationStack(path: $navStack) {
             ScrollView {
                 VStack {
                     AboutView()
-                    ConsoleLogView(sm: sm)
                     if !sm.subscribed {
                         Button {
-                            showingFilterSheet = true
+                            showingPaymentSheet = true
                         } label: {
                             PremiumBar()
-                        }.sheet(isPresented: $showingFilterSheet){
+                        }.sheet(isPresented: $showingPaymentSheet){
                             SubscriptionView(dc: dc, sm: sm)
                         }
                     }
                     SeriesSettings(dc: dc, sm: sm, navStack: navStack)
 //                    LinksView()
                     PrivacyView(navStack: navStack)
-                    VersionView()
+                    VersionView(dc: dc, sm: sm)
                 } // vstack
                 .padding(.horizontal)
             }.navigationTitle("Settings")

@@ -8,13 +8,27 @@
 import SwiftUI
 
 struct VersionView: View {
+    
+    @ObservedObject var dc: DataController
+    @ObservedObject var sm: StoreManager
+    
+    @State private var showingLogSheet = false
+
     var body: some View {
         GroupBox(label: SettingsLabelView(labelText: "Version", labelImage: "info.circle")) {
             Divider().padding(.vertical, 4)
             HStack {
-                Text("Version 2.0")
-                    .font(.caption)
-                Spacer()
+                Button {
+                    showingLogSheet = true
+                } label: {
+                    Text("Version 2.0")
+                        .font(.caption)
+                        .foregroundColor(.primary)
+                    Spacer()
+                }.sheet(isPresented: $showingLogSheet){
+                    ConsoleLogView(dc: dc, sm: sm)
+                }
+                
             }
         } //GROUPBOX
     }
@@ -22,6 +36,6 @@ struct VersionView: View {
 
 struct VersionView_Previews: PreviewProvider {
     static var previews: some View {
-        VersionView()
+        VersionView(dc: DataController(), sm: StoreManager())
     }
 }
