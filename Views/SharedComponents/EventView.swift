@@ -25,15 +25,15 @@ struct EventView: View {
         
         ScrollView {
             VStack {
-                
-                Button {
-                    showingFilterSheet = true
-                } label: {
-                    PremiumBarSlim()
-                }.sheet(isPresented: $showingFilterSheet){
-                    SubscriptionView(dc: dc, sm: sm)
+                if !sm.subscribed {
+                    Button {
+                        showingFilterSheet = true
+                    } label: {
+                        PremiumBarSlim()
+                    }.sheet(isPresented: $showingFilterSheet){
+                        SubscriptionView(dc: dc, sm: sm)
+                    }
                 }
-
                 GroupBox {
                     VStack(alignment: .leading) {
                         EventRowSeriesList(dc: dc, raceEvent: event)
