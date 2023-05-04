@@ -12,6 +12,8 @@ struct EventView: View {
     
     @ObservedObject var dc: DataController
     @ObservedObject var sm: StoreManager
+    
+    @State private var showingFilterSheet = false
 
     let event: RaceEvent
     
@@ -23,6 +25,15 @@ struct EventView: View {
         
         ScrollView {
             VStack {
+                
+                Button {
+                    showingFilterSheet = true
+                } label: {
+                    PremiumBarSlim()
+                }.sheet(isPresented: $showingFilterSheet){
+                    SubscriptionView(dc: dc, sm: sm)
+                }
+
                 GroupBox {
                     VStack(alignment: .leading) {
                         EventRowSeriesList(dc: dc, raceEvent: event)

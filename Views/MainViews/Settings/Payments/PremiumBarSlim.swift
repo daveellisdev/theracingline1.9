@@ -11,7 +11,7 @@ struct PremiumBarSlim: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 10)
-                .foregroundColor(.blue)
+                .fill(LinearGradient(colors: [Color(red: 80 / 255, green: 177 / 255, blue: 217 / 255), Color(red: 77 / 255, green: 169 / 255, blue: 210 / 255)],startPoint: .top, endPoint: .bottom))
                 .frame(height: 80)
             VStack {
                 HStack {
@@ -22,8 +22,8 @@ struct PremiumBarSlim: View {
                         .foregroundColor(.white)
                     Group {
                         Spacer()
-                        Image(systemName: "play.display")
-                        Spacer()
+//                        Image(systemName: "play.display")
+//                        Spacer()
                         Image(systemName: "app.badge")
                         Spacer()
                     }
@@ -40,7 +40,7 @@ struct PremiumBarSlim: View {
                 .fontWeight(.bold)
                 Spacer()
                 HStack {
-                    Text("Dashboard, notifications, race times, widgets and more.")
+                    Text("Notifications, race times, widgets and more.")
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundColor(.white)

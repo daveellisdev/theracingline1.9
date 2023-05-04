@@ -24,7 +24,7 @@ struct LinkButtons: View {
                     .frame(maxWidth: .infinity)
             }
             .padding()
-            .background(.blue)
+            .background(LinearGradient(colors: [Color(red: 80 / 255, green: 177 / 255, blue: 217 / 255), Color(red: 77 / 255, green: 169 / 255, blue: 210 / 255)],startPoint: .top, endPoint: .bottom))
             .foregroundColor(.white)
             .fontWeight(.bold)
             .cornerRadius(10)
@@ -39,7 +39,7 @@ struct LinkButtons: View {
                     .frame(maxWidth: .infinity)
             }
             .padding()
-            .background(.blue)
+            .background(LinearGradient(colors: [Color(red: 80 / 255, green: 177 / 255, blue: 217 / 255), Color(red: 77 / 255, green: 169 / 255, blue: 210 / 255)],startPoint: .top, endPoint: .bottom))
             .foregroundColor(.white)
             .fontWeight(.bold)
             .cornerRadius(10)
