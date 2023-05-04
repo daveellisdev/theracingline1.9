@@ -24,7 +24,7 @@ struct SeriesNotificationSettings: View {
         
         ScrollView {
             GroupBox {
-                Text("Select which series you'd like to receive notifications for.")
+                Text("Defines which series you'd like to receive notifications for.")
                     .font(.caption)
             }
             SeriesSettingsButtons(dc: dc, type: .notification)
