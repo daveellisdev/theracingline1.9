@@ -18,9 +18,8 @@ struct NotificationSessionsSettings: View {
                 Text("Defines which sessions you receive notifications for")
                     .font(.caption)
                     .frame(maxWidth: .infinity)
-            }.padding(.horizontal)
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal, 10)
+            }
+            .padding(.horizontal)
             Group {
                 SessionToggles(dc: dc, sm: sm, isOn: dc.applicationSavedSettings.raceNotifications, sessionTypeEnum: .race, sessionType: "Race")
                 SessionToggles(dc: dc, sm: sm, isOn: dc.applicationSavedSettings.qualifyingNotifications, sessionTypeEnum: .qualifying, sessionType: "Qualifying")

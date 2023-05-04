@@ -56,8 +56,8 @@ struct SubscriptionSelectionView: View {
                         sm.purchaseProduct(product: sub)
                     } label: {
                         Text("Continue")
+                            .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: .infinity)
                     .foregroundColor(.white)
                     .fontWeight(.bold)
                     .padding()
