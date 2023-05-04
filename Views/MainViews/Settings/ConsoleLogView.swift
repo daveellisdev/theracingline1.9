@@ -35,6 +35,10 @@ struct ConsoleLogView: View {
                             Text("annualSub: \(String(sm.annualSub))")
                             Spacer()
                         }
+                        HStack {
+                            Text("anySub: \(String(sm.subscribed))")
+                            Spacer()
+                        }
                     }
                     Text("---------------------")
                     Group {

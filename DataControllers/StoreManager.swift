@@ -23,6 +23,14 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
     @Published var message3 = "message3"
     @Published var iaps: [String] = []
     @Published var bunduleId = "bundleId"
+    
+    var subscribed: Bool {
+        if monthlySub || annualSub {
+            return true
+        } else {
+            return false
+        }
+    }
 
     //FETCH PRODUCTS
     var request: SKProductsRequest!
@@ -150,16 +158,17 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
             if let err = error {
                 print(err)
             } else {
+                print("InAppReceipt Refresh with no error")
             // do your stuff with the receipt data here
                 if let receipt = try? InAppReceipt.localReceipt(){
-                    if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.annual", forDate: Date()-10.days) {
+                    if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.annual", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
                         /// UPDATE USER ACCESS - ANNUAL SUB
                         self.message = "Annual found"
                         self.annualSub = true
                         self.monthlySub = false
                         
-                    } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.gold", forDate: Date()-10.days) {
+                    } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.gold", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
                         /// UPDATE USER ACCESS - MONTHLY SUB
                         self.message = "Monthly found"
@@ -182,6 +191,7 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
                         
                     } else {
                         /// DO NOTHING. NO SUB
+                        print("No sub")
                         self.message = "No Sub found"
                         self.annualSub = false
                         self.monthlySub = false

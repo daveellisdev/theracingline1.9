@@ -16,9 +16,10 @@ struct CircuitMapView: View {
 //
     var body: some View {
         
-        Map(coordinateRegion: $region)
+        Map(coordinateRegion: $region, interactionModes: [])
             .frame(height: 256)
             .cornerRadius(12)
+            
             
     }
 }

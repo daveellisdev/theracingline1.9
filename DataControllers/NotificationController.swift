@@ -59,8 +59,38 @@ class NotificationController: ObservableObject {
         
         print("Rebuild notifications called")
         // get all sessions
-        let fullSessionList = self.dc.notificationSessions
+        var fullSessionList = self.dc.unfilteredSessions
+        fullSessionList = fullSessionList.filter{ !$0.isComplete() && !$0.isInProgress() }
+        
+        fullSessionList = fullSessionList.filter{ dc.visibleSeries[$0.seriesId] ?? true}
         let applicationSavedSettings = self.dc.applicationSavedSettings
+        
+        // get session preferences
+        let setForTesting = applicationSavedSettings.testingNotifications
+        let setForPractice = applicationSavedSettings.practiceNotifications
+        let setForQualifying = applicationSavedSettings.qualifyingNotifications
+        let setForRace = applicationSavedSettings.raceNotifications
+        
+        // filter by session preferences
+        if !setForTesting {
+            fullSessionList = fullSessionList.filter{ $0.session.sessionTypeEnum == .testing }
+        }
+        
+        if !setForPractice {
+            fullSessionList = fullSessionList.filter{ $0.session.sessionTypeEnum == .practice }
+        }
+        
+        if !setForQualifying {
+            fullSessionList = fullSessionList.filter{ $0.session.sessionTypeEnum == .qualifying }
+        }
+        
+        if !setForRace {
+            fullSessionList = fullSessionList.filter{ $0.session.sessionTypeEnum == .race }
+        }
+        
+        // maximum number of notifications is 64
+        let notificationSessions = Array(fullSessionList.prefix(60))
+
 
         // clear notifications
         self.clearNotifications()
@@ -70,12 +100,16 @@ class NotificationController: ObservableObject {
         
         //filter sessions based on preferences
         //loop through remaining sessions and set notifications
-        for (index, session) in fullSessionList.enumerated() {
+        notificationSessions.forEach({ session in
+            print(session.seriesId)
+            print(session.circuit.circuit)
+            print(session.date.date)
+            print(session.date.tba)
 
-            if index < 40 && (session.date.tba == nil || !session.date.tba!) {
+            if session.date.tba == nil || (session.date.tba != nil && !session.date.tba!) {
                 self.setNotifictions(session: session)
             }
-        }
+        })
     }
     
     // MARK: - SET SESSION NOTIFICATION
