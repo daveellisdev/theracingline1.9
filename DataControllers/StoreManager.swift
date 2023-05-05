@@ -31,6 +31,11 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
             return false
         }
     }
+    
+    func loadSavedSub() {
+        self.monthlySub = dc.applicationSavedSettings.monthlySub
+        self.annualSub = dc.applicationSavedSettings.annualSub
+    }
 
     //FETCH PRODUCTS
     var request: SKProductsRequest!
@@ -130,26 +135,41 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
             /// DO NOTHING. BRONZE IS DEPRECATED
             self.annualSub = false
             self.monthlySub = false
+            dc.applicationSavedSettings.monthlySub = false
+            dc.applicationSavedSettings.annualSub = false
+            dc.saveSavedSettings()
         case "dev.daveellis.theracingline.silver":
             /// DO NOTHING. SILVER IS DEPRECATED
             self.annualSub = false
             self.monthlySub = false
+            dc.applicationSavedSettings.monthlySub = false
+            dc.applicationSavedSettings.annualSub = false
+            dc.saveSavedSettings()
         case "dev.daveellis.theracingline.gold":
             /// UPDATE USER ACCESS - MONTHLY SUB
             self.annualSub = false
             self.monthlySub = true
             self.nc.requestPermission()
+            dc.applicationSavedSettings.monthlySub = true
+            dc.applicationSavedSettings.annualSub = false
+            dc.saveSavedSettings()
         case "dev.daveellis.theracingline.annual":
             /// UPDATE USER ACCESS - ANNUAL SUB
             self.annualSub = true
             self.monthlySub = false
             self.nc.requestPermission()
+            dc.applicationSavedSettings.monthlySub = false
+            dc.applicationSavedSettings.annualSub = true
+            dc.saveSavedSettings()
         case "dev.daveellis.theracingline.coffee":
                 print("Coffee purchased")
         default:
             /// DO NOTHING. NO SUB
             self.annualSub = false
             self.monthlySub = false
+            dc.applicationSavedSettings.monthlySub = false
+            dc.applicationSavedSettings.annualSub = false
+            dc.saveSavedSettings()
         }
     }
     
@@ -167,6 +187,9 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
                         self.message = "Annual found"
                         self.annualSub = true
                         self.monthlySub = false
+                        self.dc.applicationSavedSettings.monthlySub = false
+                        self.dc.applicationSavedSettings.annualSub = true
+                        self.dc.saveSavedSettings()
                         
                     } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.gold", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
@@ -174,6 +197,9 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
                         self.message = "Monthly found"
                         self.monthlySub = true
                         self.annualSub = false
+                        self.dc.applicationSavedSettings.monthlySub = true
+                        self.dc.applicationSavedSettings.annualSub = false
+                        self.dc.saveSavedSettings()
                         
                     } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.silver", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
@@ -181,6 +207,9 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
                         self.message = "Silver found"
                         self.annualSub = false
                         self.monthlySub = false
+                        self.dc.applicationSavedSettings.monthlySub = false
+                        self.dc.applicationSavedSettings.annualSub = false
+                        self.dc.saveSavedSettings()
                         
                     } else if receipt.hasActiveAutoRenewableSubscription(ofProductIdentifier: "dev.daveellis.theracingline.bronze", forDate: Date()) {
                         // user has subscription of the product, which is still active at the specified date
@@ -188,6 +217,9 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
                         self.message = "Bronze found"
                         self.annualSub = false
                         self.monthlySub = false
+                        self.dc.applicationSavedSettings.monthlySub = false
+                        self.dc.applicationSavedSettings.annualSub = false
+                        self.dc.saveSavedSettings()
                         
                     } else {
                         /// DO NOTHING. NO SUB
@@ -195,6 +227,9 @@ class StoreManager: NSObject, ObservableObject, SKProductsRequestDelegate, SKPay
                         self.message = "No Sub found"
                         self.annualSub = false
                         self.monthlySub = false
+                        self.dc.applicationSavedSettings.monthlySub = false
+                        self.dc.applicationSavedSettings.annualSub = false
+                        self.dc.saveSavedSettings()
                     }
                 }
             }

@@ -29,22 +29,27 @@ struct theracinglineApp: App {
                     
                     // on app loading. This is not when the app comes to the foreground
                     
-                    // restore payment status
-                    sm.restoreSubscriptionStatus()
-                    SKPaymentQueue.default().add(sm)
-                    sm.getProducts(productIDs: productIDs)
-                    
                     // load saved settings
                     dc.loadSavedSettings()
                     
                     // load race data
                     dc.loadSeriesAndSessionData()
                     
+                    // get previous subscription status
+                    sm.loadSavedSub()
+                    
+                    // restore payment status
+                    sm.restoreSubscriptionStatus()
+                    SKPaymentQueue.default().add(sm)
+                    sm.getProducts(productIDs: productIDs)
+                    
                     // download new races
                     dc.downloadData()
                     
                     // rebuild notifications
                     rebuildNotifications()
+                    
+                    // load saved sub
                 }
                 .onChange(of: dc.unfilteredSessions, perform: { value in
                     rebuildNotifications()

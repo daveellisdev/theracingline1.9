@@ -22,7 +22,7 @@ class DataController: ObservableObject {
     @Published var favouriteSeries: [String:Bool] = [:]
     @Published var notificationSeries: [String:Bool] = [:]
     
-    @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: false, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "flyby_notification_bell.tiff")
+    @Published var applicationSavedSettings: ApplicationSavedSettings = ApplicationSavedSettings(raceNotifications: false, qualifyingNotifications: false, practiceNotifications: false, testingNotifications: false, notificationOffset: 900, notificationSound: "flyby_notification_bell.tiff", monthlySub: false, annualSub: false)
     
     var seriesFiltered: [Series] {
         return self.series.filter { visibleSeries[$0.seriesInfo.id] ?? true }
